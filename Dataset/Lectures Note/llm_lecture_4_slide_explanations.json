@@ -1,0 +1,1273 @@
+[
+  {
+    "slide_title": "Fine-tuning, Instruction Tuning and PERF",
+    "slide_paragraph": "This opening slide introduces the lecture topic: adapting large language models after pre-training. The title emphasizes fine-tuning and instruction tuning, which are techniques used to make a general-purpose model better at following tasks such as classification, summarization, translation, dialogue summarization, and domain-specific response generation. The visual on the left shows a human head connected to digital symbols such as a CPU, gears, a monitor, and cloud-like circuitry, reinforcing the idea that generative AI combines computation, data, and human-like language behavior. Although the title writes PERF, the content of the lecture later focuses on PEFT, parameter-efficient fine-tuning, which is a practical way to adapt large models without updating every parameter. This slide therefore sets the direction of the lecture: moving from prompting alone toward training-based adaptation and efficient model customization.",
+    "key_concepts": [
+      "fine-tuning",
+      "instruction tuning",
+      "LLM adaptation",
+      "PEFT",
+      "generative AI lifecycle"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 1; title: Fine-tuning, Instruction Tuning and PERF; key_concepts: fine-tuning, instruction tuning, LLM adaptation, PEFT, generative AI lifecycle; extracted_text: Fine-tuning, Instruction Tuning and PERF Dr. Tamer Arafa 1"
+  },
+  {
+    "slide_title": "Fine-tuning with instruction prompts",
+    "slide_paragraph": "This slide acts as a section divider for the first major part of the lecture. The phrase fine-tuning with instruction prompts means that the model is not only trained on raw text, but on examples written as instructions and expected responses. Instead of showing the model only a sentence and a label, we can show it a full prompt such as 'Classify this review' and the desired completion such as 'Positive'. This makes the training format closer to how users interact with instruction-following LLMs. The slide signals that the lecture will explain how prompts, completions, labels, and task examples are converted into a training dataset that improves the model's ability to follow similar instructions later.",
+    "key_concepts": [
+      "instruction prompts",
+      "prompt-completion pairs",
+      "instruction-following",
+      "supervised fine-tuning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 2; title: Fine-tuning with instruction prompts; key_concepts: instruction prompts, prompt-completion pairs, instruction-following, supervised fine-tuning; extracted_text: Fine-tuning with instruction prompts 2"
+  },
+  {
+    "slide_title": "GenAI project lifecycle",
+    "slide_paragraph": "The slide presents the Generative AI project lifecycle as a sequence of stages. It begins with Scope, where the problem or use case is defined, then Select, where an existing model is chosen or a new one is pretrained. The next major block is Adapt and align model, which includes prompt engineering, fine-tuning, alignment with human feedback, and evaluation. The final block is Application integration, where the model is optimized and deployed for inference, then augmented and used to build LLM-powered applications. The placement of fine-tuning inside the adaptation stage is important: it shows that fine-tuning is not the starting point of a project, but a method used after the problem and model have been selected, when prompting alone is not enough or when stronger task-specific behavior is required.",
+    "key_concepts": [
+      "GenAI lifecycle",
+      "scope",
+      "model selection",
+      "adaptation",
+      "fine-tuning",
+      "deployment"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 3; title: GenAI project lifecycle; key_concepts: GenAI lifecycle, scope, model selection, adaptation, fine-tuning, deployment; extracted_text: GenAI project lifecycle Define the problem Adapt and align model Application integration Choose model Prompt engineering Optimize and deploy model for inference Augment model and build LLM- powered applications Fine-tuning Align with human feedback Evaluate Scope Select 3"
+  },
+  {
+    "slide_title": "GenAI project lifecycle - fine-tuning focus",
+    "slide_paragraph": "This slide repeats the project lifecycle to keep attention on where fine-tuning fits. A generative AI system is usually built through a pipeline: first define the problem, then choose a model, then adapt the model, evaluate it, optimize it, and integrate it into an application. Fine-tuning belongs to the Adapt and align model stage because it changes the model's behavior using training examples. It is different from prompt engineering, which changes only the input prompt at inference time, and different from deployment optimization, which focuses on speed, memory, and cost. The slide helps students understand that fine-tuning should be justified by the use case, dataset, and evaluation results rather than applied automatically.",
+    "key_concepts": [
+      "fine-tuning stage",
+      "adapt and align",
+      "evaluation",
+      "model deployment",
+      "application integration"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 4; title: GenAI project lifecycle - fine-tuning focus; key_concepts: fine-tuning stage, adapt and align, evaluation, model deployment, application integration; extracted_text: GenAI project lifecycle Define the problem Adapt and align model Application integration Choose model Prompt engineering Optimize and deploy model for inference Augment model and build LLM- powered applications Fine-tuning Align with human feedback Evaluate Scope Select 4"
+  },
+  {
+    "slide_title": "Fine-tuning an LLM with instruction prompts",
+    "slide_paragraph": "This section title introduces the idea that an LLM can be improved by training it on instruction-style examples. In an instruction dataset, every sample usually contains a user request, possibly some input text, and an expected output. For example, a prompt may ask the model to classify a review, summarize a dialogue, or translate a sentence, while the completion provides the correct answer. Fine-tuning on this format teaches the model the mapping between instructions and outputs. The key idea is that the model is not memorizing one prompt; it is learning a reusable behavior pattern, such as recognizing that a sentiment prompt should end with a sentiment label.",
+    "key_concepts": [
+      "instruction fine-tuning",
+      "task-specific behavior",
+      "training examples",
+      "prompt format"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 5; title: Fine-tuning an LLM with instruction prompts; key_concepts: instruction fine-tuning, task-specific behavior, training examples, prompt format; extracted_text: Fine-tuning an LLM with instruction prompts 5"
+  },
+  {
+    "slide_title": "In-context learning (ICL) - zero-shot inference",
+    "slide_paragraph": "This slide shows a basic zero-shot inference example. The prompt asks the LLM to classify the review 'I loved this DVD!' and leaves the sentiment field blank. The model produces the completion 'Positive' without being given an example in the prompt. This is called zero-shot because the model must rely on its pretrained knowledge and instruction-following ability rather than demonstrations inside the current context window. The diagram separates the process into three parts: the prompt provided by the user, the model that processes it, and the completion generated by the model. The example is simple, but it illustrates a central property of modern LLMs: they can often infer the task from natural-language instructions alone.",
+    "key_concepts": [
+      "zero-shot inference",
+      "in-context learning",
+      "sentiment classification",
+      "prompt",
+      "completion"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 6; title: In-context learning (ICL) - zero-shot inference; key_concepts: zero-shot inference, in-context learning, sentiment classification, prompt, completion; extracted_text: In-context learning (ICL) - zero shot inference Classify this review: I loved this DVD! Sentiment: LLM Classify this review: I loved this DVD! Sentiment: Positive Prompt Completion Model 6"
+  },
+  {
+    "slide_title": "In-context learning failure in zero-shot inference",
+    "slide_paragraph": "This slide shows that zero-shot prompting does not always produce the desired output. The prompt again asks for the sentiment of 'I loved this DVD!', but the displayed completion is an incorrect and incoherent continuation: 'eived a very nice book review'. The point is that without examples or fine-tuning, the model may misunderstand the expected output format, generate irrelevant text, or continue the prompt as ordinary text rather than producing a label. This is especially likely for smaller or weaker models, ambiguous prompts, or tasks where the model has not been strongly instruction-tuned. The slide motivates why relying only on zero-shot prompting may be insufficient for production systems or specialized classroom/project tasks.",
+    "key_concepts": [
+      "zero-shot limitation",
+      "incorrect completion",
+      "format control",
+      "prompt ambiguity",
+      "need for fine-tuning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 7; title: In-context learning failure in zero-shot inference; key_concepts: zero-shot limitation, incorrect completion, format control, prompt ambiguity, need for fine-tuning; extracted_text: In-context learning (ICL) - zero shot inference Classify this review: I loved this DVD! Sentiment: LLM Classify this review: I loved this DVD! Sentiment: eived a very nice book review Prompt Completion Model 7"
+  },
+  {
+    "slide_title": "In-context learning (ICL) - one/few-shot inference",
+    "slide_paragraph": "This slide shows one-shot or few-shot inference, where the prompt includes at least one solved example before the new query. The first example says 'I loved this DVD!' has sentiment Positive. Then the model is asked to classify 'I don’t like this chair.' Because the prompt demonstrates the desired input-output pattern, the LLM can infer that it should return the sentiment label Negative. This is in-context learning because the model's parameters are not updated; the model only uses the examples inside the current prompt as temporary guidance. The slide highlights why examples are useful: they define the task, the output format, and the style of response expected from the model.",
+    "key_concepts": [
+      "one-shot inference",
+      "few-shot inference",
+      "demonstrations",
+      "temporary task learning",
+      "sentiment labels"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 8; title: In-context learning (ICL) - one/few-shot inference; key_concepts: one-shot inference, few-shot inference, demonstrations, temporary task learning, sentiment labels; extracted_text: Classify this review: I loved this DVD! Sentiment: Positive Classify this review: I don’t like this chair. Sentiment: In-context learning (ICL) - one/few shot inference Prompt Model Classify this review: I loved this DVD! Sentiment: Positive Classify this review: I don’t like this chair. Sentiment: Negative Completion LLM One-shot or Few-shot Inference 8"
+  },
+  {
+    "slide_title": "Limitations of in-context learning",
+    "slide_paragraph": "This slide explains why in-context learning is not always enough. The left side shows a context window filled with several labeled sentiment examples: positive and negative reviews followed by a new unlabeled review, 'Who would use this product?' The right side states two important limitations. First, in-context learning may not work well for smaller models because they may not reliably infer the task from examples. Second, examples consume space in the context window, leaving less room for the actual user input, retrieved documents, or long conversations. The slide concludes that when repeated examples are needed to get acceptable behavior, fine-tuning may be a better strategy because the task pattern is learned into the model rather than repeated in every prompt.",
+    "key_concepts": [
+      "ICL limitations",
+      "context window",
+      "small models",
+      "few-shot examples",
+      "fine-tuning motivation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 9; title: Limitations of in-context learning; key_concepts: ICL limitations, context window, small models, few-shot examples, fine-tuning motivation; extracted_text: Limitations of in-context learning Classify this review: I loved this movie! Sentiment: Positive Classify this review: I don’t like this chair. Sentiment: Negative Classify this review: This sofa is so ugly. Sentiment: Negative Classify this review: Who would use this product? Sentiment: Even with multiple examples ●In-context learning may not work for smaller models LLM ●Examples take up space in the context window Instead, try fine-tuning the model Context Window 9"
+  },
+  {
+    "slide_title": "LLM fine-tuning at a high level - pre-training",
+    "slide_paragraph": "This slide contrasts pre-training with later fine-tuning by first showing the pre-training stage. A pre-trained LLM is built from very large quantities of unstructured text, often measured in gigabytes, terabytes, or petabytes. The repeated TEXT boxes represent raw textual data that may come from books, webpages, articles, code, and other large corpora. During pre-training, the model learns general language patterns, world knowledge, grammar, reasoning traces, and statistical relationships between tokens. The important point is that pre-training creates a broad foundation model, but it does not necessarily make the model excellent at a specific downstream task or a particular instruction format.",
+    "key_concepts": [
+      "pre-training",
+      "unstructured text",
+      "foundation model",
+      "large corpus",
+      "general language learning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 10; title: LLM fine-tuning at a high level - pre-training; key_concepts: pre-training, unstructured text, foundation model, large corpus, general language learning; extracted_text: LLM fine-tuning at a high level GB - TB - PB of unstructured textual data Pre-trained LLM Model LLM pre-training TEXT[...] TEXT[...] TEXT[...] TEXT[...] TEXT[...] TEXT[...] TEXT[...] TEXT[...] TEXT[...] TEXT[...] 10"
+  },
+  {
+    "slide_title": "LLM fine-tuning at a high level - labeled task examples",
+    "slide_paragraph": "This slide introduces fine-tuning as a second training stage after pre-training. Instead of using only unstructured text, fine-tuning uses labeled examples for a specific task or set of tasks. The dataset entries are represented as TEXT plus LABEL pairs, meaning each input has a target answer. A pre-trained LLM enters the fine-tuning process and becomes a fine-tuned LLM with improved performance on the target task. The diagram emphasizes that fine-tuning is supervised: the model compares its predicted output to the correct label and updates its parameters accordingly. This is how a general language model becomes more specialized for tasks such as sentiment classification, summarization, or support-response generation.",
+    "key_concepts": [
+      "supervised fine-tuning",
+      "labeled examples",
+      "task-specific dataset",
+      "fine-tuned LLM",
+      "model specialization"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 11; title: LLM fine-tuning at a high level - labeled task examples; key_concepts: supervised fine-tuning, labeled examples, task-specific dataset, fine-tuned LLM, model specialization; extracted_text: LLM fine-tuning at a high level GB - TB of labeled examples for a specific task or set of tasks TEXT[...], LABEL[...] TEXT[...], LABEL[...] TEXT[...], LABEL[...] TEXT[...], LABEL[...] TEXT[...], LABEL[...] Fine-tuned LLM Model Pre-trained LLM Model LLM fine-tuning Task-specific examples 11"
+  },
+  {
+    "slide_title": "LLM fine-tuning at a high level - prompt-completion pairs",
+    "slide_paragraph": "This slide refines the fine-tuning dataset format by showing PROMPT and COMPLETION pairs. In instruction tuning, the prompt contains the task instruction and input, while the completion contains the desired model response. This is more natural for LLMs than a simple feature-label table because it matches the way users interact with models at inference time. The diagram shows a pre-trained LLM being fine-tuned on task-specific examples and producing improved performance. The key intuition is that the model learns not only the correct answers, but also how to interpret task instructions, maintain output style, and follow expected response formats.",
+    "key_concepts": [
+      "prompt-completion pair",
+      "instruction tuning",
+      "task examples",
+      "improved performance",
+      "output format learning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 12; title: LLM fine-tuning at a high level - prompt-completion pairs; key_concepts: prompt-completion pair, instruction tuning, task examples, improved performance, output format learning; extracted_text: LLM fine-tuning at a high level GB - TB of labeled examples for a specific task or set of tasks PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] Fine-tuned LLM Model Pre-trained LLM Model LLM fine-tuning Improved performance Prompt-completion pairs Task-specific examples 12"
+  },
+  {
+    "slide_title": "Using prompts to fine-tune LLMs with instruction - classification example",
+    "slide_paragraph": "This slide demonstrates that each training pair can include an explicit instruction. The examples use sentiment classification: one prompt asks about 'I loved this DVD!' and the completion is Positive; another asks about 'I don’t like this chair.' and the completion is Negative. The diagram shows these examples used to convert a pre-trained LLM into a fine-tuned LLM. The purpose of including the instruction inside every example is to teach the model what kind of task is being requested, not just which text maps to which label. This format is especially useful when the same model will be asked to perform many tasks through natural-language instructions.",
+    "key_concepts": [
+      "instruction dataset",
+      "classification prompt",
+      "sentiment completion",
+      "fine-tuned model",
+      "natural-language supervision"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 13; title: Using prompts to fine-tune LLMs with instruction - classification example; key_concepts: instruction dataset, classification prompt, sentiment completion, fine-tuned model, natural-language supervision; extracted_text: Using prompts to fine-tune LLMs with instruction Fine-tuned LLM Model Pre-trained LLM Model LLM fine-tuning Classify this review: I loved this DVD! Sentiment: Positive Classify this review: I don’t like this chair. Sentiment: Negative Each prompt/completion pair includes a specific “instruction” to the LLM 13"
+  },
+  {
+    "slide_title": "Using prompts to fine-tune LLMs with instruction - multiple task templates",
+    "slide_paragraph": "This slide shows that instruction fine-tuning can include different kinds of tasks, not only sentiment classification. Example prompts include summarizing a text and translating a sentence, each paired with its expected completion. The training set is still represented as prompt-completion pairs, but the instructions vary. This teaches the model to recognize different task types from natural language and respond appropriately. The slide is important because it separates ordinary single-task fine-tuning from broader instruction tuning: a model trained on many instruction templates can become more general and helpful across different user requests.",
+    "key_concepts": [
+      "multi-task prompts",
+      "summarization",
+      "translation",
+      "instruction templates",
+      "generalization"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 14; title: Using prompts to fine-tune LLMs with instruction - multiple task templates; key_concepts: multi-task prompts, summarization, translation, instruction templates, generalization; extracted_text: Using prompts to fine-tune LLMs with instruction PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] Fine-tuned LLM Model Pre-trained LLM Model LLM fine-tuning Task-specific examples Summarize the following text: [EXAMPLE TEXT] [EXAMPLE COMPLETION] Translate this sentence to... [EXAMPLE TEXT] [EXAMPLE COMPLETION] 14"
+  },
+  {
+    "slide_title": "Using prompts to fine-tune LLMs with instruction - full fine-tuning",
+    "slide_paragraph": "This slide states that full fine-tuning updates all parameters of the model. The visual shows prompt-completion examples entering the fine-tuning process, a pre-trained LLM becoming a fine-tuned LLM, and improved performance as the goal. Updating all parameters means the entire neural network is allowed to change in response to the training data. This can produce strong task performance, but it is computationally expensive and may change the model's general behavior. Later slides introduce PEFT as a more efficient alternative that updates only a small set of parameters while keeping most of the base model frozen.",
+    "key_concepts": [
+      "full fine-tuning",
+      "all parameters",
+      "training cost",
+      "task performance",
+      "model update"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 15; title: Using prompts to fine-tune LLMs with instruction - full fine-tuning; key_concepts: full fine-tuning, all parameters, training cost, task performance, model update; extracted_text: Using prompts to fine-tune LLMs with instruction PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] Fine-tuned LLM Model Pre-trained LLM Model LLM fine-tuning Task-specific examples Full fine-tuning updates all parameters Improved performance 15"
+  },
+  {
+    "slide_title": "Sample prompt instruction templates",
+    "slide_paragraph": "This slide provides concrete examples of instruction templates from PromptSource. The first template is for classification or sentiment analysis: it inserts a product review into a prompt and asks the model to predict the associated rating from possible choices. The second template is for text generation: it asks the model to generate a star-rated review about a product title, using placeholders such as star_rating, product_title, and review_body. The third template is for summarization: it asks for a short sentence describing a product review. The highlighted parts show the instruction words that tell the model what to do. The slide teaches that prompt design is not random; templates systematically define the input variables, task wording, and expected output field.",
+    "key_concepts": [
+      "PromptSource",
+      "instruction template",
+      "classification",
+      "text generation",
+      "summarization",
+      "Jinja placeholders"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 16; title: Sample prompt instruction templates; key_concepts: PromptSource, instruction template, classification, text generation, summarization, Jinja placeholders; extracted_text: Sample prompt instruction templates Source: https://github.com/bigscience-workshop/promptsource/blob/main/promptsource/templates/amazon_polarity/templates.yaml Classification / sentiment analysis Text generation Text summarization 16"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - dataset splits",
+    "slide_paragraph": "This slide outlines the full fine-tuning workflow using a prepared instruction dataset. The dataset is divided into training, validation, and test splits. The training split is used to update the model's parameters; the validation split is used during development to monitor performance and tune decisions such as training duration; the test split is kept for final evaluation after the model has been trained. This separation prevents the model from being evaluated only on examples it has already seen. The slide also reinforces that prompt-completion pairs are the basic training unit, and that a rigorous fine-tuning experiment must include proper data splitting.",
+    "key_concepts": [
+      "training split",
+      "validation split",
+      "test split",
+      "instruction dataset",
+      "evaluation protocol"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 17; title: LLM fine-tuning process - dataset splits; key_concepts: training split, validation split, test split, instruction dataset, evaluation protocol; extracted_text: LLM fine-tuning process Prepared instruction dataset PROMPT[...], COMPLETION[...] ... Validation PROMPT[...], COMPLETION[...] ... Test LLM fine-tuning PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] Training Training splits 17"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - prediction versus label",
+    "slide_paragraph": "This slide shows how fine-tuning compares the model's completion to the correct label. The prompt asks the model to classify 'I loved this DVD!' with the sentiment field blank. The pre-trained model produces an incorrect completion, Neutral, while the label in the prepared dataset is Positive. This mismatch is the training signal. The model is not simply told that it is wrong in natural language; instead, a loss function measures how far its predicted probability distribution is from the correct target. Fine-tuning uses many such examples to gradually make correct completions more likely for similar prompts.",
+    "key_concepts": [
+      "model completion",
+      "label",
+      "training signal",
+      "prediction error",
+      "sentiment classification"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 18; title: LLM fine-tuning process - prediction versus label; key_concepts: model completion, label, training signal, prediction error, sentiment classification; extracted_text: LLM fine-tuning process Pre-trained LLM Model Classify this review: I loved this DVD! Sentiment: Neutral LLM completion: Label: Classify this review: I loved this DVD! Sentiment: Positive Prompt: Classify this review: I loved this DVD! Sentiment: LLM fine-tuning Prepared instruction dataset 18"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - cross-entropy loss",
+    "slide_paragraph": "This slide adds the loss function to the fine-tuning process. The prompt is shown, the model produces a completion, and the correct label is available. Cross-entropy loss measures how much probability the model assigned to the correct answer. If the correct label is Positive but the model predicts Neutral with high confidence, the loss is large. During training, gradients are computed from this loss and used to adjust the model parameters so that the correct token or label becomes more likely next time. This is the mathematical mechanism behind supervised fine-tuning: repeated loss minimization over prompt-completion examples.",
+    "key_concepts": [
+      "cross-entropy",
+      "loss function",
+      "gradient update",
+      "supervised learning",
+      "correct label probability"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 19; title: LLM fine-tuning process - cross-entropy loss; key_concepts: cross-entropy, loss function, gradient update, supervised learning, correct label probability; extracted_text: LLM fine-tuning process Pre-trained LLM Model Classify this review: I loved this DVD! Sentiment: Classify this review: I loved this DVD! Sentiment: Neutral LLM completion: Label: Classify this review: I loved this DVD! Sentiment: Positive Prompt: LLM fine-tuning Prepared instruction dataset Loss: Cross-Entropy 19"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - validation accuracy",
+    "slide_paragraph": "This slide highlights validation accuracy as a metric used during training. The training split updates the model, but the validation split is used to check how well the model performs on examples that were not used for parameter updates. Validation accuracy can reveal overfitting: if training performance improves but validation performance stops improving or decreases, the model may be memorizing training examples rather than learning a generalizable task pattern. The slide therefore connects dataset splitting to model selection, early stopping, and responsible experimental design. Fine-tuning is not only about training; it is also about monitoring whether training improves generalization.",
+    "key_concepts": [
+      "validation accuracy",
+      "overfitting",
+      "generalization",
+      "model monitoring",
+      "training dataset"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 20; title: LLM fine-tuning process - validation accuracy; key_concepts: validation accuracy, overfitting, generalization, model monitoring, training dataset; extracted_text: LLM fine-tuning process Prepared instruction dataset PROMPT[...], COMPLETION[...] ... Validation PROMPT[...], COMPLETION[...] ... Test LLM fine-tuning PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] Training Training splits validation_accuracy 20"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - test accuracy",
+    "slide_paragraph": "This slide highlights test accuracy as the final held-out evaluation measure. After the model is trained and any development decisions are made using validation results, the test set is used to estimate performance on unseen examples. The test set should not guide repeated tuning, otherwise it stops being an unbiased evaluation. In the context of instruction fine-tuning, test accuracy tells us whether the model can follow the task instruction correctly on new prompts. This slide completes the experimental workflow: train on training examples, tune or monitor on validation examples, then report final results on test examples.",
+    "key_concepts": [
+      "test accuracy",
+      "held-out evaluation",
+      "unseen examples",
+      "final performance",
+      "experimental integrity"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 21; title: LLM fine-tuning process - test accuracy; key_concepts: test accuracy, held-out evaluation, unseen examples, final performance, experimental integrity; extracted_text: LLM fine-tuning process Prepared instruction dataset PROMPT[...], COMPLETION[...] ... Validation PROMPT[...], COMPLETION[...] ... Test LLM fine-tuning PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] PROMPT[...], COMPLETION[...] Training Training splits test_accuracy 21"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - from pre-trained to instruct model",
+    "slide_paragraph": "This slide summarizes the outcome of instruction fine-tuning. A pre-trained LLM becomes an instruct LLM after training on instruction-style examples. The difference is behavioral: the pre-trained model has broad language knowledge, while the instruct model is better at interpreting user requests and producing useful responses in the requested format. The slide uses a simple before-and-after diagram to emphasize that instruction tuning changes the model's interaction style. This is why many deployed models are not only pretrained models; they have also undergone instruction tuning and often additional alignment stages.",
+    "key_concepts": [
+      "pre-trained LLM",
+      "instruct LLM",
+      "instruction following",
+      "behavioral adaptation",
+      "model alignment"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 22; title: LLM fine-tuning process - from pre-trained to instruct model; key_concepts: pre-trained LLM, instruct LLM, instruction following, behavioral adaptation, model alignment; extracted_text: LLM fine-tuning process Model Pre-trained LLM Instruct LLM Model 22"
+  },
+  {
+    "slide_title": "Fine-tuning on a single task",
+    "slide_paragraph": "This section divider introduces single-task fine-tuning. In this setting, the training dataset focuses on one specific capability, such as summarization, sentiment classification, or named entity recognition. Single-task fine-tuning can be effective when the application has a narrow objective and a consistent output format. However, because the model repeatedly sees one task style, it may become very specialized. The following slides explain both the benefit and the risk of this approach, especially the possibility of catastrophic forgetting when performance on other tasks decreases.",
+    "key_concepts": [
+      "single-task fine-tuning",
+      "task specialization",
+      "narrow objective",
+      "catastrophic forgetting"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 23; title: Fine-tuning on a single task; key_concepts: single-task fine-tuning, task specialization, narrow objective, catastrophic forgetting; extracted_text: Fine-tuning on a single task 23"
+  },
+  {
+    "slide_title": "Fine-tuning on a single task - summarization example",
+    "slide_paragraph": "This slide shows an example of single-task fine-tuning for summarization. A pre-trained LLM is trained on a dataset where every example asks the model to summarize some text and provides an expected completion. The slide notes that often only 500 to 1000 examples may be needed to fine-tune a single task. This is because the base model already understands language; fine-tuning mainly teaches it a specific behavior, format, or domain. The limitation is that the model sees one repeated instruction type, so it becomes optimized for that task. This is useful for a focused application such as dialogue summarization, but it may not preserve broad general-purpose ability.",
+    "key_concepts": [
+      "summarization fine-tuning",
+      "single-task dataset",
+      "500-1000 examples",
+      "instruct model",
+      "task-specific performance"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 24; title: Fine-tuning on a single task - summarization example; key_concepts: summarization fine-tuning, single-task dataset, 500-1000 examples, instruct model, task-specific performance; extracted_text: Fine-tuning on a single task Instruct LLM Model Pre-trained LLM Model Single-task training dataset, e.g. summarization Summarize the following text: [EXAMPLE TEXT] [EXAMPLE COMPLETION] … Summarize the following text: [EXAMPLE TEXT] [EXAMPLE COMPLETION] … Summarize the following text: [EXAMPLE TEXT] [EXAMPLE COMPLETION] … Summarize the following text: [EXAMPLE TEXT] [EXAMPLE COMPLETION] … Often, only 500-1000 examples needed to fine-tune a single task 24"
+  },
+  {
+    "slide_title": "Catastrophic forgetting - before fine-tuning",
+    "slide_paragraph": "This slide begins the explanation of catastrophic forgetting by showing the model before fine-tuning. The sentiment prompt asks about 'I loved this DVD!', but the model generates an irrelevant completion rather than the label Positive. This illustrates the weakness that motivates task-specific fine-tuning: the model may not naturally produce the desired output format. The phrase 'before fine-tuning' is important because the slide establishes a baseline. In the next slide, fine-tuning improves this specific task, but later slides show the trade-off: improving one task can sometimes damage performance on other tasks.",
+    "key_concepts": [
+      "catastrophic forgetting",
+      "baseline behavior",
+      "before fine-tuning",
+      "sentiment task",
+      "incorrect output"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 25; title: Catastrophic forgetting - before fine-tuning; key_concepts: catastrophic forgetting, baseline behavior, before fine-tuning, sentiment task, incorrect output; extracted_text: Catastrophic forgetting ● Fine-tuning can significantly increase the performance of a model on a specific task… Classify this review: I loved this DVD! Sentiment: LLM Classify this review: I loved this DVD! Sentiment: eived a very nice book review Before fine-tuning Prompt Completion Model 25"
+  },
+  {
+    "slide_title": "Catastrophic forgetting - task improvement after fine-tuning",
+    "slide_paragraph": "This slide shows the direct benefit of fine-tuning. After being trained on sentiment examples, the same model now outputs POSITIVE for the prompt 'I loved this DVD! Sentiment:'. This means fine-tuning successfully taught the model the expected task and output format. The slide highlights why fine-tuning is attractive: it can transform unreliable prompting behavior into consistent task performance. However, the word 'specific' in the slide matters. The improvement is measured on the target task, and it does not guarantee that all other abilities of the model remain unchanged.",
+    "key_concepts": [
+      "task improvement",
+      "after fine-tuning",
+      "sentiment classification",
+      "output format",
+      "supervised adaptation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 26; title: Catastrophic forgetting - task improvement after fine-tuning; key_concepts: task improvement, after fine-tuning, sentiment classification, output format, supervised adaptation; extracted_text: Catastrophic forgetting ● Fine-tuning can significantly increase the performance of a model on a specific task… Classify this review: I loved this DVD! Sentiment: LLM Classify this review: I loved this DVD! Sentiment: POSITIVE After fine-tuning Prompt Completion Model 26"
+  },
+  {
+    "slide_title": "Catastrophic forgetting - general ability before fine-tuning",
+    "slide_paragraph": "This slide shifts from the fine-tuned sentiment task to a different task: answering a question from a short context. Before fine-tuning, the model reads 'Charlie the cat roamed the garden at night' and correctly answers that the cat's name is Charlie. This shows that the base model had useful general reading-comprehension ability. The slide is setting up the contrast: a model can be good at a broad task before fine-tuning, but if it is aggressively fine-tuned on a narrow task, its general behavior may become distorted. Catastrophic forgetting refers to this loss of previously learned abilities.",
+    "key_concepts": [
+      "reading comprehension",
+      "general ability",
+      "before fine-tuning",
+      "question answering",
+      "catastrophic forgetting setup"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 27; title: Catastrophic forgetting - general ability before fine-tuning; key_concepts: reading comprehension, general ability, before fine-tuning, question answering, catastrophic forgetting setup; extracted_text: Catastrophic forgetting ● …but can lead to reduction in ability on other tasks What is the name of the cat? Charlie the cat roamed the garden at night. LLM What is the name of the cat? Charlie the cat roamed the garden at night. Charlie Before fine-tuning Prompt Completion Model 27"
+  },
+  {
+    "slide_title": "Catastrophic forgetting - ability reduction after fine-tuning",
+    "slide_paragraph": "This slide demonstrates catastrophic forgetting in an exaggerated but clear way. After fine-tuning heavily on sentiment classification, the model is asked a question-answering task about a cat named Charlie. Instead of answering 'Charlie', it outputs 'The garden was positive.' The model has transferred the sentiment-label behavior into an unrelated task, which shows that its original ability has been harmed or its output style has become overly biased toward the fine-tuning task. The key lesson is that fine-tuning can improve one target capability while reducing performance elsewhere, especially if the dataset is narrow, the training is too aggressive, or too many parameters are updated.",
+    "key_concepts": [
+      "catastrophic forgetting",
+      "negative transfer",
+      "over-specialization",
+      "question answering failure",
+      "task interference"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 28; title: Catastrophic forgetting - ability reduction after fine-tuning; key_concepts: catastrophic forgetting, negative transfer, over-specialization, question answering failure, task interference; extracted_text: Catastrophic forgetting ● …but can lead to reduction in ability on other tasks What is the name of the cat? Charlie the cat roamed the garden at night. LLM What is the name of the cat? Charlie the cat roamed the garden at night. The garden was positive. After fine-tuning Prompt Completion Model 28"
+  },
+  {
+    "slide_title": "How to avoid catastrophic forgetting",
+    "slide_paragraph": "This slide lists strategies for dealing with catastrophic forgetting. The first point says that sometimes you may not need to avoid it: if the model is intended only for one narrow task, losing unrelated abilities may not matter. The second strategy is multi-task fine-tuning, where the model trains on many task types at once so it preserves broader instruction-following behavior. The third strategy is parameter-efficient fine-tuning, or PEFT, which updates only a small portion of the model or adds small trainable modules while keeping most original weights frozen. These approaches reduce the risk that a narrow dataset will overwrite the model's general knowledge and capabilities.",
+    "key_concepts": [
+      "avoid forgetting",
+      "multi-task fine-tuning",
+      "PEFT",
+      "frozen weights",
+      "task balance"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 29; title: How to avoid catastrophic forgetting; key_concepts: avoid forgetting, multi-task fine-tuning, PEFT, frozen weights, task balance; extracted_text: How to avoid catastrophic forgetting ● First note that you might not have to! ● Fine-tune on multiple tasks at the same time ● Consider Parameter Efficient Fine-tuning (PEFT) 29"
+  },
+  {
+    "slide_title": "Multi-task, instruction fine-tuning",
+    "slide_paragraph": "This section divider introduces multi-task instruction fine-tuning. The main idea is to train a model on many instruction types rather than only one. For example, the dataset might include summarization, translation, classification, question answering, code generation, and information extraction. By seeing many tasks, the model learns a more general skill: follow the instruction and produce the requested type of output. This approach is closely related to how general instruct models are created, and it can reduce the risk of the model becoming too specialized in a single output pattern.",
+    "key_concepts": [
+      "multi-task instruction tuning",
+      "generalization",
+      "instruction diversity",
+      "task mixture"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 30; title: Multi-task, instruction fine-tuning; key_concepts: multi-task instruction tuning, generalization, instruction diversity, task mixture; extracted_text: Multi-task, instruction fine-tuning 30"
+  },
+  {
+    "slide_title": "Multi-task instruction fine-tuning - many tasks",
+    "slide_paragraph": "This slide visualizes a pre-trained LLM being instruction fine-tuned on many tasks. The examples include 'Summarize the following text', 'Rate this review', 'Translate into Python code', and 'Identify the places'. Each instruction has an example text and completion. The purpose is to expose the model to many task formats so it learns the general concept of following instructions, not just one mapping such as review-to-sentiment. The diagram implies that the training data must be diverse in both input content and desired output type. A strong instruction-tuned model becomes more useful because it can respond to a wider range of user prompts.",
+    "key_concepts": [
+      "multi-task dataset",
+      "summarization",
+      "review rating",
+      "code translation",
+      "place identification"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 31; title: Multi-task instruction fine-tuning - many tasks; key_concepts: multi-task dataset, summarization, review rating, code translation, place identification; extracted_text: Multi-task, instruction fine-tuning Pre-trained LLM Model Instruction fine-tune on many tasks Summarize the following text: Rate this review: Translate into Python code: Identify the places: [EXAMPLE TEXT] [EXAMPLE COMPLETION] … 31"
+  },
+  {
+    "slide_title": "Multi-task instruction fine-tuning - instruct LLM output",
+    "slide_paragraph": "This slide completes the multi-task fine-tuning diagram by showing the output as an instruct LLM. The slide notes that many examples of each task are needed for training. This is important because multi-task training is broader and requires enough coverage for every task category; otherwise, the model may learn some tasks well and others poorly. The final instruct LLM should be better at recognizing varied instructions and adapting its response style. The trade-off is data and compute: multi-task instruction tuning generally needs larger and more carefully balanced datasets than single-task fine-tuning.",
+    "key_concepts": [
+      "instruct LLM",
+      "many examples",
+      "task coverage",
+      "balanced training",
+      "instruction generalization"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 32; title: Multi-task instruction fine-tuning - instruct LLM output; key_concepts: instruct LLM, many examples, task coverage, balanced training, instruction generalization; extracted_text: Multi-task, instruction fine-tuning Pre-trained LLM Model Instruction fine-tune on many tasks Summarize the following text: Rate this review: Translate into Python code: Identify the places: [EXAMPLE TEXT] [EXAMPLE COMPLETION] … Instruct LLM Model Many examples of each needed for training 32"
+  },
+  {
+    "slide_title": "Instruction fine-tuning with FLAN",
+    "slide_paragraph": "This slide introduces FLAN as a family of instruction fine-tuning datasets or procedures. It states that FLAN models refer to a specific set of instructions used to perform instruction fine-tuning. The dessert metaphor says FLAN is like the 'metaphorical dessert' after the 'main course' of pretraining: pretraining provides the main language knowledge, while FLAN-style instruction tuning makes the model more pleasant and useful for following tasks. The slide does not present equations, but it communicates an important workflow: large-scale pretraining comes first, then instruction fine-tuning improves usability and task responsiveness.",
+    "key_concepts": [
+      "FLAN",
+      "instruction fine-tuning",
+      "pretraining",
+      "Fine-tuned Language Net",
+      "instruct models"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 33; title: Instruction fine-tuning with FLAN; key_concepts: FLAN, instruction fine-tuning, pretraining, Fine-tuned Language Net, instruct models; extracted_text: ● FLAN models refer to a specific set of instructions used to perform instruction fine-tuning Instruction fine-tuning with FLAN “The metaphorical dessert to the main course of pretraining” FLAN 33"
+  },
+  {
+    "slide_title": "Instruction fine-tuning with FLAN - model examples",
+    "slide_paragraph": "This slide shows how FLAN instruction tuning can be applied to different base models. T5 becomes FLAN-T5 after being instruction-tuned with FLAN-style tasks, and PaLM becomes FLAN-PaLM. The arrows indicate transformation: the base model remains the starting point, but its behavior is changed by training on a broad instruction mixture. The visual is useful because it clarifies that FLAN is not only one model architecture; it is a tuning approach or dataset collection that can be used to create instruction-following versions of existing models. The result is usually stronger zero-shot and few-shot performance across many tasks.",
+    "key_concepts": [
+      "FLAN-T5",
+      "FLAN-PaLM",
+      "base model",
+      "instruction mixture",
+      "zero-shot improvement"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 34; title: Instruction fine-tuning with FLAN - model examples; key_concepts: FLAN-T5, FLAN-PaLM, base model, instruction mixture, zero-shot improvement; extracted_text: Instruction fine-tuning with FLAN ● FLAN models refer to a specific set of instructions used to perform instruction fine-tuning T5 T5 FLAN-T5 PALM PALM FLAN-PALM FLAN (Fine-tuned LAnguage Net) 34"
+  },
+  {
+    "slide_title": "FLAN-T5: Fine-tuned version of pre-trained T5 model",
+    "slide_paragraph": "This slide summarizes the scale and diversity of tasks used in FLAN-T5-style instruction tuning. It lists several task collections: T0-SF with 55 datasets, 14 categories, and 193 tasks; Muffin with 69 datasets, 27 categories, and 80 tasks; Chain-of-Thought reasoning with 9 datasets and 9 tasks; and Natural Instructions with 372 datasets, 108 categories, and 1554 tasks. The examples include commonsense reasoning, question generation, closed-book QA, code instruction generation, summarization, natural language inference, named entity recognition, and toxic language detection. The message is that FLAN-T5 is general-purpose because it was exposed to many instruction forms, not because it was trained on one narrow task.",
+    "key_concepts": [
+      "FLAN-T5",
+      "T5",
+      "Natural Instructions",
+      "Chain-of-Thought",
+      "task diversity",
+      "general-purpose instruct model"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 35; title: FLAN-T5: Fine-tuned version of pre-trained T5 model; key_concepts: FLAN-T5, T5, Natural Instructions, Chain-of-Thought, task diversity, general-purpose instruct model; extracted_text: FLAN-T5: Fine-tuned version of pre-trained T5 model ● FLAN-T5 is a great, general purpose, instruct model Source: Chung et al. 2022, “Scaling Instruction-Finetuned Language Models” T0-SF - Commonsense Reasoning, - Question Generation, - Closed-book QA, - Adversarial QA, - Extractive QA … 55 Datasets 14 Categories 193 Tasks Muffin - Natural language inference, - Code instruction gen, - Code repair - Dialog context generation, - Summarization (SAMSum) … 69 Datasets 27 Categories 80 Tasks CoT (reasoning) - Arithmetic reasoning, - Commonsense reasoning - Explanation generation, - Sentence composition, - Implicit reasoning, … 9 Datasets 1 Category 9 Tasks Natural Instructions - Cause effect classification, - Commonsense reasoning, - Named Entity Recognition, - Toxic Language Detection, - Question answering … 372 Datasets 108 Categories 1554 Tasks 35"
+  },
+  {
+    "slide_title": "SAMSum: A dialogue dataset",
+    "slide_paragraph": "This slide introduces SAMSum as a dialogue summarization dataset used in prompt-based fine-tuning. The screenshot shows a dataset interface with columns for dialogue and summary. Each example contains a short conversation and a human-written summary. This makes it suitable for training a model to read multi-speaker dialogue and produce concise summaries. The slide connects a real dataset to the earlier concept of prompt-completion pairs: the dialogue can be placed inside a prompt, and the summary becomes the expected completion. SAMSum is useful because dialogue summarization requires identifying speakers, intentions, and important events rather than simply shortening a paragraph.",
+    "key_concepts": [
+      "SAMSum",
+      "dialogue summarization",
+      "training dataset",
+      "dialogue column",
+      "summary column"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 36; title: SAMSum: A dialogue dataset; key_concepts: SAMSum, dialogue summarization, training dataset, dialogue column, summary column; extracted_text: Sample prompt training dataset (samsum) to fine-tune FLAN-T5 from pretrained T5 Source: https://huggingface.co/datasets/samsum, https://github.com/google-research/FLAN/blob/2c79a31/flan/v2/templates.py#L3285 SAMSum: A dialogue dataset 36"
+  },
+  {
+    "slide_title": "Sample FLAN-T5 prompt templates - SAMSum variants",
+    "slide_paragraph": "This slide shows several prompt templates for the same SAMSum summarization task. Each template inserts the dialogue into a slightly different instruction, such as 'Briefly summarize that dialogue', 'Write a short summary', 'What is a summary of this dialogue?', or 'What were the main points in that conversation?'. The target output remains the same summary. The key idea is prompt diversity: if the model sees many ways of asking for the same task, it becomes less dependent on one exact wording. This improves robustness because users may phrase their requests differently at inference time.",
+    "key_concepts": [
+      "prompt templates",
+      "SAMSum",
+      "summarization instructions",
+      "prompt diversity",
+      "robustness"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 37; title: Sample FLAN-T5 prompt templates - SAMSum variants; key_concepts: prompt templates, SAMSum, summarization instructions, prompt diversity, robustness; extracted_text: Sample FLAN-T5 prompt templates \"samsum\": [ (\"{di alogue}\\n\\Briefly summarize that dialogue.\", \"{summary}\"), (\"Here i s a dialogue:\\n{dialogue}\\n\\nWrite a short summary!\", \"{summary}\"), (\"Dialogue:\\n{dialogue}\\n\\nWhat i s a summary of t hi s dialogue?\", \"{summary}\"), (\"{dialogue}\\n\\nWhat was that dialogue about, i n two sentences or less?\", \"{summary}\"), (\"Here i s a dialogue:\\n{dialogue}\\n\\nWhat were they talk ing about?\", \"{summary}\"), (\"Dialogue:\\n{dialogue}\\nWhat were the main points i n that \" \"conversation?\", \"{summary}\"), (\"Dialogue:\\n{dialogue}\\nWhat was \"{summary}\"), going on i n that conversation?\", ] 37"
+  },
+  {
+    "slide_title": "Sample FLAN-T5 prompt templates - complete template list",
+    "slide_paragraph": "This slide continues the SAMSum template examples and shows the prompt-completion pairs in code-like form. Each tuple contains an input template and the target placeholder summary. The slide demonstrates that instruction datasets can be generated systematically from templates rather than manually written one by one. This allows the same dataset example to support multiple natural-language instructions. The template list also illustrates how small wording changes can teach the model that many expressions, such as 'main points' or 'what was going on', all correspond to the summarization task. This is one reason instruction-tuned models generalize better to user phrasing.",
+    "key_concepts": [
+      "template tuples",
+      "instruction variation",
+      "summary target",
+      "template-based dataset generation",
+      "prompt robustness"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 38; title: Sample FLAN-T5 prompt templates - complete template list; key_concepts: template tuples, instruction variation, summary target, template-based dataset generation, prompt robustness; extracted_text: Sample FLAN-T5 prompt templates \"samsum\": [ (\"{di alogue}\\n\\Briefly summarize that dialogue.\", \"{summary}\"), (\"Here i s a dialogue:\\n{dialogue}\\n\\nWrite a short summary!\", \"{summary}\"), (\"Dialogue:\\n{dialogue}\\n\\nWhat i s a summary of t hi s dialogue?\", \"{summary}\"), (\"{dialogue}\\n\\nWhat was that dialogue about, i n two sentences or less?\", \"{summary}\"), (\"Here i s a dialogue:\\n{dialogue}\\n\\nWhat were they talk ing about?\", \"{summary}\"), (\"Dialogue:\\n{dialogue}\\nWhat were the main points i n that \" \"conversation?\", \"{summary}\"), (\"Dialogue:\\n{dialogue}\\nWhat was going on i n that conversation?\", \"{summary}\"), ] 38"
+  },
+  {
+    "slide_title": "Improving FLAN-T5's summarization capabilities - support chat",
+    "slide_paragraph": "This slide begins a practical example involving a support chatbot conversation. The visible dialogue shows ShopBot greeting a customer, the customer saying they need to return jeans, the bot asking when the item was bought, and the customer replying 'Two weeks ago.' This resembles a customer-service transcript. The purpose is to show a domain where summarization is useful: instead of reading the whole conversation, a model should identify the user's need and the action required. The slide sets up the idea that a general FLAN-T5 model may already summarize, but additional domain-specific fine-tuning can make it better for support-dialogue summaries.",
+    "key_concepts": [
+      "support dialogue",
+      "ShopBot",
+      "return request",
+      "conversation summarization",
+      "domain-specific fine-tuning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 39; title: Improving FLAN-T5's summarization capabilities - support chat; key_concepts: support dialogue, ShopBot, return request, conversation summarization, domain-specific fine-tuning; extracted_text: Improving FLAN-T5’s summarization capabilities ShopBot Hi there! How can I help you today? I need to return a pair of jeans that I purchased Of course, I’d be happy to help you. When did you buy your item? T Two weeks ago. T 39"
+  },
+  {
+    "slide_title": "Improving FLAN-T5's summarization capabilities - action-oriented summary",
+    "slide_paragraph": "This slide adds the goal of the support-dialogue example: summarize conversations to identify actions to take. This is more specific than generic summarization. A customer-support summary should preserve operational details, such as the product being returned, the purchase time, and what the agent should do next. The conversation itself is short, but it demonstrates why domain-specific summarization matters: in business applications, a good summary is not only fluent; it must help a human or automated system decide the next step. The slide motivates further fine-tuning on a relevant dialogue dataset.",
+    "key_concepts": [
+      "action extraction",
+      "support workflow",
+      "dialogue summary",
+      "customer service",
+      "task-specific objective"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 40; title: Improving FLAN-T5's summarization capabilities - action-oriented summary; key_concepts: action extraction, support workflow, dialogue summary, customer service, task-specific objective; extracted_text: Improving FLAN-T5’s summarization capabilities ShopBot Hi there! How can I help you today? I need to return a pair of jeans that I purchased Of course, I’d be happy to help you. When did you buy your item? T Two weeks ago. T Goal: Summarize conversations to identify actions to take 40"
+  },
+  {
+    "slide_title": "Improving FLAN-T5's summarization capabilities - DialogSum dataset",
+    "slide_paragraph": "This slide shows the idea of further fine-tuning FLAN-T5 with a domain-specific instruction dataset called DialogSum. The screenshot displays a dataset page with examples containing dialogue and summary fields. Compared with using only general instruction tuning, domain-specific fine-tuning exposes the model to the style, structure, and information needs of dialogue summarization. The word 'further' is important: FLAN-T5 is already instruction-tuned, but it can still be specialized for a narrower task. This is a common workflow in applied LLM projects: start from a strong instruct model, then fine-tune on high-quality examples from the target domain.",
+    "key_concepts": [
+      "DialogSum",
+      "domain-specific fine-tuning",
+      "FLAN-T5",
+      "dialogue-summary pairs",
+      "specialization"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 41; title: Improving FLAN-T5's summarization capabilities - DialogSum dataset; key_concepts: DialogSum, domain-specific fine-tuning, FLAN-T5, dialogue-summary pairs, specialization; extracted_text: Improving FLAN-T5’s summarization capabilities Further fine-tune FLAN-T5 with a domain-specific instruction dataset (dialogsum) 41"
+  },
+  {
+    "slide_title": "Example support-dialog summarization - prompt",
+    "slide_paragraph": "This slide presents a concrete prompt for dialogue summarization. The instruction says 'Summarize the following conversation', followed by a hotel check-in dialogue between Tommy Sandals and Mike. The conversation includes Tommy stating he has a reservation, Mike requesting identification and a credit card, Mike assigning room 507, and the exchange ending politely. This prompt is created from a template, meaning the dialogue is inserted into a fixed instruction format. The expected model behavior is to condense the conversation into the important facts: the reservation, identity check, credit card check, room assignment, and check-in assistance.",
+    "key_concepts": [
+      "dialogue prompt",
+      "hotel check-in",
+      "template-generated prompt",
+      "conversation summarization",
+      "important facts"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 42; title: Example support-dialog summarization - prompt; key_concepts: dialogue prompt, hotel check-in, template-generated prompt, conversation summarization, important facts; extracted_text: Example support-dialog summarization Summarize the following conversation. Tommy: Hello. My name is Tommy Sandals, I have a reservation. Mike: May I see some identification, sir, please? Tommy: Sure. Here you go. Mike: Thank you so much. Have you got a credit card, Mr. Sandals? Tommy: I sure do. Mike: Thank you, sir. You'll be in room 507, nonsmoking, queen bed. Tommy: That's great, thank you! Mike: Enjoy your stay! Prompt (created from template) Source: https://huggingface.co/datasets/knkarthick/dialogsum/viewer/knkarthick--dialogsum/ 42"
+  },
+  {
+    "slide_title": "Summary before fine-tuning FLAN-T5 with our dataset",
+    "slide_paragraph": "This slide compares FLAN-T5's summary before additional fine-tuning with a human baseline. The model summary says Tommy Sandals has a reservation for a room at the Venetian Hotel in Las Vegas. This is adequate because it captures the reservation topic, but it misses some interaction details. The human baseline says Mike asks for identification and credit card and helps Tommy check in, which better reflects the sequence of events. The slide shows why automatic summaries must be evaluated qualitatively as well as numerically: a fluent summary can still omit important task-specific details. Fine-tuning aims to make the model output closer to the human reference.",
+    "key_concepts": [
+      "before fine-tuning",
+      "FLAN-T5 summary",
+      "human baseline",
+      "summary quality",
+      "missing details"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 43; title: Summary before fine-tuning FLAN-T5 with our dataset; key_concepts: before fine-tuning, FLAN-T5 summary, human baseline, summary quality, missing details; extracted_text: Tommy Sandals has a reservation for a room at the Venetian Hotel in Las Vegas. Summary before fine-tuning FLAN-T5 with our dataset Summarize the following conversation. Tommy: Hello. My name is Tommy Sandals, I have a reservation. Mike: May I see some ... ... ... Tommy: That's great, thank you! Mike: Enjoy your stay! FLAN-T5 Prompt (created from template) Completion (Summary) Model Adequate completion, but does not match human baseline. Human baseline summary: Tommy Sandals has got a reservation. Mike asks for his identification and credit card and helps his check-in. 43"
+  },
+  {
+    "slide_title": "Summary before fine-tuning - repeated comparison",
+    "slide_paragraph": "This slide repeats the before-fine-tuning comparison to reinforce the weakness of the original model output. The prompt contains the same hotel check-in dialogue, the FLAN-T5 summary is acceptable but incomplete, and the human baseline includes more useful details about identification, credit card, and check-in. Repetition here helps students focus on the evaluation criterion: a good domain summary should capture actions and roles, not merely the broad topic. The slide prepares the learner to appreciate the improvement shown after fine-tuning, where the model becomes more aligned with the human style and information priorities.",
+    "key_concepts": [
+      "baseline repetition",
+      "summary evaluation",
+      "human reference",
+      "domain details",
+      "fine-tuning motivation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 44; title: Summary before fine-tuning - repeated comparison; key_concepts: baseline repetition, summary evaluation, human reference, domain details, fine-tuning motivation; extracted_text: Tommy Sandals has a reservation for a room at the Venetian Hotel in Las Vegas. Summary before fine-tuning FLAN-T5 with our dataset Summarize the following conversation. Tommy: Hello. My name is Tommy Sandals, I have a reservation. Mike: May I see some ... ... ... Tommy: That's great, thank you! Mike: Enjoy your stay! FLAN-T5 Prompt (created from template) Completion (Summary) Model Adequate completion, but does not match human baseline. Human baseline summary: Tommy Sandals has got a reservation. Mike asks for his identification and credit card and helps his check-in. 44"
+  },
+  {
+    "slide_title": "Summary before fine-tuning - adequacy versus alignment",
+    "slide_paragraph": "This slide again emphasizes that the original FLAN-T5 summary is not completely wrong, but it does not match the human baseline closely enough. It captures the existence of a hotel reservation but does not mention the check-in process and required documents. This distinction is important in LLM evaluation: outputs can be adequate, partially correct, or fully aligned with the desired reference. Fine-tuning is useful when the model already has the general skill but needs to adapt to a domain-specific notion of what information should be included.",
+    "key_concepts": [
+      "partial correctness",
+      "alignment with reference",
+      "domain-specific detail",
+      "summary adequacy",
+      "fine-tuning benefit"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 45; title: Summary before fine-tuning - adequacy versus alignment; key_concepts: partial correctness, alignment with reference, domain-specific detail, summary adequacy, fine-tuning benefit; extracted_text: Tommy Sandals has a reservation for a room at the Venetian Hotel in Las Vegas. Summary before fine-tuning FLAN-T5 with our dataset Summarize the following conversation. Tommy: Hello. My name is Tommy Sandals, I have a reservation. Mike: May I see some ... ... ... Tommy: That's great, thank you! Mike: Enjoy your stay! FLAN-T5 Prompt (created from template) Completion (Summary) Model Adequate completion, but does not match human baseline. Human baseline summary: Tommy Sandals has got a reservation. Mike asks for his identification and credit card and helps his check-in. 45"
+  },
+  {
+    "slide_title": "Summary after fine-tuning FLAN-T5 with our dataset",
+    "slide_paragraph": "This slide shows the effect of fine-tuning on the dialogue summarization task. After fine-tuning, the model summary says Tommy Sandals has a reservation, checks in by showing his ID and credit card, and Mike helps approve the reservation. This output is closer to the human baseline because it includes the key actions and participants. The slide illustrates the practical value of supervised fine-tuning: the model becomes better at selecting the information the task requires. It also shows that fine-tuning does not necessarily teach a completely new language ability; it can refine an existing ability so the output better matches target examples.",
+    "key_concepts": [
+      "after fine-tuning",
+      "improved summary",
+      "human baseline match",
+      "domain adaptation",
+      "supervised improvement"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 46; title: Summary after fine-tuning FLAN-T5 with our dataset; key_concepts: after fine-tuning, improved summary, human baseline match, domain adaptation, supervised improvement; extracted_text: Summary after fine-tuning FLAN-T5 with our dataset Prompt (created from template) Completion (Summary) Tommy Sandals has a reservation and checks in showing his ID and credit card. Mike helps him to check in and approves his reservation. Better summary, more-closely matches human baseline. Summarize the following conversation. Tommy: Hello. My name is Tommy Sandals, I have a reservation. Mike: May I see some ... ... ... Tommy: That's great, thank you! Mike: Enjoy your stay! Model FLAN-T5 (Fine-tuned) 46"
+  },
+  {
+    "slide_title": "Fine-tuning with your own data",
+    "slide_paragraph": "This slide returns to the support-chat example and highlights the idea of using your own data. The visible conversation about returning jeans represents the kind of internal dataset a company or course project might collect. Fine-tuning with your own data means adapting the model to the specific language, workflows, policies, and output expectations of the application domain. For a support bot, this might include summaries that identify return eligibility, missing information, and next actions. The slide prepares the transition from model training to evaluation, because once a model is fine-tuned on custom data, we need objective ways to measure whether it actually improved.",
+    "key_concepts": [
+      "custom data",
+      "support bot",
+      "domain adaptation",
+      "return workflow",
+      "fine-tuning dataset"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 47; title: Fine-tuning with your own data; key_concepts: custom data, support bot, domain adaptation, return workflow, fine-tuning dataset; extracted_text: Fine-tuning with your own data ShopBot Hi there! How can I help you today? I need to return a pair of jeans that I purchased Of course, I’d be happy to help you. When did you buy your item? T Two weeks ago. T 47"
+  },
+  {
+    "slide_title": "Model evaluation metrics",
+    "slide_paragraph": "This section divider introduces the evaluation part of the lecture. After fine-tuning, we need metrics that can quantify whether the model performs better. Unlike ordinary classification, LLM outputs are often free-form text, so evaluation is more complex. A generated summary may use different words from the reference while still being correct, or it may share words with the reference while changing the meaning. The following slides introduce common metrics such as ROUGE and BLEU and explain their strengths and limitations. The slide signals that model development should be evidence-based, not judged only by a few examples.",
+    "key_concepts": [
+      "model evaluation",
+      "LLM metrics",
+      "ROUGE",
+      "BLEU",
+      "free-form text evaluation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 48; title: Model evaluation metrics; key_concepts: model evaluation, LLM metrics, ROUGE, BLEU, free-form text evaluation; extracted_text: Model evaluation metrics 48"
+  },
+  {
+    "slide_title": "LLM Evaluation - Challenges: accuracy",
+    "slide_paragraph": "This slide begins with the familiar accuracy formula: correct predictions divided by total predictions. Accuracy works well when the model output is a discrete class label, such as Positive or Negative. However, the slide title says evaluation challenges because many LLM tasks do not have one exact answer. For classification, accuracy is straightforward; for summarization, translation, and open-ended generation, deciding whether a prediction is correct is much harder. The slide prepares students to understand why text generation requires metrics that compare overlap, meaning, fluency, and faithfulness rather than only exact-match correctness.",
+    "key_concepts": [
+      "accuracy",
+      "correct predictions",
+      "total predictions",
+      "classification evaluation",
+      "generation challenge"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 49; title: LLM Evaluation - Challenges: accuracy; key_concepts: accuracy, correct predictions, total predictions, classification evaluation, generation challenge; extracted_text: LLM Evaluation - Challenges Correct Predictions Accuracy = Total Predictions 49"
+  },
+  {
+    "slide_title": "LLM Evaluation - Challenges: semantic equivalence and contradiction",
+    "slide_paragraph": "This slide shows two pairs of sentences to demonstrate why exact text matching is insufficient. 'Mike really loves drinking tea' and 'Mike adores sipping tea' are semantically very similar even though many words differ. In contrast, 'Mike does not drink coffee' and 'Mike does drink coffee' are almost identical in words but opposite in meaning because of the word 'not'. This illustrates a core challenge in LLM evaluation: surface overlap does not always equal meaning. Metrics based only on shared n-grams can reward wrong outputs or penalize correct paraphrases. Human judgment or semantic metrics may be needed when meaning matters.",
+    "key_concepts": [
+      "semantic equivalence",
+      "contradiction",
+      "exact match limitation",
+      "paraphrase",
+      "negation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 50; title: LLM Evaluation - Challenges: semantic equivalence and contradiction; key_concepts: semantic equivalence, contradiction, exact match limitation, paraphrase, negation; extracted_text: LLM Evaluation - Challenges “Mike really loves drinking tea.” “Mike adores sipping tea.” “Mike does not drink coffee.” “Mike does drink coffee.” = = 50"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE and BLEU",
+    "slide_paragraph": "This slide introduces two common automatic evaluation metrics. ROUGE is typically used for text summarization and compares a generated summary to one or more reference summaries. BLEU is commonly used for translation and compares generated translations to human translations. Both metrics rely on overlap between generated text and reference text, usually through words or n-grams. The slide helps students distinguish use cases: ROUGE is recall-oriented and summary-focused, while BLEU is precision-oriented and translation-focused. However, both are imperfect because they measure textual overlap more directly than true understanding or factual correctness.",
+    "key_concepts": [
+      "ROUGE",
+      "BLEU",
+      "summarization",
+      "translation",
+      "reference comparison"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 51; title: LLM Evaluation - Metrics: ROUGE and BLEU; key_concepts: ROUGE, BLEU, summarization, translation, reference comparison; extracted_text: LLM Evaluation - Metrics ROUGE BLEU SCORE ● Used for text summarization ● Compares a summary to one or more reference summaries ● Used for text translation ● Compares to human-generated translations 51"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics terminology: n-gram",
+    "slide_paragraph": "This slide defines n-grams using the sentence 'The dog lay on the rug as I sipped a cup of tea.' A unigram is a single word, such as 'dog'. A bigram is a sequence of two consecutive words, such as 'the dog' or 'cup of'. The concept generalizes to trigrams, four-grams, and longer sequences. N-grams are fundamental to ROUGE and BLEU because these metrics compare generated outputs and reference texts by counting how many word sequences overlap. Understanding n-grams is necessary before interpreting ROUGE-1, ROUGE-2, and BLEU scores.",
+    "key_concepts": [
+      "n-gram",
+      "unigram",
+      "bigram",
+      "text overlap",
+      "evaluation terminology"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 52; title: LLM Evaluation - Metrics terminology: n-gram; key_concepts: n-gram, unigram, bigram, text overlap, evaluation terminology; extracted_text: LLM Evaluation - Metrics - Terminology n-gram The dog lay on the rug as I sipped a cup of tea. bigram unigram 52"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE-1 example",
+    "slide_paragraph": "This slide calculates ROUGE-1 for a generated sentence, 'It is very cold outside', against the reference 'It is cold outside.' ROUGE-1 uses unigram overlap, meaning it counts matching individual words. The generated output contains the extra word 'very', but all four reference words appear in the generated output. Therefore recall is 4/4 = 1.0 because every reference unigram is covered. Precision is 4/5 = 0.8 because four of the five generated unigrams match the reference. The F1 score balances precision and recall and is shown as 0.89. The example demonstrates how ROUGE-1 rewards word-level overlap.",
+    "key_concepts": [
+      "ROUGE-1",
+      "unigram overlap",
+      "precision",
+      "recall",
+      "F1 score"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 53; title: LLM Evaluation - Metrics: ROUGE-1 example; key_concepts: ROUGE-1, unigram overlap, precision, recall, F1 score; extracted_text: LLM Evaluation - Metrics - ROUGE-1 Generated output: It is very cold outside. Reference (human): It is cold outside. = unigram matches unigrams in reference ROUGE-1 Recall ROUGE-1 Precision: unigram matches unigrams in output = ROUGE-1 F1: precision + recall 2 precision x recall = = 4 4 = 1.0 = 4 5 = 0.8 = 2 0.8 1.8 = 0.89 53"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE-1 limitation with negation",
+    "slide_paragraph": "This slide uses 'It is not cold outside' as the generated output and 'It is cold outside' as the reference. The ROUGE-1 calculation can still produce a high overlap score because the words 'It', 'is', 'cold', and 'outside' are shared. However, the generated sentence contains 'not', which reverses the meaning. This is a major limitation of lexical overlap metrics: they may treat a semantically incorrect statement as strong because many words match. The slide teaches that automatic metrics must be interpreted carefully, especially when small words such as 'not' change the meaning completely.",
+    "key_concepts": [
+      "ROUGE limitation",
+      "negation",
+      "word overlap",
+      "semantic error",
+      "metric caution"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 54; title: LLM Evaluation - Metrics: ROUGE-1 limitation with negation; key_concepts: ROUGE limitation, negation, word overlap, semantic error, metric caution; extracted_text: LLM Evaluation - Metrics - ROUGE-1 Generated output: It is not cold outside. Reference (human): It is cold outside. = unigram matches unigrams in reference ROUGE-1 Recall ROUGE-1 Precision: unigram matches unigrams in output = ROUGE-1 F1: precision + recall 2 precision x recall = = 4 4 = 1.0 = 4 5 = 0.8 = 2 0.8 1.8 = 0.89 54"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE-2 setup",
+    "slide_paragraph": "This slide introduces ROUGE-2 by showing how sentences are broken into bigrams. The generated sentence 'It is very cold outside' has bigrams such as 'It is', 'is very', 'very cold', and 'cold outside'. The reference 'It is cold outside' has bigrams such as 'It is', 'is cold', and 'cold outside'. ROUGE-2 is stricter than ROUGE-1 because it checks consecutive two-word sequences, not only individual words. This means it captures some local word order. The slide prepares students for the next calculation, where the number of matching bigrams determines precision, recall, and F1.",
+    "key_concepts": [
+      "ROUGE-2",
+      "bigram",
+      "word order",
+      "generated bigrams",
+      "reference bigrams"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 55; title: LLM Evaluation - Metrics: ROUGE-2 setup; key_concepts: ROUGE-2, bigram, word order, generated bigrams, reference bigrams; extracted_text: LLM Evaluation - Metrics - ROUGE-2 Generated output: It is very cold outside. It is is very very cold cold outside Reference (human): It is cold outside. It is is cold cold outside 55"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE-2 calculation",
+    "slide_paragraph": "This slide calculates ROUGE-2 for the same generated and reference sentences. The matching bigrams are 'It is' and 'cold outside'. The reference contains three bigrams, so recall is 2/3 = 0.67. The generated output contains four bigrams, so precision is 2/4 = 0.5. The F1 score combines these values and is shown as about 0.57. This example shows that ROUGE-2 penalizes the inserted word 'very' more than ROUGE-1 because it disrupts the bigram 'is cold'. In general, higher-order ROUGE scores are stricter about local phrase structure.",
+    "key_concepts": [
+      "ROUGE-2 precision",
+      "ROUGE-2 recall",
+      "bigram matches",
+      "F1",
+      "local phrase structure"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 56; title: LLM Evaluation - Metrics: ROUGE-2 calculation; key_concepts: ROUGE-2 precision, ROUGE-2 recall, bigram matches, F1, local phrase structure; extracted_text: LLM Evaluation - Metrics - ROUGE-2 Generated output: It is very cold outside. bigram matches bigrams in reference ROUGE-2 Recall: ROUGE-2 Precision: ROUGE-2 F1: bigram matches bigrams in output precision + recall 2 precision x recall = = = = = 2 3 2 4 1.17 = 2 0.335 = 0.57 = 0.5 = 0.67 It is very cold is very cold outside Reference (human): It is cold outside. It is is cold cold outside 56"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE-L and LCS",
+    "slide_paragraph": "This slide introduces ROUGE-L, which is based on the longest common subsequence, abbreviated LCS. The generated output is 'It is very cold outside', and the reference is 'It is cold outside.' A subsequence does not need to be contiguous, but the words must appear in the same order. The highlighted common sequence includes 'It is' and 'cold outside', meaning the generated sentence preserves the main ordered structure of the reference while inserting the extra word 'very'. ROUGE-L is useful because it considers sequence order more flexibly than exact n-gram matching.",
+    "key_concepts": [
+      "ROUGE-L",
+      "longest common subsequence",
+      "LCS",
+      "sequence order",
+      "summary evaluation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 57; title: LLM Evaluation - Metrics: ROUGE-L and LCS; key_concepts: ROUGE-L, longest common subsequence, LCS, sequence order, summary evaluation; extracted_text: LLM Evaluation - Metrics - ROUGE-L Reference (human): It is cold outside. Generated output: It is very cold outside. Longest common subsequence (LCS): It is cold outside 2 57"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE-L calculation",
+    "slide_paragraph": "This slide shows the ROUGE-L precision, recall, and F1 formulas using the length of the longest common subsequence. The LCS between generated and reference text is compared to the number of unigrams in the reference for recall and to the number of unigrams in the generated output for precision. In the displayed calculation, the score is lower than ROUGE-1 because ROUGE-L is sensitive to ordered sequence structure. The exact arithmetic on the slide illustrates the general procedure: find the longest ordered overlap, compute recall and precision, then combine them into F1. This metric is popular for summarization because summaries may preserve meaning with non-identical wording.",
+    "key_concepts": [
+      "ROUGE-L recall",
+      "ROUGE-L precision",
+      "LCS length",
+      "ordered overlap",
+      "F1"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 58; title: LLM Evaluation - Metrics: ROUGE-L calculation; key_concepts: ROUGE-L recall, ROUGE-L precision, LCS length, ordered overlap, F1; extracted_text: LLM Evaluation - Metrics - ROUGE-L Generated output: It is very cold outside. Reference (human): It is cold outside. LCS(Gen, Ref) unigrams in reference ROUGE-L Recall: ROUGE-L Precision: ROUGE-L F1: LCS(Gen, Ref) unigrams in output precision + recall 2 precision x recall = = = = = = 2 2 4 2 5 0.2 0.9 = 0.44 = 0.4 = 0.5 58"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE-L with definition",
+    "slide_paragraph": "This slide repeats the ROUGE-L calculation and explicitly defines LCS as the longest common subsequence. The repetition helps connect the abbreviation to the formula. In practice, ROUGE-L measures how much of the reference appears in the generated text in the correct order, even if some additional words are inserted. This makes it more flexible than exact phrase matching, but it is still based on text overlap rather than deep semantic understanding. The slide reinforces that ROUGE-L can be useful for comparing summaries, but it should not be treated as a complete measure of factual correctness.",
+    "key_concepts": [
+      "LCS definition",
+      "ROUGE-L F1",
+      "ordered subsequence",
+      "summary metric",
+      "evaluation limitation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 59; title: LLM Evaluation - Metrics: ROUGE-L with definition; key_concepts: LCS definition, ROUGE-L F1, ordered subsequence, summary metric, evaluation limitation; extracted_text: LLM Evaluation - Metrics - ROUGE-L Generated output: It is very cold outside. Reference (human): It is cold outside. LCS(Gen, Ref) unigrams in reference ROUGE-L Recall: ROUGE-L Precision: ROUGE-L F1: LCS(Gen, Ref) unigrams in output precision + recall 2 precision x recall = = = = = = 2 2 4 2 5 0.2 0.9 = 0.44 = 0.4 = 0.5 LCS: Longest common subsequence 59"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE hacking",
+    "slide_paragraph": "This slide shows a failure case called ROUGE hacking. The reference is 'It is cold outside', while the generated output is 'cold cold cold cold'. If a metric only counts word overlap naively, repeating a common reference word could artificially increase the score. This reveals that overlap metrics can be gamed by repetition or by outputting high-frequency reference words. The slide is important because it teaches that evaluation metrics need safeguards and that model outputs should also be inspected for quality, repetition, coherence, and meaning. A high automatic score is not always a good answer.",
+    "key_concepts": [
+      "ROUGE hacking",
+      "repetition",
+      "metric gaming",
+      "word overlap",
+      "evaluation robustness"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 60; title: LLM Evaluation - Metrics: ROUGE hacking; key_concepts: ROUGE hacking, repetition, metric gaming, word overlap, evaluation robustness; extracted_text: LLM Evaluation - Metrics - ROUGE hacking Reference (human): It is cold outside. Generated output: cold cold cold cold 60"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: ROUGE clipping",
+    "slide_paragraph": "This slide explains clipping as a correction for ROUGE or BLEU-style overlap counting. The generated output 'cold cold cold cold' repeats one word four times, but the reference contains 'cold' only once. Without clipping, precision may be misleadingly high. Modified precision clips the count of each matched unigram to the maximum count found in the reference, so repeated extra matches are not rewarded. The slide also contrasts this with 'outside cold it is', which contains all reference words but in a different order. Clipping handles repetition, but word order and meaning still require other considerations. This slide shows how evaluation metrics are engineered to reduce obvious loopholes.",
+    "key_concepts": [
+      "clipping",
+      "modified precision",
+      "repetition penalty",
+      "ROUGE",
+      "BLEU-style counting"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 61; title: LLM Evaluation - Metrics: ROUGE clipping; key_concepts: clipping, modified precision, repetition penalty, ROUGE, BLEU-style counting; extracted_text: LLM Evaluation - Metrics - ROUGE clipping Reference (human): It is cold outside. Generated output: cold cold cold cold Generated output: outside cold it is unigram matches unigrams in output ROUGE-1 Precision = = 4 4 = 1.0 Modified precision clip(unigram matches) unigrams in output = = 1 4 = 0.25 unigrams in output Modified precision = clip(unigram matches) = 4 4 = 1.0 61"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics recap: ROUGE and BLEU",
+    "slide_paragraph": "This slide returns to the high-level comparison between ROUGE and BLEU. ROUGE is mainly used for summarization, where the generated summary is compared with one or more reference summaries. BLEU is mainly used for translation, where generated translations are compared with human translations. Both metrics use n-gram overlap, but they were designed for different tasks and emphasize different aspects of quality. The repetition of this comparison helps students organize the evaluation toolkit: choose a metric based on the task, understand what it measures, and remember what it does not measure, such as factuality, reasoning, or human usefulness.",
+    "key_concepts": [
+      "ROUGE",
+      "BLEU",
+      "metric selection",
+      "summarization evaluation",
+      "translation evaluation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 62; title: LLM Evaluation - Metrics recap: ROUGE and BLEU; key_concepts: ROUGE, BLEU, metric selection, summarization evaluation, translation evaluation; extracted_text: LLM Evaluation - Metrics ROUGE BLEU SCORE ● Used for text summarization ● Compares a summary to one or more reference summaries ● Used for text translation ● Compares to human-generated translations 62"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics: BLEU",
+    "slide_paragraph": "This slide introduces BLEU as the average precision across a range of n-gram sizes. The reference sentence is 'I am very happy to say that I am drinking a warm cup of tea.' Several generated outputs are compared, and their BLEU scores increase as they become closer to the reference. The perfect match receives BLEU 1.000. Outputs that omit words or alter phrase structure receive lower scores. The example shows that BLEU rewards exact word and phrase overlap with the human translation or reference text. It is useful for translation benchmarking, but like ROUGE, it can penalize valid paraphrases and does not always capture meaning perfectly.",
+    "key_concepts": [
+      "BLEU",
+      "n-gram precision",
+      "translation metric",
+      "reference text",
+      "score interpretation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 63; title: LLM Evaluation - Metrics: BLEU; key_concepts: BLEU, n-gram precision, translation metric, reference text, score interpretation; extracted_text: LLM Evaluation - Metrics - BLEU BLEU metric = Avg(precision across range of n-gram sizes) Reference (human): I am very happy to say that I am drinking a warm cup of tea. Generated output: I am very happy that I am drinking a cup of tea. - BLEU 0.495 I am very happy that I am drinking a warm cup of tea. - BLEU 0.730 I am very happy to say that I am drinking a warm tea. - BLEU 0.798 I am very happy to say that I am drinking a warm cup of tea. - BLEU 1.000 63"
+  },
+  {
+    "slide_title": "LLM Evaluation - Metrics summary",
+    "slide_paragraph": "This slide again summarizes that ROUGE is used mainly for summarization and BLEU mainly for translation. The repeated visual serves as a transition from metric formulas to larger benchmark suites. The important takeaway is that individual metrics are task-specific tools, not universal judgments of intelligence. For fine-tuned LLMs, a good evaluation plan may combine task-specific metrics such as ROUGE or BLEU with human review, classification accuracy, factuality checks, and benchmark results. This is especially important when the model output is open-ended or when errors have practical consequences.",
+    "key_concepts": [
+      "task-specific metrics",
+      "automatic evaluation",
+      "ROUGE",
+      "BLEU",
+      "benchmark transition"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 64; title: LLM Evaluation - Metrics summary; key_concepts: task-specific metrics, automatic evaluation, ROUGE, BLEU, benchmark transition; extracted_text: LLM Evaluation - Metrics ROUGE BLEU SCORE ● Used for text summarization ● Compares a summary to one or more reference summaries ● Used for text translation ● Compares to human-generated translations 64"
+  },
+  {
+    "slide_title": "Benchmarks",
+    "slide_paragraph": "This section divider introduces standardized benchmarks for evaluating language models. Unlike a single task metric such as ROUGE, a benchmark usually contains many datasets or tasks designed to test broader capabilities. Benchmarks help compare models under consistent conditions and track progress over time. The next slides mention GLUE, SuperGLUE, MMLU, BIG-bench, and HELM. Each benchmark has a different focus, from natural language understanding to multitask knowledge and holistic evaluation. The slide signals a move from evaluating one fine-tuned application to assessing general language-model ability.",
+    "key_concepts": [
+      "benchmarks",
+      "standardized evaluation",
+      "model comparison",
+      "LLM capabilities"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 65; title: Benchmarks; key_concepts: benchmarks, standardized evaluation, model comparison, LLM capabilities; extracted_text: Benchmarks 65"
+  },
+  {
+    "slide_title": "Evaluation benchmarks",
+    "slide_paragraph": "This slide displays major benchmark names and logos: GLUE, SuperGLUE, HELM, MMLU, and BIG-bench. GLUE and SuperGLUE focus on natural language understanding tasks. MMLU evaluates broad multitask knowledge across many subjects. BIG-bench and BIG-bench Hard contain challenging tasks intended to test large-model capabilities. HELM takes a more holistic view by measuring not only accuracy but also robustness, fairness, toxicity, and efficiency. The slide teaches that no single benchmark captures everything; different benchmarks reveal different dimensions of model behavior.",
+    "key_concepts": [
+      "GLUE",
+      "SuperGLUE",
+      "HELM",
+      "MMLU",
+      "BIG-bench",
+      "evaluation suite"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 66; title: Evaluation benchmarks; key_concepts: GLUE, SuperGLUE, HELM, MMLU, BIG-bench, evaluation suite; extracted_text: Evaluation benchmarks 66"
+  },
+  {
+    "slide_title": "GLUE",
+    "slide_paragraph": "This slide introduces GLUE, the General Language Understanding Evaluation benchmark. The table lists tasks from several categories, including single-sentence tasks, similarity and paraphrase tasks, and inference tasks. Examples include CoLA for grammatical acceptability, SST-2 for sentiment, MRPC and QQP for paraphrase detection, MNLI and QNLI for natural language inference, RTE for textual entailment, and WNLI for coreference-style reasoning. The slide is useful because it shows that language understanding is not one task; it includes classification, sentence-pair reasoning, paraphrase recognition, and entailment. GLUE became a standard way to compare representation models such as BERT.",
+    "key_concepts": [
+      "GLUE",
+      "natural language understanding",
+      "CoLA",
+      "SST-2",
+      "MNLI",
+      "paraphrase detection"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 67; title: GLUE; key_concepts: GLUE, natural language understanding, CoLA, SST-2, MNLI, paraphrase detection; extracted_text: GLUE The tasks included in SuperGLUE benchmark: Source: Wang et al. 2018, “GLUE: A Multi-Task Benchmark and Analysis Platform for Natural Language Understanding” 67"
+  },
+  {
+    "slide_title": "SuperGLUE",
+    "slide_paragraph": "This slide introduces SuperGLUE, a harder benchmark created after models began performing very well on GLUE. The table lists tasks such as BoolQ, CB, COPA, MultiRC, ReCoRD, RTE, WiC, and WSC, with metrics such as accuracy, F1, and exact match. These tasks cover question answering, natural language inference, word sense disambiguation, commonsense reasoning, and coreference. The slide shows that benchmarks evolve as models improve: when earlier tasks become too easy, new benchmarks are designed to be more challenging and better discriminate between systems. SuperGLUE is therefore a stronger test of general-purpose language understanding.",
+    "key_concepts": [
+      "SuperGLUE",
+      "BoolQ",
+      "COPA",
+      "ReCoRD",
+      "WiC",
+      "harder NLU benchmark"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 68; title: SuperGLUE; key_concepts: SuperGLUE, BoolQ, COPA, ReCoRD, WiC, harder NLU benchmark; extracted_text: SuperGLUE Source: Wang et al. 2019, “SuperGLUE: A Stickier Benchmark for General-Purpose Language Understanding Systems“ The tasks included in SuperGLUE benchmark: 68"
+  },
+  {
+    "slide_title": "GLUE and SuperGLUE leaderboards",
+    "slide_paragraph": "This slide shows leaderboard pages for GLUE and SuperGLUE. A leaderboard ranks models by benchmark scores, allowing researchers to compare systems on standardized tasks. The disclaimer says metrics may not be up to date and points learners to the official leaderboard websites for the latest results. This is important because model rankings change quickly as new systems are released. The slide also teaches that benchmark numbers should be interpreted in context: a high leaderboard score is useful, but it may not guarantee strong performance on a specific domain task, deployment environment, or user population.",
+    "key_concepts": [
+      "leaderboards",
+      "benchmark ranking",
+      "model comparison",
+      "GLUE website",
+      "SuperGLUE website"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 69; title: GLUE and SuperGLUE leaderboards; key_concepts: leaderboards, benchmark ranking, model comparison, GLUE website, SuperGLUE website; extracted_text: GLUE and SuperGLUE leaderboards Disclaimer: metrics may not be up-to-date. Check https://super.gluebenchmark.com and https://gluebenchmark.com/leaderboard for the latest. 69"
+  },
+  {
+    "slide_title": "Benchmarks for massive models - MMLU",
+    "slide_paragraph": "This slide introduces MMLU, Massive Multitask Language Understanding, as a benchmark for large models. MMLU evaluates a model across many academic and professional subjects, testing whether it can answer questions that require broad knowledge and reasoning. The slide places MMLU in 2021, indicating its role in the more recent era of evaluating massive models. Unlike GLUE, which focuses heavily on sentence understanding tasks, MMLU is designed to probe breadth of knowledge. It is particularly relevant for LLMs because it measures performance across many domains rather than one narrow task.",
+    "key_concepts": [
+      "MMLU",
+      "massive multitask evaluation",
+      "knowledge benchmark",
+      "large models",
+      "2021"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 70; title: Benchmarks for massive models - MMLU; key_concepts: MMLU, massive multitask evaluation, knowledge benchmark, large models, 2021; extracted_text: Benchmarks for massive models Massive Multitask Language Understanding (MMLU) 2021 Source: Hendrycks, 2021. “Measuring Massive Multitask Language Understanding” 70"
+  },
+  {
+    "slide_title": "Benchmarks for massive models - BIG-bench and BIG-bench Hard",
+    "slide_paragraph": "This slide expands the benchmark picture by showing MMLU from 2021 and BIG-bench or BIG-bench Hard from 2022. The circles indicate different benchmark families and their relative relationship. BIG-bench contains a large collection of diverse tasks designed to test capabilities that may emerge in large language models. BIG-bench Hard is a subset of especially challenging tasks, and Lite indicates a smaller practical version. The slide highlights that as models scale, evaluation must also scale in diversity and difficulty. Benchmarks for massive models are designed to test reasoning, instruction following, generalization, and robustness beyond traditional NLU datasets.",
+    "key_concepts": [
+      "BIG-bench",
+      "BIG-bench Hard",
+      "MMLU",
+      "massive model evaluation",
+      "challenging tasks"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 71; title: Benchmarks for massive models - BIG-bench and BIG-bench Hard; key_concepts: BIG-bench, BIG-bench Hard, MMLU, massive model evaluation, challenging tasks; extracted_text: BIG-bench Hard BIG-bench Benchmarks for massive models Massive Multitask Language Understanding (MMLU) 2021 2022 Lite Source: Hendrycks, 2021. “Measuring Massive Multitask Language Understanding” Source: Suzgun et al. 2022. “Challenging BIG-Bench tasks and whether chain-of-thought can solve them“ 71"
+  },
+  {
+    "slide_title": "Holistic Evaluation of Language Models (HELM)",
+    "slide_paragraph": "This slide introduces HELM, a holistic evaluation framework for language models. The metric list includes accuracy, calibration, robustness, fairness, bias, toxicity, and efficiency. The table on the right shows multiple scenarios and models, with check marks indicating which evaluations are performed. The highlighted metrics fairness, bias, and toxicity are especially important because a model can be accurate but still harmful or unfair. HELM therefore goes beyond task performance and asks broader deployment questions: Is the model reliable? Is it robust? Does it behave safely? Is it efficient enough for practical use? This aligns evaluation with real-world responsible AI concerns.",
+    "key_concepts": [
+      "HELM",
+      "holistic evaluation",
+      "fairness",
+      "bias",
+      "toxicity",
+      "robustness",
+      "efficiency"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 72; title: Holistic Evaluation of Language Models (HELM); key_concepts: HELM, holistic evaluation, fairness, bias, toxicity, robustness, efficiency; extracted_text: Holistic Evaluation of Language Models (HELM) Metrics: 1. Accuracy 2. Calibration 3. Robustness 4. Fairness 5. Bias 6. Toxicity 7. Efficiency 72"
+  },
+  {
+    "slide_title": "Holistic Evaluation of Language Models (HELM) leaderboard",
+    "slide_paragraph": "This slide shows an example HELM results page with core scenarios and accuracy columns for different tasks. The disclaimer again warns that metrics may not be up to date and directs users to the latest HELM site. The slide teaches that holistic evaluation is organized across scenarios, not just one aggregate score. A model may perform well on natural questions but worse on robustness or bias measures. For students, this is an important lesson: choosing a model for an application requires looking at the dimensions that matter for that application, not simply selecting the model with the highest overall benchmark number.",
+    "key_concepts": [
+      "HELM results",
+      "core scenarios",
+      "accuracy table",
+      "model selection",
+      "responsible evaluation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 73; title: Holistic Evaluation of Language Models (HELM) leaderboard; key_concepts: HELM results, core scenarios, accuracy table, model selection, responsible evaluation; extracted_text: Holistic Evaluation of Language Models (HELM) Disclaimer: metrics may not be up-to-date. Check https://crfm.stanford.edu/helm/latest for the latest. 73"
+  },
+  {
+    "slide_title": "Key takeaways",
+    "slide_paragraph": "This slide marks a transition into the summary and PEFT part of the lecture. It indicates that the previous concepts - instruction fine-tuning, evaluation metrics, benchmarks, and catastrophic forgetting - are being consolidated before moving to parameter-efficient methods. A key takeaway from the preceding section is that fine-tuning can improve task performance, but it must be evaluated carefully and can be expensive or risky if it updates the whole model. The following slides revisit the fine-tuning process and then explain why PEFT methods are attractive for large LLMs. This slide functions as a pause point for organizing the lecture's main ideas.",
+    "key_concepts": [
+      "key takeaways",
+      "fine-tuning summary",
+      "evaluation",
+      "PEFT transition",
+      "catastrophic forgetting"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 74; title: Key takeaways; key_concepts: key takeaways, fine-tuning summary, evaluation, PEFT transition, catastrophic forgetting; extracted_text: Key takeaways 74"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - key takeaway recap",
+    "slide_paragraph": "This slide recaps the fine-tuning process with the prompt, model completion, label, and loss. It shows a training dataset example where the prompt asks for sentiment and the model completion is compared against the label. The loss is shown as Cross, which refers to cross-entropy. The main takeaway is that fine-tuning is a supervised learning loop: provide input, generate output, compare with target, compute loss, and update parameters. The slide prepares the learner for the memory problem of full fine-tuning: if all model weights are trainable, then the training process requires storing weights, gradients, optimizer states, and activations.",
+    "key_concepts": [
+      "fine-tuning recap",
+      "prompt",
+      "label",
+      "cross-entropy",
+      "supervised update"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 75; title: LLM fine-tuning process - key takeaway recap; key_concepts: fine-tuning recap, prompt, label, cross-entropy, supervised update; extracted_text: LLM fine-tuning process Pre-trained LLM Model Training dataset Classify this review: I loved this DVD! Sentiment: LLM completion: Label: Prompt: LLM fine-tuning Loss: Cross 75"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - updated LLM",
+    "slide_paragraph": "This slide shows the same process but emphasizes that the result is an updated LLM. During fine-tuning, each training example contributes to parameter updates through the loss function. After many examples and optimization steps, the model's output probabilities change, making desired completions more likely. The word updated matters because full fine-tuning changes the base model itself. This can be powerful, but it also means that if we want different task-specific versions, we may need to store multiple full model copies unless we use parameter-efficient alternatives.",
+    "key_concepts": [
+      "updated LLM",
+      "parameter update",
+      "optimization",
+      "full fine-tuning",
+      "model copy"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 76; title: LLM fine-tuning process - updated LLM; key_concepts: updated LLM, parameter update, optimization, full fine-tuning, model copy; extracted_text: LLM fine-tuning process Updated LLM Model Training dataset Classify this review: I loved this DVD! Sentiment: LLM completion: Label: Prompt: LLM fine-tuning Loss: Cross-Entropy 76"
+  },
+  {
+    "slide_title": "LLM fine-tuning process - incorrect completion and correct label",
+    "slide_paragraph": "This slide revisits the concrete sentiment example. The model sees the prompt 'Classify this review: I loved this DVD! Sentiment:' and produces Neutral, while the correct label is Positive. This mismatch is exactly what cross-entropy penalizes. Over many examples, the optimizer adjusts the model so that Positive receives higher probability for similar positive reviews. The slide is useful because it connects the abstract training process to one intuitive example. It also reminds students that fine-tuning is not magic: it is ordinary supervised learning applied to LLM outputs formatted as natural-language completions.",
+    "key_concepts": [
+      "incorrect completion",
+      "correct label",
+      "sentiment prompt",
+      "cross-entropy penalty",
+      "supervised fine-tuning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 77; title: LLM fine-tuning process - incorrect completion and correct label; key_concepts: incorrect completion, correct label, sentiment prompt, cross-entropy penalty, supervised fine-tuning; extracted_text: LLM fine-tuning process Pre-trained LLM Model Classify this review: I loved this DVD! Sentiment: Neutral LLM completion: Label: Classify this review: I loved this DVD! Sentiment: Positive Prompt: Classify this review: I loved this DVD! Sentiment: LLM fine-tuning Prepared instruction dataset 77"
+  },
+  {
+    "slide_title": "Parameter-efficient Fine-tuning (PEFT)",
+    "slide_paragraph": "This section divider introduces PEFT, or parameter-efficient fine-tuning. PEFT methods are designed for large models where full fine-tuning is expensive, memory-intensive, and difficult to store for multiple tasks. Instead of updating every parameter, PEFT updates a small subset of parameters or adds lightweight trainable components. This makes fine-tuning more practical on limited hardware and allows different task adapters to be stored separately. The section will explain why full fine-tuning is challenging, how PEFT reduces memory and storage cost, and how methods such as LoRA and QLoRA work.",
+    "key_concepts": [
+      "PEFT",
+      "parameter-efficient fine-tuning",
+      "memory efficiency",
+      "adapters",
+      "LoRA"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 78; title: Parameter-efficient Fine-tuning (PEFT); key_concepts: PEFT, parameter-efficient fine-tuning, memory efficiency, adapters, LoRA; extracted_text: Parameter- efficient Fine-tuning (PEFT) 78"
+  },
+  {
+    "slide_title": "Full fine-tuning of large LLMs is challenging",
+    "slide_paragraph": "This slide explains why full fine-tuning large LLMs is difficult. The diagram shows an LLM and a stack of memory components: trainable weights, optimizer states, gradients, forward activations, and temporary memory. The bracket indicates that training can require 12 to 20 times the memory of the model weights alone. This is because optimization needs more than just the model parameters; it must store intermediate computations for backpropagation and optimizer statistics such as momentum. For large LLMs, this can exceed the memory of a single GPU. The slide motivates PEFT as a way to reduce the number of trainable parameters and therefore reduce training memory.",
+    "key_concepts": [
+      "full fine-tuning",
+      "GPU memory",
+      "optimizer states",
+      "gradients",
+      "forward activations",
+      "12-20x memory"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 79; title: Full fine-tuning of large LLMs is challenging; key_concepts: full fine-tuning, GPU memory, optimizer states, gradients, forward activations, 12-20x memory; extracted_text: Full fine-tuning of large LLMs is challenging LLM Trainable Weights Optimizer states Gradients Forward Activations Temp memory 12-20x weights 79"
+  },
+  {
+    "slide_title": "Parameter-efficient fine-tuning (PEFT) - frozen layers",
+    "slide_paragraph": "This slide introduces the basic PEFT idea: most layers of the LLM are frozen, and only a small number of layers or parameters are trainable. The diagram shows the large LLM with a snowflake symbol, indicating frozen weights, and a small trainable region. Freezing means those original weights are not changed during training, which greatly reduces gradient and optimizer memory. The model can still adapt because the trainable components learn task-specific adjustments. This approach is useful when hardware is limited, when many task variants are needed, or when we want to preserve the general knowledge of the base model.",
+    "key_concepts": [
+      "frozen weights",
+      "small trainable layers",
+      "memory reduction",
+      "task adaptation",
+      "base model preservation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 80; title: Parameter-efficient fine-tuning (PEFT) - frozen layers; key_concepts: frozen weights, small trainable layers, memory reduction, task adaptation, base model preservation; extracted_text: Parameter efficient fine-tuning (PEFT) LLM with most layers frozen LLM Small number of trainable layers 80"
+  },
+  {
+    "slide_title": "Parameter-efficient fine-tuning (PEFT) - additional trainable layers",
+    "slide_paragraph": "This slide shows another view of PEFT where new trainable layers are added to the LLM while the original model weights stay frozen. The right side separates frozen weights from trainable weights and notes that PEFT is less prone to catastrophic forgetting. This is because the base model's learned knowledge is not overwritten as aggressively as in full fine-tuning. The new trainable modules can specialize the model for a task while leaving the original representation mostly intact. The diagram also implies storage efficiency: for each task, we can store only the small PEFT weights rather than a complete copy of the whole LLM.",
+    "key_concepts": [
+      "additional layers",
+      "trainable weights",
+      "frozen base model",
+      "catastrophic forgetting reduction",
+      "adapter storage"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 81; title: Parameter-efficient fine-tuning (PEFT) - additional trainable layers; key_concepts: additional layers, trainable weights, frozen base model, catastrophic forgetting reduction, adapter storage; extracted_text: Parameter efficient fine-tuning (PEFT) Frozen Weights LLM with additional layers for PEFT Other components Trainable weights Less prone to catastrophic forgetting New trainable layers LLM 81"
+  },
+  {
+    "slide_title": "Full fine-tuning creates a full copy of the original LLM per task",
+    "slide_paragraph": "This slide illustrates the storage problem of full fine-tuning. Starting from one LLM, separate fine-tuning processes for QA, summarization, and generation produce separate full models: QA LLM, Summarize LLM, and Generate LLM. Each full model may require gigabytes of storage. If an organization needs many specialized models, full fine-tuning becomes expensive to store, maintain, and deploy. The slide's key message is that full fine-tuning duplicates the entire model for every task, even though most of the knowledge is shared across tasks. PEFT solves this by reusing one base model and storing small task-specific weights.",
+    "key_concepts": [
+      "model copies",
+      "storage cost",
+      "task-specific full models",
+      "QA fine-tune",
+      "summarization fine-tune"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 82; title: Full fine-tuning creates a full copy of the original LLM per task; key_concepts: model copies, storage cost, task-specific full models, QA fine-tune, summarization fine-tune; extracted_text: LLM Full fine-tuning creates full copy of original LLM per task QA fine tune QA LLM Summarize fine tune Summarize LLM Generate fine tune Generate LLM GBs GBs GBs GBs 82"
+  },
+  {
+    "slide_title": "PEFT fine-tuning saves space and is flexible",
+    "slide_paragraph": "This slide contrasts PEFT with full fine-tuning. Instead of storing separate gigabyte-sized full models for QA, summarization, and generation, PEFT stores one large base LLM plus small task-specific PEFT weights measured in megabytes. The diagram shows QA PEFT, Summarize PEFT, and Generate PEFT as lightweight components attached to the same base model. This makes it easier to switch tasks by loading different adapters. It also reduces storage and deployment complexity. The slide highlights why PEFT is especially practical for course projects and real applications where compute and memory are limited.",
+    "key_concepts": [
+      "PEFT weights",
+      "adapter switching",
+      "storage efficiency",
+      "MB-sized adapters",
+      "shared base model"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 83; title: PEFT fine-tuning saves space and is flexible; key_concepts: PEFT weights, adapter switching, storage efficiency, MB-sized adapters, shared base model; extracted_text: PEFT fine-tuning saves space and is flexible LLM QA PEFT Summarize PEFT Generate PEFT PEFT weights GBs MBs MBs MBs 83 Generate LLM"
+  },
+  {
+    "slide_title": "PEFT trade-offs",
+    "slide_paragraph": "This slide lists important trade-offs when choosing a PEFT method: parameter efficiency, memory efficiency, training speed, model performance, and inference costs. Parameter efficiency asks how many trainable parameters are needed. Memory efficiency asks how much GPU RAM is saved. Training speed depends on how much of the model is updated and how much extra computation is introduced. Model performance measures whether PEFT can match full fine-tuning. Inference costs matter because some PEFT methods add extra modules or require merging weights. The slide teaches that PEFT is not one universal answer; the best method depends on hardware, task, dataset size, and performance requirements.",
+    "key_concepts": [
+      "parameter efficiency",
+      "memory efficiency",
+      "training speed",
+      "model performance",
+      "inference cost"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 84; title: PEFT trade-offs; key_concepts: parameter efficiency, memory efficiency, training speed, model performance, inference cost; extracted_text: PEFT Trade-offs Parameter Efficiency Memory Efficiency Training Speed Model Performance Inference Costs 84"
+  },
+  {
+    "slide_title": "PEFT methods - selective and reparameterization",
+    "slide_paragraph": "This slide categorizes PEFT methods into two major families shown here: selective and reparameterization. Selective methods choose a subset of the original LLM parameters to fine-tune, leaving the rest frozen. Reparameterization methods represent weight updates using a smaller structure, often a low-rank representation, so fewer trainable parameters are needed. The slide cites a guide on PEFT and prepares for the introduction of LoRA, which is a reparameterization method. The important idea is that PEFT can reduce training cost in different ways: either by training fewer existing parameters or by learning compact substitutes for full weight updates.",
+    "key_concepts": [
+      "PEFT methods",
+      "selective tuning",
+      "reparameterization",
+      "low-rank representation",
+      "trainable subset"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 85; title: PEFT methods - selective and reparameterization; key_concepts: PEFT methods, selective tuning, reparameterization, low-rank representation, trainable subset; extracted_text: Source: Lialin et al. 2023, “Scaling Down to Scale Up: A Guide to Parameter-Efficient Fine-Tuning”, PEFT methods Select subset of initial LLM parameters to fine-tune Selective Reparameterize model weights using a low-rank representation Reparameterization 85"
+  },
+  {
+    "slide_title": "PEFT methods - additive, selective, and reparameterization",
+    "slide_paragraph": "This slide expands the PEFT taxonomy. Additive methods add trainable layers or parameters, such as adapters, soft prompts, or prompt tuning. Selective methods fine-tune only selected original parameters. Reparameterization methods, such as LoRA, express weight updates through a low-rank representation. The diagram helps students organize many PEFT names into understandable categories. Additive methods attach new components; selective methods choose parts of the old model; reparameterization methods change how the update is represented. LoRA is highlighted because it becomes the main technical focus of the next section.",
+    "key_concepts": [
+      "additive PEFT",
+      "adapters",
+      "soft prompts",
+      "prompt tuning",
+      "LoRA",
+      "PEFT taxonomy"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 86; title: PEFT methods - additive, selective, and reparameterization; key_concepts: additive PEFT, adapters, soft prompts, prompt tuning, LoRA, PEFT taxonomy; extracted_text: PEFT methods Add trainable layers or parameters to model Additive Adapters Soft Prompts Prompt Tuning Selective Select subset of initial LLM parameters to fine-tune Reparameterize model weights using a low-rank representation LoRA Reparameterization Source: Lialin et al. 2023, “Scaling Down to Scale Up: A Guide to Parameter-Efficient Fine-Tuning”, 86"
+  },
+  {
+    "slide_title": "Low-Rank Adaptation of Large Language Models (LoRA)",
+    "slide_paragraph": "This section divider introduces LoRA, Low-Rank Adaptation of Large Language Models. LoRA is a PEFT method that keeps the original model weights frozen and trains small low-rank matrices that represent the update to selected weight matrices. Instead of learning a full large weight update, LoRA learns two smaller matrices whose product approximates that update. This greatly reduces the number of trainable parameters while preserving strong performance. The following slides explain LoRA in the context of Transformer attention layers and show how the low-rank matrices are trained and merged for inference.",
+    "key_concepts": [
+      "LoRA",
+      "low-rank adaptation",
+      "frozen base weights",
+      "rank decomposition",
+      "parameter-efficient tuning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 87; title: Low-Rank Adaptation of Large Language Models (LoRA); key_concepts: LoRA, low-rank adaptation, frozen base weights, rank decomposition, parameter-efficient tuning; extracted_text: Low-Rank Adaptation of Large Language Models (LoRA) 87"
+  },
+  {
+    "slide_title": "Transformers recap - encoder-decoder structure",
+    "slide_paragraph": "This slide recaps the basic Transformer architecture before introducing LoRA. It shows an encoder and decoder with embeddings at the input side and a softmax output at the end. The example input is French text, 'J'aime l'apprentissage automatique', represented by token IDs such as 2345, 3425, and 3853. The purpose is to remind students that text is first tokenized and embedded, then processed through Transformer blocks, and finally converted into output probabilities. This recap is necessary because LoRA is usually applied inside Transformer weight matrices, especially attention projections, rather than to raw text directly.",
+    "key_concepts": [
+      "Transformer recap",
+      "encoder",
+      "decoder",
+      "embedding",
+      "softmax output",
+      "token IDs"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 88; title: Transformers recap - encoder-decoder structure; key_concepts: Transformer recap, encoder, decoder, embedding, softmax output, token IDs; extracted_text: Transformers: recap Decoder Encoder Embedding Embedding Softmax output Inputs Output 2345 3425 3853 J'aime l'apprentissage automatique 88"
+  },
+  {
+    "slide_title": "Transformers recap - attention and feed-forward layers",
+    "slide_paragraph": "This slide adds more internal detail to the Transformer recap by showing self-attention and feed-forward networks inside both encoder and decoder. Self-attention lets tokens interact and compute contextual representations. The feed-forward network then transforms each token representation through learned linear layers and nonlinearities. These components contain large weight matrices, which are expensive to fully fine-tune in a big model. The slide prepares students to understand where LoRA can be inserted: rather than changing all Transformer weights, LoRA can target specific matrices within attention or feed-forward layers.",
+    "key_concepts": [
+      "self-attention",
+      "feed-forward network",
+      "Transformer layers",
+      "weight matrices",
+      "LoRA insertion point"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 89; title: Transformers recap - attention and feed-forward layers; key_concepts: self-attention, feed-forward network, Transformer layers, weight matrices, LoRA insertion point; extracted_text: Transformers: recap Encoder Decoder Embedding Embedding Softmax output Inputs Output Feed forward network Feed forward network Self-attention Self-attention 2345 3425 3853 89"
+  },
+  {
+    "slide_title": "LoRA: Low Rank Adaptation of LLMs - freezing original weights",
+    "slide_paragraph": "This slide focuses on a self-attention component where weights are applied to embedding vectors. The first LoRA step is to freeze most of the original LLM weights. In practice, this means the large pre-trained weight matrix stays unchanged during fine-tuning. Freezing is important because it preserves the base model and avoids storing gradients and optimizer states for that full matrix. The task-specific learning will happen through additional low-rank matrices introduced in the next slide. This slide therefore establishes the central PEFT principle: do not retrain the whole model unless necessary.",
+    "key_concepts": [
+      "LoRA step 1",
+      "frozen weights",
+      "self-attention weights",
+      "embedding vectors",
+      "base model preservation"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 90; title: LoRA: Low Rank Adaptation of LLMs - freezing original weights; key_concepts: LoRA step 1, frozen weights, self-attention weights, embedding vectors, base model preservation; extracted_text: Self-attention Encoder Embedding Weights applied to embedding vectors 1. Freeze most of the original LLM weights. LoRA: Low Rank Adaption of LLMs 90"
+  },
+  {
+    "slide_title": "LoRA: injecting rank decomposition matrices",
+    "slide_paragraph": "This slide adds steps two and three of LoRA. After freezing most original weights, two rank decomposition matrices are injected. These smaller matrices are trained while the original large matrix stays fixed. The rank r is a small dimension, typically values such as 4, 8, or 64. A smaller rank means fewer trainable parameters and lower memory cost; a larger rank gives the update more capacity but costs more. The plus sign indicates that the learned low-rank update will be added to the original weight transformation. The intuition is that many useful task adaptations can be represented by a low-dimensional update rather than a full matrix.",
+    "key_concepts": [
+      "rank r",
+      "low-rank matrices",
+      "trainable adapters",
+      "LoRA update",
+      "parameter reduction"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 91; title: LoRA: injecting rank decomposition matrices; key_concepts: rank r, low-rank matrices, trainable adapters, LoRA update, parameter reduction; extracted_text: Self-attention Encoder Embedding 1. Freeze most of the original LLM weights. 2. Inject 2 rank decomposition matrices 3. Train the weights of the smaller matrices LoRA: Low Rank Adaption of LLMs + Rank r is small dimension, typically 4, 8 … 64 91"
+  },
+  {
+    "slide_title": "LoRA: updating the model for inference",
+    "slide_paragraph": "This slide explains how LoRA is used after training. The two low-rank matrices, often called A and B, are multiplied to form the update B x A. This product has the same shape as the original weight matrix, even though A and B individually are much smaller. The product is then added to the original frozen weights before or during inference. Conceptually, the model uses updated weights equal to the base weights plus the LoRA update. This allows the model to behave as if it had been fine-tuned for the task, while only the small LoRA matrices needed to be trained and stored.",
+    "key_concepts": [
+      "B x A",
+      "matrix multiplication",
+      "weight update",
+      "inference merge",
+      "LoRA adapters"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 92; title: LoRA: updating the model for inference; key_concepts: B x A, matrix multiplication, weight update, inference merge, LoRA adapters; extracted_text: Self-attention Encoder Embedding 1. Freeze most of the original LLM weights. 2. Inject 2 rank decomposition matrices 3. Train the weights of the smaller matrices LoRA: Low Rank Adaption of LLMs + Steps to update model for inference 1. Matrix multiply the low rank matrices B x A + 2. Add to original weights B x A = * B A 92"
+  },
+  {
+    "slide_title": "LoRA: updated weights",
+    "slide_paragraph": "This slide continues the LoRA inference procedure and explicitly shows the updated weights. The low-rank product B x A is added to the original weights to create a task-adapted version of the transformation. Because the original weights remain available, different LoRA adapters can be applied for different tasks without retraining or duplicating the whole model. The key mathematical idea is additive adaptation: new behavior comes from adding a learned low-rank correction to a frozen pre-trained matrix. This makes LoRA both storage-efficient and operationally flexible.",
+    "key_concepts": [
+      "updated weights",
+      "additive adaptation",
+      "task-specific correction",
+      "adapter merge",
+      "frozen pre-trained matrix"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 93; title: LoRA: updated weights; key_concepts: updated weights, additive adaptation, task-specific correction, adapter merge, frozen pre-trained matrix; extracted_text: Self-attention Encoder Embedding 1. Freeze most of the original LLM weights. 2. Inject 2 rank decomposition matrices 3. Train the weights of the smaller matrices LoRA: Low Rank Adaption of LLMs B x A + Steps to update model for inference: 1. Matrix multiply the low rank matrices 2. Add to original weights B x A + Updated weights B x A = * B A 93"
+  },
+  {
+    "slide_title": "Concrete example using base Transformer as reference",
+    "slide_paragraph": "This slide gives a numerical example of LoRA parameter savings using the base Transformer dimensions from Vaswani et al. The original Transformer weight matrix has dimensions d x k = 512 x 64, giving 32,768 trainable parameters if fully fine-tuned. With LoRA rank r = 8, matrix A has dimensions 8 x 64, which is 512 parameters, and matrix B has dimensions 512 x 8, which is 4,096 parameters. Together, LoRA trains 4,608 parameters instead of 32,768. The slide states this is an 86% reduction in trainable parameters. The example makes the memory benefit concrete: low rank drastically reduces what must be learned.",
+    "key_concepts": [
+      "LoRA parameter count",
+      "rank 8",
+      "matrix A",
+      "matrix B",
+      "86% reduction",
+      "Transformer dimensions"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 94; title: Concrete example using base Transformer as reference; key_concepts: LoRA parameter count, rank 8, matrix A, matrix B, 86% reduction, Transformer dimensions; extracted_text: Concrete example using base Transformer as reference Use the base Transformer model presented by Vaswani et al. 2017: ● Transformer weights have dimensions d x k = 512 x 64 ● So 512 x 64 = 32,768 trainable parameters In LoRA with rank r = 8: ● A has dimensions r x k = 8 x 64 = 512 parameters ● B has dimension d x r = 512 x 8 = 4,096 trainable parameters ● 86% reduction in parameters to train! 94"
+  },
+  {
+    "slide_title": "LoRA for different tasks - task A",
+    "slide_paragraph": "This slide shows how LoRA supports different task-specific adaptations. The base self-attention weights are shared, while different low-rank decomposition matrices can be trained for different tasks. For Task A, the LoRA matrices are multiplied and added to the frozen base weights before inference. This produces updated weights specialized for Task A. The advantage is that the same LLM can serve many tasks by swapping small adapters. Instead of storing a full model for every task, we store a compact LoRA update for each task and apply it when needed.",
+    "key_concepts": [
+      "Task A adapter",
+      "multiple LoRA adapters",
+      "shared base model",
+      "task-specific weights",
+      "adapter swapping"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 95; title: LoRA for different tasks - task A; key_concepts: Task A adapter, multiple LoRA adapters, shared base model, task-specific weights, adapter swapping; extracted_text: Self-attention Encoder Embedding Weights applied to embedding vectors LoRA: Low Rank Adaption of LLMs 1. Train different rank decomposition matrices for different tasks 2. Update weights before inference * = Task A + 95"
+  },
+  {
+    "slide_title": "LoRA for different tasks - task A and task B",
+    "slide_paragraph": "This slide extends the previous idea by showing separate LoRA updates for Task A and Task B. Each task has its own low-rank matrices, and each produces a different updated weight matrix when added to the same base model. This illustrates the flexibility of LoRA in multi-application settings. For example, one adapter might specialize the model for summarization, while another specializes it for question answering. The base model remains unchanged; only the selected adapter changes. This design is useful for deployment because adapters are small, modular, and easier to manage than full fine-tuned models.",
+    "key_concepts": [
+      "Task B adapter",
+      "adapter modularity",
+      "multi-task deployment",
+      "base model reuse",
+      "LoRA flexibility"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 96; title: LoRA for different tasks - task A and task B; key_concepts: Task B adapter, adapter modularity, multi-task deployment, base model reuse, LoRA flexibility; extracted_text: Self-attention Encoder Embedding LoRA: Low Rank Adaption of LLMs + Updated weights for task A 1. Train different rank decomposition matrices for different tasks 2. Update weights before inference = Task A = Task B + + * * 96"
+  },
+  {
+    "slide_title": "LoRA for different tasks - updated weights for task B",
+    "slide_paragraph": "This slide highlights the updated weights for Task B. The visual shows that Task B has its own low-rank update, separate from Task A. At inference time, applying the Task B update changes the model's behavior toward the Task B objective. The important concept is task isolation: different adapters can encode different behaviors without overwriting each other or the base model. This reduces catastrophic forgetting and makes experimentation easier because a poor adapter can be removed or replaced without damaging the original LLM.",
+    "key_concepts": [
+      "updated weights for task B",
+      "task isolation",
+      "adapter replacement",
+      "catastrophic forgetting reduction",
+      "LoRA deployment"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 97; title: LoRA for different tasks - updated weights for task B; key_concepts: updated weights for task B, task isolation, adapter replacement, catastrophic forgetting reduction, LoRA deployment; extracted_text: Self-attention Encoder Embedding LoRA: Low Rank Adaption of LLMs + Updated weights for task B 1. Train different rank decomposition matrices for different tasks 2. Update weights before inference = Task A = Task B + + * * 97"
+  },
+  {
+    "slide_title": "Sample ROUGE metrics for full vs. LoRA fine-tuning - baseline",
+    "slide_paragraph": "This slide begins a quantitative comparison for FLAN-T5 dialogue summarization. The base model ROUGE scores are shown for flan_t5_base, including ROUGE-1, ROUGE-2, ROUGE-L, and ROUGE-Lsum. These scores represent the model before instruction fine-tuning or LoRA adaptation for the dialogue summarization task. Establishing a baseline is essential: without the base score, we cannot know whether fine-tuning improved performance. The slide also links the LoRA discussion back to evaluation metrics introduced earlier, showing that PEFT methods should be judged empirically rather than assumed to work.",
+    "key_concepts": [
+      "ROUGE baseline",
+      "FLAN-T5",
+      "dialogue summarization",
+      "LoRA evaluation",
+      "base model score"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 98; title: Sample ROUGE metrics for full vs. LoRA fine-tuning - baseline; key_concepts: ROUGE baseline, FLAN-T5, dialogue summarization, LoRA evaluation, base model score; extracted_text: Sample ROUGE metrics for full vs. LoRA fine-tuning Base model ROUGE Full fine-tune ROUGE flan_t5_base { ‘ r o u g e 1 ’ : 0.2334, ‘ r o u g e 2 ’ : 0.0760, ‘ r o u g e L ’ : 0.2014, ‘rougeLsum’: 0.2015} Baseline score FLAN-T5 Dialog summarization 98"
+  },
+  {
+    "slide_title": "Sample ROUGE metrics for full vs. LoRA fine-tuning - comparison",
+    "slide_paragraph": "This slide compares three sets of ROUGE scores: the base FLAN-T5 model, a LoRA fine-tuned model, and a fully fine-tuned model. The base ROUGE-1 is around 0.2334, while the LoRA model improves to around 0.4081, and the full fine-tune reaches around 0.4216. Similar improvements appear for ROUGE-2 and ROUGE-L. The slide notes that LoRA achieves a large gain over the baseline and is only slightly below full fine-tuning, with an indicated small difference of about -3.20% relative to full fine-tuning. The key message is practical: LoRA can recover most of the performance benefit while training far fewer parameters.",
+    "key_concepts": [
+      "LoRA ROUGE",
+      "full fine-tuning",
+      "baseline comparison",
+      "performance gap",
+      "parameter efficiency"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 99; title: Sample ROUGE metrics for full vs. LoRA fine-tuning - comparison; key_concepts: LoRA ROUGE, full fine-tuning, baseline comparison, performance gap, parameter efficiency; extracted_text: Sample ROUGE metrics for full vs. LoRA fine-tuning flan_t5_base { ‘ r o u g e 1 ’ : 0.2334, ‘ r o u g e 2 ’ : 0.0760, ‘ r o u g e L ’ : 0.2014, ‘rougeLsum’: 0.2015} fl an_ t5_ba se_ ins truc t_l ora { ‘ r o u g e 1 ’ : 0.4081, ‘ r o u g e 2 ’ : 0.1633, ‘ r o u g e L ’ : 0.3251, ‘rougeLsum’: 0.3249} Baseline score f l a n_ t 5 _b a s e _i ns t r uc t _ f ul l { ‘ r o u g e 1 ’ : 0.4216, ‘ r o u g e 2 ’ : 0.1804, ‘ r o u g e L ’ : 0.3384, ‘rougeLsum’: 0.3384} +80.63% -3.20% FLAN-T5 Dialog summarization Base model ROUGE Full fine-tune ROUGE LoRA fine tune ROUGE 99"
+  },
+  {
+    "slide_title": "Choosing the LoRA rank",
+    "slide_paragraph": "This slide discusses the choice of LoRA rank r. The table compares ranks such as 1, 2, 4, 8, 16, and higher values against validation loss and metrics like BLEU, NIST, METEOR, ROUGE-L, and CIDEr. The highlighted results suggest that performance improves up to a point and then plateaus, meaning very high ranks may not provide much additional benefit. The slide also notes that the relationship between rank and dataset size needs more empirical data. In practice, rank is a hyperparameter: small ranks are cheaper and often sufficient, while larger ranks may help more complex tasks but cost more memory and training time.",
+    "key_concepts": [
+      "LoRA rank",
+      "rank plateau",
+      "hyperparameter tuning",
+      "validation loss",
+      "dataset size relationship"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 100; title: Choosing the LoRA rank; key_concepts: LoRA rank, rank plateau, hyperparameter tuning, validation loss, dataset size relationship; extracted_text: Choosing the LoRA rank ● Effectiveness of higher rank appears to plateau ● Relationship between rank and dataset size needs more empirical data Source: Hu et al. 2021, “LoRA: Low-Rank Adaptation of Large Language Models” 100"
+  },
+  {
+    "slide_title": "QLoRA: Quantized LoRA",
+    "slide_paragraph": "This slide introduces QLoRA, Quantized LoRA, as a further memory-saving method. It uses 4-bit NormalFloat, or nf4, for quantizing the base model. It also supports double quantization, which reduces memory by about 0.4 bits per parameter, corresponding to roughly 3 GB for a 65B model. Unified GPU-CPU memory management helps reduce GPU memory pressure, and LoRA adapters can be applied at every layer, not only attention layers. The goal is to minimize accuracy trade-off while enabling fine-tuning of very large models on much smaller hardware than full fine-tuning would require.",
+    "key_concepts": [
+      "QLoRA",
+      "4-bit NormalFloat",
+      "nf4",
+      "double quantization",
+      "GPU-CPU memory",
+      "large-model fine-tuning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 101; title: QLoRA: Quantized LoRA; key_concepts: QLoRA, 4-bit NormalFloat, nf4, double quantization, GPU-CPU memory, large-model fine-tuning; extracted_text: QLoRA: Quantized LoRA Source: Dettmers et al. 2023, “QLoRA: Efficient Finetuning of Quantized LLMs” ● Introduces 4-bit NormalFloat (nf4) data type for 4-bit quantization ● Supports double-quantization to reduce memory ~0.4 bits per parameter (~3 GB for a 65B model) ● Unified GPU-CPU memory management reduces GPU memory usage ● LoRA adapters at every layer - not just attention layers ● Minimizes accuracy trade-off 101"
+  },
+  {
+    "slide_title": "QLoRA: Quantized LoRA - memory diagram",
+    "slide_paragraph": "This slide visually compares full fine-tuning, LoRA, and QLoRA. Full fine-tuning uses a 16-bit Transformer and large 32-bit optimizer states because all parameters are updated. LoRA keeps the 16-bit base model and trains smaller adapter matrices. QLoRA goes further by quantizing the base Transformer model to 4-bit precision and using paged optimizers to handle memory spikes, while still training adapters. The arrows in the diagram distinguish parameter updates, gradient flow, and paging flow. The main lesson is that QLoRA reduces memory more aggressively than LoRA by combining adapter training with low-bit quantization of the frozen base model.",
+    "key_concepts": [
+      "full fine-tuning",
+      "LoRA",
+      "QLoRA",
+      "4-bit Transformer",
+      "paged optimizer",
+      "memory comparison"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 102; title: QLoRA: Quantized LoRA - memory diagram; key_concepts: full fine-tuning, LoRA, QLoRA, 4-bit Transformer, paged optimizer, memory comparison; extracted_text: QLoRA: Quantized LoRA Source: Dettmers et al. 2023, “QLoRA: Efficient Finetuning of Quantized LLMs” 102"
+  },
+  {
+    "slide_title": "QLoRA: Quantized LoRA - method comparison table",
+    "slide_paragraph": "This slide summarizes full fine-tuning, LoRA, and QLoRA in a table. Full fine-tuning uses a 16-bit base model and trains all parameters, requiring very high GPU memory but offering maximum flexibility. LoRA uses a 16-bit base model and trains only small adapter matrices, giving moderate memory usage and faster training. QLoRA uses a 4-bit quantized base model and trains only adapters, giving very low GPU memory usage. The table emphasizes QLoRA's key advantage: it can enable fine-tuning huge models on one GPU by using quantization and paged optimizers to handle memory spikes. This makes QLoRA highly practical for constrained environments.",
+    "key_concepts": [
+      "method comparison",
+      "trainable parameters",
+      "GPU memory",
+      "full finetuning",
+      "LoRA",
+      "QLoRA"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 103; title: QLoRA: Quantized LoRA - method comparison table; key_concepts: method comparison, trainable parameters, GPU memory, full finetuning, LoRA, QLoRA; extracted_text: 103 Method Base Model Trainable Parameters Adapters Used GPU Memory Usage Key Advantage Full Finetuning 16-bit All parameters (entire model) None Very High Maximum accuracy, full flexibility LoRA (Low-Rank Adaptation) 16-bit Only small adapter matrices Yes Moderate Much lower memory use; faster training QLoRA (Quantized LoRA) 4-bit (quantized) Only adapters Yes Very Low Enables fine-tuning huge models on one GPU; uses paged optimizer to handle memory spikes QLoRA: Quantized LoRA"
+  },
+  {
+    "slide_title": "PEFT methods summary",
+    "slide_paragraph": "This final content slide summarizes the PEFT taxonomy. Additive methods add trainable layers or parameters, including adapters, soft prompts, and prompt tuning. Selective methods fine-tune only a subset of the original LLM parameters. Reparameterization methods represent updates compactly, and LoRA is the key example shown. The slide ties together the lecture's PEFT section: parameter-efficient methods reduce memory and storage requirements, make task-specific adaptation more flexible, and can reduce catastrophic forgetting compared with full fine-tuning. Students should leave this slide understanding that PEFT is a family of methods, not only LoRA, and that the method choice depends on the task and constraints.",
+    "key_concepts": [
+      "PEFT summary",
+      "additive methods",
+      "selective methods",
+      "reparameterization",
+      "LoRA",
+      "prompt tuning"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 104; title: PEFT methods summary; key_concepts: PEFT summary, additive methods, selective methods, reparameterization, LoRA, prompt tuning; extracted_text: PEFT methods summary Add trainable layers or parameters to model Additive Adapters Soft Prompts Prompt Tuning Select subset of initial LLM parameters to fine-tune Selective Reparameterize model weights using a low-rank representation Reparameterization LoRA 104"
+  },
+  {
+    "slide_title": "Lecture References",
+    "slide_paragraph": "This closing slide lists the main reference for the lecture: the Generative AI with Large Language Models course from DeepLearning.AI, Week 2. The reference indicates that the lecture material is based on established educational content about fine-tuning, instruction tuning, evaluation, and PEFT. For a student, this slide is useful because it points to a source for deeper study after the lecture. It also signals that the lecture has covered a complete pipeline: starting from in-context learning limitations, moving to supervised instruction fine-tuning, evaluating generated outputs, and ending with efficient adaptation methods such as LoRA and QLoRA.",
+    "key_concepts": [
+      "lecture reference",
+      "DeepLearning.AI",
+      "Generative AI with LLMs",
+      "fine-tuning",
+      "PEFT"
+    ],
+    "index_text": "lecture: LLM Lecture 4; slide: 105; title: Lecture References; key_concepts: lecture reference, DeepLearning.AI, Generative AI with LLMs, fine-tuning, PEFT; extracted_text: Lecture References • Generative AI with Large Language Models – Deeplearning.ai Course (Week 2) 105"
+  }
+]

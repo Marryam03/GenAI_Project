@@ -1,0 +1,860 @@
+[
+  {
+    "slide_title": "Understanding Agentic AI Part 2",
+    "slide_paragraph": "This opening slide introduces the second part of the lecture on Agentic AI. The visual design repeats the course theme: a human head surrounded by digital symbols such as a CPU, cloud, gears, messages, and a computer screen. These icons strongly suggest that the lecture is about AI systems that combine reasoning, computation, communication, and tool interaction. The title tells the student that this lecture continues the previous discussion of agentic workflows, but now focuses on more advanced forms of agent behavior. Since this is Part 2, the lecture will likely move beyond basic ideas such as reflection and simple tool use toward more autonomous planning, multi-agent coordination, evaluation, debugging, and cost-aware deployment. The instructor name, Dr. Tamer Arafa, identifies the lecture source and keeps continuity with the previous lectures in the series.",
+    "key_concepts": [
+      "Agentic AI",
+      "autonomous agents",
+      "LLM workflows",
+      "tool interaction",
+      "course introduction"
+    ],
+    "index_text": "Slide 1. Understanding Agentic AI Part 2. Introductory title slide for advanced agentic AI workflows. Dr. Tamer Arafa."
+  },
+  {
+    "slide_title": "Patterns for Highly Autonomous Agents: Planning Workflows",
+    "slide_paragraph": "This slide acts as a section divider and announces that the next topic is planning workflows for highly autonomous agents. Planning is one of the most important capabilities that distinguishes a simple LLM call from an agentic system. In a non-agentic setup, the user gives a prompt and the model directly produces an answer. In a planning workflow, the agent first decides what steps are needed, which tools or sub-agents should be used, what information must be collected, and in what order the task should proceed. The phrase highly autonomous agents implies that the system is expected to make more decisions by itself rather than relying on a developer to hard-code every step. Therefore, this section prepares the student to understand how LLMs can generate structured plans before execution.",
+    "key_concepts": [
+      "planning workflows",
+      "high autonomy",
+      "agent planning",
+      "step-by-step execution",
+      "LLM agents"
+    ],
+    "index_text": "Slide 2. Patterns for highly autonomous agents. Planning workflows."
+  },
+  {
+    "slide_title": "Planning Example: Customer Service Agent",
+    "slide_paragraph": "This slide gives a concrete example of planning in a customer service setting. The user asks: Do you have any round sunglasses in stock that are under $100? The slide shows an inventory database with product IDs, names, descriptions, prices, and stock counts. The inventory includes Aviator sunglasses, Catseye sunglasses, Moon sunglasses, and Classic sunglasses, each with a different description, price, and stock amount. To answer correctly, the agent must reason over several constraints: the sunglasses must be round, they must be in stock, and they must cost less than $100. The final response shown says that the Classic sunglasses meet the request because they have a classic round profile, are in stock, and cost $60. This example illustrates that even a simple customer question can require structured reasoning over database fields rather than direct text generation. The agent must identify the relevant attribute in the description, verify availability using the stock column, compare price against the user’s budget, and then formulate a helpful answer.",
+    "key_concepts": [
+      "customer service agent",
+      "inventory database",
+      "constraint checking",
+      "planning",
+      "tool-based reasoning",
+      "structured data"
+    ],
+    "index_text": "Slide 3. Planning example customer service agent. User asks for round sunglasses in stock under $100. Inventory table with id, name, description, price, stock. Answer selects Classic sunglasses."
+  },
+  {
+    "slide_title": "Planning Example: Customer Service Agent with Tools",
+    "slide_paragraph": "This slide expands the previous customer service example by showing how an LLM can produce a step-by-step tool-use plan. The user query asks for round sunglasses that are in stock and under $100. The system prompt tells the model that it has access to tool descriptions and asks it to return a step-by-step plan. The model then decomposes the task into three logical operations: first, use get_item_descriptions to find round sunglasses; second, use check_inventory to verify whether the candidate items are in stock; third, use get_item_price to check whether the available results are below $100. The diagram shows a loop where the LLM generates step text, calls a tool, receives tool output, and then uses that output to form the next step. The tool list includes check_inventory, check_past_transactions, process_item_return, process_item_sale, get_item_descriptions, and get_item_price. The key educational point is that the model does not simply answer from memory; it creates a plan, selects the appropriate tools, and uses intermediate results to decide what to do next.",
+    "key_concepts": [
+      "tool selection",
+      "step-by-step plan",
+      "system prompt",
+      "customer service tools",
+      "intermediate outputs",
+      "agent execution"
+    ],
+    "index_text": "Slide 4. Planning with tools for sunglasses query. Tools include get_item_descriptions, check_inventory, get_item_price. LLM creates sequential plan."
+  },
+  {
+    "slide_title": "Planning Example: Item Return Request",
+    "slide_paragraph": "This slide shows another customer service planning scenario, but the task is more complex because the user wants to return a specific purchased item: the gold frame glasses, but not the metal frame ones. The LLM must infer that it cannot directly process the return until it identifies the customer’s previous purchases and distinguishes between similar products. The generated plan uses check_past_transactions first to find which glasses the customer bought. Then it uses get_item_descriptions to identify which purchased item has a gold frame. Finally, it uses process_item_return to return only the gold-framed glasses. The diagram reinforces the same agent loop as the previous slide: the LLM produces step text, calls a tool, observes the output, and continues to the next step. This example is important because it shows why planning is needed when user instructions contain constraints, exceptions, or references to past actions. The phrase but not the metal frame ones requires the agent to avoid over-generalizing and to process only the correct item.",
+    "key_concepts": [
+      "return workflow",
+      "past transactions",
+      "item disambiguation",
+      "tool orchestration",
+      "constraint-aware planning",
+      "customer support"
+    ],
+    "index_text": "Slide 5. Customer wants to return gold frame glasses but not metal frame ones. Plan uses check_past_transactions, get_item_descriptions, process_item_return."
+  },
+  {
+    "slide_title": "Planning Example: Email Assistant",
+    "slide_paragraph": "This slide transfers the same planning idea to an email assistant. The user asks the agent to reply to an email invitation from Bob about dinner in New York, say that they will attend, and then archive Bob’s email. The agent needs to perform three operations using email tools. First, it uses search_email to locate the relevant email from Bob that mentions dinner and New York. Second, it uses send_email to reply and confirm attendance. Third, it uses move_email to archive the message. The tools shown include search_email, delete_email, move_email, and send_email, so the LLM must choose the correct subset and order. This example demonstrates that autonomous agents can operate across personal productivity applications, but safe planning is critical: replying to the wrong email, deleting instead of archiving, or sending an incorrect confirmation would be harmful. The slide therefore teaches that planning is not only about decomposing tasks, but also about sequencing actions safely in real applications.",
+    "key_concepts": [
+      "email assistant",
+      "search email",
+      "send email",
+      "archive email",
+      "productivity agent",
+      "safe action sequencing"
+    ],
+    "index_text": "Slide 6. Email assistant planning. Reply to Bob dinner invitation, confirm attendance, archive email. Tools: search_email, send_email, move_email."
+  },
+  {
+    "slide_title": "Creating and Executing LLM Plans",
+    "slide_paragraph": "This section divider introduces the next stage: not only creating plans, but executing them. A plan by itself is only a description of intended actions. For an agent to be useful, it must turn that plan into tool calls, receive outputs, update its internal state, and continue until the user’s task is completed. The title suggests a shift from conceptual planning to implementation details. Students should understand that execution adds new challenges: plans must be machine-readable, tools must receive valid arguments, results from earlier steps may affect later steps, and errors must be handled. This is where agentic systems become workflow systems rather than isolated prompts.",
+    "key_concepts": [
+      "plan execution",
+      "tool calls",
+      "workflow implementation",
+      "agent control flow",
+      "LLM plans"
+    ],
+    "index_text": "Slide 7. Patterns for highly autonomous agents. Creating and executing LLM plans."
+  },
+  {
+    "slide_title": "Executing the Customer Service Plan",
+    "slide_paragraph": "This slide revisits the sunglasses customer service example and shows the connection between the generated plan and actual tool execution. The user asks for round sunglasses in stock under $100, and the LLM plan contains three steps: get descriptions, check inventory, and check price. The diagram now visually ties each plan step to the corresponding tool call: get_item_descriptions, then check_inventory, then get_item_price. The LLM receives output after each step and uses it as context for the next. This demonstrates the practical difference between planning and execution. Planning creates a structured intent, while execution operationalizes the intent by calling external functions. The slide also highlights that agents often need stateful reasoning: the result from step 1 becomes the input to step 2, and the result from step 2 becomes the input to step 3. Without this chaining, the agent would not be able to filter candidates correctly.",
+    "key_concepts": [
+      "plan execution",
+      "tool chaining",
+      "stateful reasoning",
+      "get_item_descriptions",
+      "check_inventory",
+      "get_item_price"
+    ],
+    "index_text": "Slide 8. Customer service execution flow for round sunglasses. LLM creates plan then calls tools sequentially."
+  },
+  {
+    "slide_title": "Formatting Plan as JSON",
+    "slide_paragraph": "This slide explains why agents often need structured plan formats such as JSON. The updated system prompt asks the LLM to create a step-by-step plan in JSON format, where each step includes a step number, description, tool name, and arguments. The example JSON contains a plan array, and the first step has description Find round sunglasses, tool get_item_descriptions, and args with query equal to round sunglasses. The second step checks stock using check_inventory with items coming from the results of step 1. This is important because natural-language plans are easy for humans to read but harder for software to execute reliably. JSON makes the plan explicit, parseable, and easier to validate. It also reduces ambiguity by separating what the step does from which tool should be called and what arguments should be passed. In real systems, this kind of structured output allows the agent controller to inspect, modify, reject, or execute the plan programmatically.",
+    "key_concepts": [
+      "JSON planning",
+      "structured output",
+      "tool arguments",
+      "machine-readable plans",
+      "agent controller",
+      "validation"
+    ],
+    "index_text": "Slide 9. Formatting plans as JSON. Each step has step number, description, tool name, args. Example plan for round sunglasses."
+  },
+  {
+    "slide_title": "Planning with Code Execution",
+    "slide_paragraph": "This section divider introduces planning with code execution. Instead of relying only on a fixed list of narrow tools, an agent can write code to solve flexible data-processing tasks. Code execution is especially useful when the task requires many operations, complex filtering, aggregation, date handling, arithmetic, or manipulation of tabular data. This topic is closely related to tool use, but code is a more general tool: rather than asking developers to create a separate function for every possible operation, the LLM can generate a custom program for the specific user request. The key idea is that for many analytical tasks, planning in code can be more scalable and less brittle than planning through a large set of specialized tools.",
+    "key_concepts": [
+      "code execution",
+      "data analysis",
+      "flexible tools",
+      "planning with code",
+      "agentic computation"
+    ],
+    "index_text": "Slide 10. Patterns for highly autonomous agents. Planning with code execution."
+  },
+  {
+    "slide_title": "The Challenge of Planning with Tools",
+    "slide_paragraph": "This slide illustrates a weakness of using many small predefined tools for data analysis. The user asks: Which month had the highest sales of hot chocolate? The available tools include functions such as get_column_mean, get_column_median, sum_rows, filter_rows, get_column_max, and get_column_min. A naive plan would repeatedly filter rows for Hot Chocolate by month, compute an amount or average for each month, repeat the process for all twelve months, and then compare the results. The diagram shows this as a long, repetitive, and inefficient plan. The data table includes dates, prices, coffee names, and sizes, so the task is naturally suited to a grouped aggregation by month. The slide teaches that when a task involves loops, aggregation, or many similar operations, forcing the LLM to call narrow tools repeatedly can be inefficient and brittle. A better approach may be to generate code that performs the entire analysis in one coherent program.",
+    "key_concepts": [
+      "tool limitations",
+      "tabular analysis",
+      "aggregation",
+      "hot chocolate sales",
+      "repetitive plans",
+      "inefficiency"
+    ],
+    "index_text": "Slide 11. Challenge of planning with tools. Query: which month had highest sales of hot chocolate? Many repetitive tool calls over coffee_sales.csv."
+  },
+  {
+    "slide_title": "Brittleness of Many Specialized Tools",
+    "slide_paragraph": "This slide generalizes the tool-planning problem. It shows several possible user questions over a transactions dataset, such as how many unique transactions occurred last week or what the amounts of the last five transactions were. To answer each new question, the system might require a new specialized tool, such as get_unique_entries or get_last_N_values. The slide explicitly labels this approach as brittle, inefficient, and continuously dealing with edge cases. This means that if developers build a separate tool for every possible query type, the tool set becomes hard to maintain and still fails when users ask unexpected questions. The visible table with date, price, coffee_name, and size suggests that many questions can be answered by flexible dataframe operations. The main lesson is that a fixed tool catalog can become too limited for open-ended data tasks, while code execution can offer broader coverage.",
+    "key_concepts": [
+      "brittle tools",
+      "edge cases",
+      "dataframe tasks",
+      "tool proliferation",
+      "general-purpose code",
+      "transaction analysis"
+    ],
+    "index_text": "Slide 12. Tool-based planning becomes brittle and inefficient. Examples: unique transactions last week, last five amounts. Tools include get_unique_entries and get_last_N_values."
+  },
+  {
+    "slide_title": "Planning with Code Execution: Last Five Transactions",
+    "slide_paragraph": "This slide shows how code execution can replace many specialized tools. The user asks for the amounts of the last five transactions. The system prompt instructs the LLM to solve the query by returning Python code wrapped between execute_python tags. The generated code imports pandas, reads transactions.csv, parses the date column as datetime, sorts the dataframe by date in descending order, selects the first five rows, and prints the price column as a list. This example demonstrates that the LLM can create a custom program tailored to the question. Instead of needing separate tools for sorting, selecting rows, and extracting values, Python code combines these operations cleanly. The execute_python tags are important because they allow the orchestration system to detect the code block, run it in a controlled environment, and return the result to the LLM or user.",
+    "key_concepts": [
+      "Python execution",
+      "pandas",
+      "transactions.csv",
+      "execute_python tags",
+      "sorting by date",
+      "last five transactions"
+    ],
+    "index_text": "Slide 13. Code execution example. LLM writes pandas code to load transactions.csv, parse date, sort descending, select last five, print prices."
+  },
+  {
+    "slide_title": "Planning with Code Execution: Unique Transactions Last Week",
+    "slide_paragraph": "This slide provides another code-execution example. The user asks how many unique transactions occurred last week. The generated Python code reads transactions.csv with the date column parsed as datetime, defines a time window from today back seven days, filters rows whose date falls between those two boundaries, removes duplicate rows, and prints the number of remaining rows. The example shows that code can express temporal logic, filtering, and deduplication in a compact way. These operations would be cumbersome if the agent had only small predefined tools. The slide also highlights that code is not just for arithmetic; it can encode procedural plans over structured data. In an agentic application, the LLM supplies the program, while the execution environment performs the exact computation, reducing the risk of arithmetic mistakes or incomplete manual reasoning by the model.",
+    "key_concepts": [
+      "unique transactions",
+      "date filtering",
+      "deduplication",
+      "pandas",
+      "last week",
+      "code as action"
+    ],
+    "index_text": "Slide 14. Code execution example for unique transactions last week. Reads CSV, filters date window, drops duplicates, counts rows."
+  },
+  {
+    "slide_title": "Planning with Code Improves Performance",
+    "slide_paragraph": "This slide presents evidence that planning with executable code can improve agent performance. The chart compares successful task completion rate across multiple models and three action modes: Code as Action, JSON as Action, and Text as Action. The models listed include gpt-4 variants, claude-2, gpt-3.5 variants, gemini-pro, text-davinci-003, and Llama-2-70b-chat-hf. The horizontal axis measures successful task completion rate as a percentage. The visible pattern shows that Code as Action often achieves the highest or among the highest completion rates, especially for stronger models. This supports the earlier argument that asking an LLM to generate executable code can be more effective than asking it to produce a long textual action plan or a JSON-only sequence of tool calls. The educational takeaway is that execution format matters: code can represent loops, conditionals, data transformations, and calculations more naturally than plain text plans.",
+    "key_concepts": [
+      "code as action",
+      "JSON as action",
+      "text as action",
+      "task completion rate",
+      "agent performance",
+      "execution format"
+    ],
+    "index_text": "Slide 15. Bar chart adapted from Executable Code Actions Elicit Better LLM Agents. Code as Action improves successful task completion rate across models."
+  },
+  {
+    "slide_title": "Multi-Agentic Workflows",
+    "slide_paragraph": "This section divider introduces multi-agentic workflows as another pattern for highly autonomous agents. A single LLM agent may be sufficient for simple tasks, but complex tasks often benefit from specialized roles. Multi-agent systems divide responsibility across agents such as researchers, writers, reviewers, designers, planners, or fact-checkers. This mirrors human teamwork: complex deliverables are rarely created by one person doing everything from start to finish. The section prepares students to study how multiple agents can collaborate, communicate, and be coordinated to solve tasks that require different skills or tools.",
+    "key_concepts": [
+      "multi-agent workflows",
+      "agent collaboration",
+      "role specialization",
+      "autonomous agents",
+      "team-based AI"
+    ],
+    "index_text": "Slide 16. Patterns for highly autonomous agents. Multi-agentic workflows."
+  },
+  {
+    "slide_title": "Some Tasks Require More Than One Person",
+    "slide_paragraph": "This slide motivates multi-agent systems by comparing complex tasks with the human teams normally needed to complete them. Creating marketing assets may require a researcher, graphic designer, and writer. Writing a research article may require a researcher, statistician, lead writer, and editor. Preparing a legal case may involve an associate, paralegal, and investigator. The point is that complex work is naturally decomposed by expertise. In AI systems, this means it may be useful to create separate agents with different prompts, tools, and responsibilities. A researcher agent can gather facts, a statistician agent can analyze data, and an editor agent can improve clarity. This slide teaches that multi-agent workflows are not just a technical novelty; they are inspired by how human organizations coordinate specialized labor.",
+    "key_concepts": [
+      "specialized agents",
+      "team structure",
+      "marketing workflow",
+      "research writing",
+      "legal workflow",
+      "division of labor"
+    ],
+    "index_text": "Slide 17. Some tasks require more than one person. Teams for marketing assets, research articles, legal cases."
+  },
+  {
+    "slide_title": "Example: Marketing Team",
+    "slide_paragraph": "This slide defines three specialized agents in a marketing team: a researcher, a graphic designer, and a writer. The researcher’s tasks are to analyze market trends and research competitors, using web search as a tool. The graphic designer’s tasks are to create data visualizations and artwork, using image generation, image manipulation, and code execution for chart generation. The writer’s task is to transform research into report text and marketing copy, and the slide states that this agent has no tools. This division is important because it shows that agents can differ not only in prompt instructions but also in tool access. Giving every agent every tool may be unnecessary or unsafe. Instead, each agent is equipped for its role. The slide also demonstrates that a multi-agent workflow can combine factual research, visual production, and written communication into one larger application.",
+    "key_concepts": [
+      "marketing team",
+      "researcher agent",
+      "graphic designer agent",
+      "writer agent",
+      "role-specific tools",
+      "agent specialization"
+    ],
+    "index_text": "Slide 18. Example marketing team. Researcher uses web search, graphic designer uses image and code tools, writer creates report and marketing copy."
+  },
+  {
+    "slide_title": "Marketing Team with Linear Plan",
+    "slide_paragraph": "This slide shows a linear communication pattern for a multi-agent marketing workflow. The user asks for a summer marketing campaign for sunglasses. The researcher first produces current sunglasses trends and competitor offerings. That research is passed to the graphic designer, who creates five data visualizations and five artwork options. The combined research, visualizations, and artwork are then passed to the writer, who produces the final report. The workflow is linear because each agent hands its output to the next agent in a fixed sequence. This design is simple and easy to debug because the flow of information is clear. However, it may be less flexible than workflows where agents can communicate back and forth. The slide teaches that multi-agent collaboration can be organized in different patterns, and a linear pipeline is often a good starting point.",
+    "key_concepts": [
+      "linear workflow",
+      "marketing campaign",
+      "research handoff",
+      "graphic design handoff",
+      "writer agent",
+      "final report"
+    ],
+    "index_text": "Slide 19. Marketing team linear plan. Researcher -> graphic designer -> writer -> final report for sunglasses campaign."
+  },
+  {
+    "slide_title": "Planning with Multiple Agents: From Tools to Agents",
+    "slide_paragraph": "This slide begins by showing the same planning interface used for tools: a system prompt tells the LLM it has access to tool descriptions and should return a step-by-step plan. The visual still lists customer service tools such as check_inventory, check_past_transactions, process_item_return, process_item_sale, get_item_descriptions, and get_item_price. The user request, however, is to create a summer marketing campaign for sunglasses, which is not naturally solved by those customer service tools. This contrast helps students understand why an agent planner sometimes needs access to agents rather than simple tools. A marketing campaign requires research, visual creation, and writing, not inventory lookup or item returns. The slide therefore transitions from tool-based planning to agent-based planning.",
+    "key_concepts": [
+      "agent planning",
+      "tool mismatch",
+      "marketing campaign",
+      "planner",
+      "agent capabilities",
+      "workflow design"
+    ],
+    "index_text": "Slide 20. Planning with multiple agents begins. User asks for marketing campaign but old tool list is customer-service oriented."
+  },
+  {
+    "slide_title": "Planning with Multiple Agents: Agent Pool",
+    "slide_paragraph": "This slide replaces the tool list with a set of agents: researcher, graphic designer, and writer. The user still asks for a summer marketing campaign for sunglasses. By showing agents instead of low-level tools, the slide emphasizes that a planner can delegate work to role-based agents. Each agent can itself use tools or perform sub-steps internally. For example, the researcher may search the web, the graphic designer may generate images or charts, and the writer may produce marketing copy. This abstraction makes the plan easier to express at a higher level. Instead of telling the LLM to call web_search, image_generate, chart_code, and draft_text directly, the planner can assign tasks to agents that encapsulate those capabilities.",
+    "key_concepts": [
+      "agent pool",
+      "researcher",
+      "graphic designer",
+      "writer",
+      "delegation",
+      "high-level planning"
+    ],
+    "index_text": "Slide 21. Planning with multiple agents. Agent pool contains researcher, graphic designer, writer for sunglasses marketing campaign."
+  },
+  {
+    "slide_title": "Marketing Manager as Planner",
+    "slide_paragraph": "This slide refines the system prompt by giving the LLM the role of a marketing manager. The prompt says: You are a marketing manager and have the following team of agents to work with, followed by descriptions of the agents. The model is then asked to return a step-by-step plan to carry out the user’s request. This is a powerful design pattern because the planning LLM is not merely selecting tools; it is acting as a coordinator that understands team roles. The marketing manager agent decides which specialist should do what and in what order. The user request remains the same: create a summer marketing campaign for sunglasses. The key lesson is that agentic workflows can use hierarchical roles, where a manager agent plans and delegates work to worker agents.",
+    "key_concepts": [
+      "manager agent",
+      "team coordination",
+      "role prompting",
+      "delegation",
+      "marketing workflow",
+      "multi-agent planning"
+    ],
+    "index_text": "Slide 22. Marketing manager system prompt. Planner has team of agents and returns step-by-step plan."
+  },
+  {
+    "slide_title": "Executing a Multi-Agent Plan",
+    "slide_paragraph": "This slide shows an example plan produced by the marketing manager. The plan asks the researcher to research current sunglasses trends, asks the graphic designer to create ad images, asks the writer to create a report, and finally reviews the report. The diagram shows the marketing manager sending step text to the researcher, then using the output to create the next step for the graphic designer, then passing results to the writer. This is similar to tool execution, but each call is to an agent rather than a simple function. The difference is that agents can perform more complex subtasks, use their own prompts, and possibly use their own tools. The final review step indicates that a manager agent can also evaluate or integrate the outputs. The slide illustrates how multi-agent systems combine planning, delegation, communication, and synthesis.",
+    "key_concepts": [
+      "multi-agent execution",
+      "marketing manager",
+      "researcher agent",
+      "graphic designer agent",
+      "writer agent",
+      "review step"
+    ],
+    "index_text": "Slide 23. Multi-agent plan: researcher researches trends, graphic designer creates ads, writer creates report, manager reviews report."
+  },
+  {
+    "slide_title": "Communication Patterns for Multi-Agent Systems",
+    "slide_paragraph": "This section divider introduces communication patterns for multi-agent systems. Once multiple agents exist, the designer must decide how information flows between them. Communication structure affects correctness, latency, cost, and coordination. Some systems use a simple chain where one agent passes output to the next. Others use a manager who delegates tasks and collects outputs. More complex systems allow all agents to talk to each other or organize agents into deeper hierarchies. This topic is important because multi-agent systems can become chaotic if every agent communicates without structure, but they can also become too rigid if communication is overly constrained.",
+    "key_concepts": [
+      "communication patterns",
+      "multi-agent systems",
+      "coordination",
+      "information flow",
+      "agent architecture"
+    ],
+    "index_text": "Slide 24. Patterns for highly autonomous agents. Communication patterns for multi-agent systems."
+  },
+  {
+    "slide_title": "Linear Communication Pattern",
+    "slide_paragraph": "This slide revisits the marketing team with a linear plan and explicitly labels it as a communication pattern. The flow is researcher to graphic designer to writer. The researcher produces trends and competitor offerings, the graphic designer uses that research to create visualizations and artwork, and the writer uses the combined material to produce the final report. The lower part of the slide summarizes the pattern as a simple chain: researcher, graphic designer, writer. This communication pattern is easy to implement because each agent only needs the previous agent’s output. It is also easy to inspect because errors can often be traced to the stage where they first appear. However, the pattern may limit collaboration because the writer cannot directly ask the researcher for clarification unless the workflow is extended.",
+    "key_concepts": [
+      "linear communication",
+      "agent chain",
+      "handoff",
+      "marketing team",
+      "workflow traceability",
+      "pipeline design"
+    ],
+    "index_text": "Slide 25. Linear communication pattern. Researcher passes output to graphic designer, then writer creates final report."
+  },
+  {
+    "slide_title": "Manager-Based Communication Pattern",
+    "slide_paragraph": "This slide contrasts the linear pattern with a manager-based pattern. The marketing manager receives the user request and coordinates the researcher, graphic designer, and writer. Instead of agents simply passing work forward in a chain, the manager decides which agent receives each step and collects outputs to plan subsequent steps. The diagram shows the marketing manager at the center of coordination, while the researcher, graphic designer, and writer operate as sub-agents. This pattern is useful when the plan may need adaptation, review, or repeated delegation. For example, if the graphic designer’s output is weak, the manager can request revisions before sending work to the writer. The slide teaches that communication architecture determines how much control, flexibility, and oversight the system has.",
+    "key_concepts": [
+      "manager pattern",
+      "central coordinator",
+      "agent delegation",
+      "adaptive planning",
+      "multi-agent control",
+      "communication architecture"
+    ],
+    "index_text": "Slide 26. Manager-based communication pattern. Marketing manager coordinates researcher, graphic designer, writer."
+  },
+  {
+    "slide_title": "Other Communication Patterns",
+    "slide_paragraph": "This slide shows additional multi-agent communication structures. The all-to-all pattern allows the marketing manager, researcher, graphic designer, and writer to communicate with each other more freely. This can increase collaboration but may also increase complexity, cost, and the risk of uncontrolled message loops. The deeper hierarchy example shows a more layered structure with roles such as web researcher, fact checker, style writer, and citation checker. A deeper hierarchy is useful when a large task needs many specialized checks and sub-teams. The key lesson is that there is no single best communication pattern. A designer chooses a structure based on the task, required reliability, expected autonomy, cost constraints, and how easy the workflow must be to debug.",
+    "key_concepts": [
+      "all-to-all communication",
+      "hierarchical agents",
+      "fact checker",
+      "citation checker",
+      "style writer",
+      "workflow architecture"
+    ],
+    "index_text": "Slide 27. Other communication patterns: all-to-all and deeper hierarchy with web researcher, fact checker, style writer, citation checker."
+  },
+  {
+    "slide_title": "Summary of Agentic AI Topics",
+    "slide_paragraph": "This summary slide lists the major ideas covered so far: why Agentic AI matters, the reflection design pattern, tool use through function calling, evaluations and error analysis, planning, and multi-agent systems. The list connects the two Agentic AI lectures into one development framework. Reflection improves outputs through critique and revision. Tool use lets models interact with external systems. Evaluations and error analysis reveal whether the system works and where it fails. Planning enables agents to choose steps and tools. Multi-agent systems allow specialized agents to collaborate. The slide is useful as a roadmap because it shows that successful agentic AI is not just about making an LLM call; it requires design patterns, measurement, debugging, and system-level thinking.",
+    "key_concepts": [
+      "agentic AI summary",
+      "reflection",
+      "tool use",
+      "evals",
+      "error analysis",
+      "planning",
+      "multi-agent systems"
+    ],
+    "index_text": "Slide 28. Summary: why Agentic AI, reflection, tool use, evals, error analysis, planning, multi-agent systems."
+  },
+  {
+    "slide_title": "Practical Tips for Building Agentic AI: Evaluations",
+    "slide_paragraph": "This section divider begins the practical part of the lecture, focusing first on evaluations, often abbreviated as evals. In agentic AI, evals are essential because workflows contain multiple steps and may fail in subtle ways. A direct output might look plausible while hiding a wrong tool call, a missed source, or an incorrect extracted field. Evaluations provide measurable feedback so developers can compare prompt changes, model changes, tool changes, and workflow changes. This section prepares students to think of agent development as an iterative engineering process rather than a one-time prompt writing exercise.",
+    "key_concepts": [
+      "evaluations",
+      "agent development",
+      "metrics",
+      "workflow testing",
+      "practical AI engineering"
+    ],
+    "index_text": "Slide 29. Practical tips for building Agentic AI. Evaluations."
+  },
+  {
+    "slide_title": "Invoice Processing Workflow Evaluation",
+    "slide_paragraph": "This slide returns to the invoice processing workflow and shows why evaluation is needed. The workflow takes an invoice PDF, converts it to text, sends the text to an LLM, and uses an update_database tool to create a record. The required fields are biller, biller address, amount due, and due date. The slide shows a small test set of 10 to 20 invoices and a table of outcomes, where some invoices are fine but others mix up dates or updates. The invoice image highlights that there are two dates: a due date and an invoice date. This is a realistic source of errors because an LLM might extract the invoice date instead of the due date. The lesson is that even a seemingly simple extraction task needs systematic testing across multiple examples. Without evals, developers may only notice errors after incorrect records enter a database.",
+    "key_concepts": [
+      "invoice processing",
+      "field extraction",
+      "due date",
+      "PDF to text",
+      "database update",
+      "evaluation dataset"
+    ],
+    "index_text": "Slide 30. Invoice processing workflow with 10-20 invoices. Required fields: biller, address, amount due, due date. Some invoices mix up dates."
+  },
+  {
+    "slide_title": "Creating an Eval to Measure Date Extraction",
+    "slide_paragraph": "This slide explains how to build a code-based evaluation for invoice due-date extraction. First, the developer manually extracts due dates from a small set of 10 to 20 invoices to create ground truth. Second, the prompt specifies the output format, such as YYYY/MM/DD. Third, code extracts a date from the LLM response using a regular expression pattern like four digits, slash, two digits, slash, two digits. Fourth, the extracted date is compared to the actual ground-truth date, and the number of correct examples is counted. The example shows a human-readable date, August 20, 2025, and a formatted ground-truth answer, 2025/08/20. This slide teaches that evals do not need to be complicated to be useful. A small, clear metric can track whether prompt or workflow changes reduce date extraction errors.",
+    "key_concepts": [
+      "date extraction",
+      "ground truth",
+      "regular expression",
+      "YYYY/MM/DD",
+      "code-based eval",
+      "accuracy counting"
+    ],
+    "index_text": "Slide 31. Eval for due date extraction. Manually extract ground truth, specify format, use regex, compare LLM result to actual date."
+  },
+  {
+    "slide_title": "Driving Development with Evals",
+    "slide_paragraph": "This slide describes an evaluation-driven development process. The first step is to build a system and look at its outputs to discover where it behaves unsatisfactorily, such as extracting incorrect due dates from invoices. The next step is to create a small eval, perhaps around 20 examples, that measures the specific problem. Then, as developers change prompts, algorithms, tools, or workflow structure, they monitor whether the metric improves. This is important because agentic systems are often too complex to improve by intuition alone. A change that improves one example may worsen others, and a metric helps detect this. The slide encourages students to use evals as a practical feedback loop for iterative development.",
+    "key_concepts": [
+      "evaluation-driven development",
+      "small eval set",
+      "metric tracking",
+      "workflow changes",
+      "iteration",
+      "agent debugging"
+    ],
+    "index_text": "Slide 32. Development process with evals. Build system, inspect outputs, create small eval, monitor improvements after workflow changes."
+  },
+  {
+    "slide_title": "Marketing Copy Assistant Evaluation",
+    "slide_paragraph": "This slide introduces another evaluation example: a marketing copy assistant. The visible task is to generate marketing copy assets under strict length guidelines, such as an Instagram caption with a maximum of 10 words. The table shows outputs with word counts like 17 words, OK, OK, 14 words, and 11 words, indicating that the model sometimes violates the length constraint. This is a common instruction-following failure: the output may be stylistically good but still not meet the required format or length. The slide teaches that evaluation should measure concrete requirements, not just subjective quality. If the user needs a short caption, then word count is an objective success criterion.",
+    "key_concepts": [
+      "marketing copy",
+      "length guidelines",
+      "word count",
+      "instruction following",
+      "objective eval",
+      "Instagram caption"
+    ],
+    "index_text": "Slide 33. Marketing copy assistant. Length guideline: Instagram caption 10 words max. Some outputs exceed limit."
+  },
+  {
+    "slide_title": "Creating an Eval to Measure Text Length",
+    "slide_paragraph": "This slide shows how to create a simple code-based eval for text length. The process begins by creating 10 to 20 test tasks, such as asking the model to create Instagram posts. Then code measures the word count of the generated text using a split operation. Finally, the output is compared to the required limit. The example condition says that if word_count is less than or equal to 10, then num_correct is increased. This eval is easy to implement because the criterion is objective and does not require an LLM judge or human reviewer. The key educational point is that many agentic AI failures can be measured with simple checks. Before building complex evaluation pipelines, developers should first use straightforward code-based metrics wherever possible.",
+    "key_concepts": [
+      "text length eval",
+      "word count",
+      "code metric",
+      "Instagram post",
+      "objective criterion",
+      "test tasks"
+    ],
+    "index_text": "Slide 34. Create eval to measure text length. Use 10-20 tasks, count words, compare to limit with if word_count <= 10."
+  },
+  {
+    "slide_title": "Research Agent Evaluation Problem",
+    "slide_paragraph": "This slide presents a harder evaluation case: a research agent that searches the web, fetches sources, converts PDFs to text, and writes an essay draft. The table lists prompts and observed issues. For recent black hole science, the agent missed a high-profile result with lots of news coverage. For renting versus buying a home in Seattle, the agent seems to do a good job. For robotics for harvesting fruit, it did not mention a leading equipment company. The note says the system sometimes misses points a human would have made. This is more subjective than checking a date or word count, because there may be no single exact answer. The slide teaches that research-quality evaluation often requires identifying expected discussion points and checking whether the generated output covers them.",
+    "key_concepts": [
+      "research agent",
+      "web search",
+      "missing key points",
+      "subjective evaluation",
+      "essay draft",
+      "gold standard points"
+    ],
+    "index_text": "Slide 35. Research agent sometimes misses key points. Examples: black hole science, renting vs buying in Seattle, robotic harvesting."
+  },
+  {
+    "slide_title": "Evaluating Research Agent Performance",
+    "slide_paragraph": "This slide explains a method for evaluating subjective research outputs. For each topic, the developer chooses three to five gold-standard discussion points. Then an LLM-as-a-judge is used to count how many of those points are mentioned in the essay. The prompt asks the judge to return a JSON object with a score from 0 to 5 and an explanation listing the talking points present. The examples include black holes with gold-standard points such as event horizon and radio telescope, and robotic harvesting with points such as RoboPick and pinchers. This method does not require a single correct answer, but it still creates a structured evaluation signal. It also makes the evaluation more transparent because the explanation identifies which expected points were included or missed.",
+    "key_concepts": [
+      "LLM-as-a-judge",
+      "gold-standard talking points",
+      "research evaluation",
+      "JSON output",
+      "subjective metric",
+      "coverage score"
+    ],
+    "index_text": "Slide 36. Eval for research agent. Use 3-5 gold-standard talking points and ask LLM judge to count coverage in essay."
+  },
+  {
+    "slide_title": "Two Axes of Evaluation",
+    "slide_paragraph": "This slide organizes evaluation methods along two axes: whether the evaluation uses code or an LLM judge, and whether per-example ground truth exists. Code-based objective evals are suitable when the answer can be compared directly, such as checking whether an extracted invoice date equals the actual date or whether marketing copy has at most 10 words. LLM-as-judge subjective evals are useful when direct comparison is difficult, such as counting gold-standard talking points in an essay or grading charts with a rubric. The slide helps students choose an evaluation strategy based on the task. If the criterion is exact and measurable, use code. If the criterion involves judgment, completeness, or quality, use an LLM judge with a clear rubric or scoring instruction.",
+    "key_concepts": [
+      "objective evals",
+      "subjective evals",
+      "code evaluation",
+      "LLM judge",
+      "ground truth",
+      "rubric grading"
+    ],
+    "index_text": "Slide 37. Two axes of evaluation: code objective vs LLM-as-judge subjective, with or without per-example ground truth."
+  },
+  {
+    "slide_title": "Tips for Designing End-to-End Evals",
+    "slide_paragraph": "This slide gives practical advice for end-to-end evaluations. It says that quick and dirty is acceptable at the start, meaning developers do not need a perfect evaluation before they begin improving a system. As they find cases where evals fail to match human judgment, they should refine the metric. The slide also advises looking for places where performance is worse than humans, because those are high-value improvement opportunities. The deeper lesson is that evaluations themselves are products that improve over time. A weak eval is still useful if it reveals some problems, and observing mismatches between the eval and human judgment helps make the eval more accurate.",
+    "key_concepts": [
+      "end-to-end evals",
+      "quick evaluation",
+      "human judgment",
+      "metric refinement",
+      "performance gaps",
+      "iterative evaluation"
+    ],
+    "index_text": "Slide 38. Tips for end-to-end evals: start quick and dirty, improve metric when it misses human judgment, focus where performance is worse than humans."
+  },
+  {
+    "slide_title": "Error Analysis and Prioritizing Next Steps",
+    "slide_paragraph": "This section divider introduces error analysis and prioritization. Evaluation tells developers that a system is failing, but error analysis explains why it is failing and where to invest effort. In multi-step agentic workflows, a bad final answer can result from poor search terms, low-quality sources, wrong tool use, weak reasoning, formatting errors, or hallucinated synthesis. Prioritization is necessary because teams usually have limited time. They should focus first on the components that cause the largest share of errors or the most severe failures. This section prepares students to move from measuring performance to diagnosing and fixing it.",
+    "key_concepts": [
+      "error analysis",
+      "prioritization",
+      "root cause",
+      "agent debugging",
+      "workflow improvement"
+    ],
+    "index_text": "Slide 39. Practical tips for building Agentic AI. Error analysis and prioritizing next steps."
+  },
+  {
+    "slide_title": "Observed Error Mode in Research Agent",
+    "slide_paragraph": "This slide returns to the research agent workflow and identifies an observed error mode: the system sometimes misses key points that a human would make. The diagram shows the workflow: web search, web fetch, PDF-to-text conversion, source selection, and essay drafting. The table repeats examples where the agent missed important information, such as a high-profile black hole result or a leading robotics company. The point is that the final essay quality problem may originate in any earlier stage. The agent might search for the wrong terms, retrieve weak sources, select the wrong top five sources, fail to read sources correctly, or reason poorly over the fetched text. The slide sets up the need to inspect intermediate traces rather than only reading the final answer.",
+    "key_concepts": [
+      "research agent",
+      "observed error mode",
+      "missed key points",
+      "workflow tracing",
+      "source selection",
+      "essay drafting"
+    ],
+    "index_text": "Slide 40. Research agent error mode: sometimes misses key points a human would make. Need inspect workflow stages."
+  },
+  {
+    "slide_title": "Possible Causes and Trace Inspection",
+    "slide_paragraph": "This slide lists possible causes of the research agent’s weak final output: bad search terms, low-quality search results, poor selection of sources, or bad reasoning over texts. The diagram emphasizes examining traces to understand each step of the workflow. A trace is a record of what happened during execution, including prompts, tool calls, tool outputs, intermediate decisions, and final responses. Trace inspection is crucial because the final answer alone does not reveal where the failure started. For example, if the search terms are poor, improving the summarization prompt will not solve the problem. If the sources are good but the final essay omits important facts, then the reasoning or synthesis step needs attention. The slide teaches that agent debugging should be component-aware.",
+    "key_concepts": [
+      "trace inspection",
+      "root-cause analysis",
+      "bad search terms",
+      "source selection",
+      "reasoning errors",
+      "component debugging"
+    ],
+    "index_text": "Slide 41. Possible causes: bad search terms, low quality results, poor source selection, bad reasoning. Examine traces for each workflow step."
+  },
+  {
+    "slide_title": "Looking at Traces",
+    "slide_paragraph": "This slide shows what a trace might look like for a research agent. The user asks for an essay on recent developments in black hole science. The trace includes search queries such as Black hole theories Einstein, Event horizon telescope radio, New physics black holes, and Galaxies black holes origins. It also shows search results such as an elementary school student blog and sites like astrokidnews.com, spaceblog2000.com, spacefunnews.com, and astronautme.com. These sources appear low quality for a serious research task. By inspecting this trace, a developer can see that the problem may not be the final essay writer but the search or source-selection stage. The slide visually introduces spans inside a trace: each span corresponds to a step such as web search or web fetch. This helps developers localize failures precisely.",
+    "key_concepts": [
+      "traces",
+      "spans",
+      "web search quality",
+      "low-quality sources",
+      "black hole science",
+      "debugging workflow"
+    ],
+    "index_text": "Slide 42. Looking at traces. Search queries and low-quality results for black hole science essay reveal possible search/source-selection failure."
+  },
+  {
+    "slide_title": "Counting Up the Errors",
+    "slide_paragraph": "This slide shows how to quantify error analysis across many prompts. The table has columns for prompts, search terms, search results, picking the five best sources, and other stages. Example errors include too many blog posts and not enough papers, missed well-known blog, terms too generic, website for elementary school students, only selected US-based companies, and missed magazine. The bottom row shows percentages, such as 5% of errors from search terms, 45% from search results, and 10% from picking the five best sources. This converts qualitative trace inspection into a prioritized improvement plan. If 45% of failures come from poor search results, then improving the search provider, query strategy, or filtering should be prioritized over less frequent error sources.",
+    "key_concepts": [
+      "error counting",
+      "prioritization",
+      "search result quality",
+      "source selection",
+      "error percentages",
+      "research agent"
+    ],
+    "index_text": "Slide 43. Counting errors across prompts. Search results account for large share of issues, e.g., too many blog posts or poor websites."
+  },
+  {
+    "slide_title": "Tips for Error Analysis",
+    "slide_paragraph": "This slide summarizes best practices for error analysis. Developers should build a habit of looking at traces, because traces reveal the internal behavior of multi-step systems. They should determine which component performed poorly and caused the final output to degrade. Finally, they should use the error analysis output to decide where to focus improvement effort. This is especially important in agentic AI because many components interact: changing the final prompt may not help if the retrieval component is weak, and changing the model may not help if a tool returns bad data. The slide encourages systematic diagnosis instead of random experimentation.",
+    "key_concepts": [
+      "trace review",
+      "component diagnosis",
+      "systematic debugging",
+      "workflow improvement",
+      "prioritization"
+    ],
+    "index_text": "Slide 44. Tips: look at traces, identify component causing poor output, use error analysis to decide next efforts."
+  },
+  {
+    "slide_title": "More Error Analysis Examples",
+    "slide_paragraph": "This section divider introduces additional examples of error analysis. The previous example focused on a research agent, but the same reasoning applies to other workflows such as invoice processing and customer email response. Showing multiple examples helps students understand that error analysis is a general development technique, not a special method for search systems. Any agentic workflow with multiple components can be decomposed into stages, evaluated, and diagnosed.",
+    "key_concepts": [
+      "error analysis examples",
+      "invoice workflow",
+      "customer email",
+      "general debugging",
+      "agentic workflows"
+    ],
+    "index_text": "Slide 45. Practical tips for building Agentic AI. More error analysis examples."
+  },
+  {
+    "slide_title": "Invoice Processing Error Analysis",
+    "slide_paragraph": "This slide revisits the invoice processing workflow and focuses on due date extraction. The invoice includes a due date and an invoice date, and the required fields list highlights Due date with a red box. The workflow is PDF to text, LLM extraction, update database, and record creation. The slide states that to carry out error analysis, developers should focus on examples where performance is subpar. This means selecting invoices where the wrong due date was extracted or where the database record was incorrect. The educational point is that error analysis should not be random. It is most useful to inspect failure cases, identify whether the error came from PDF-to-text conversion or LLM data extraction, and then quantify the pattern across examples.",
+    "key_concepts": [
+      "invoice error analysis",
+      "due date extraction",
+      "PDF-to-text",
+      "LLM extraction",
+      "failure cases",
+      "database update"
+    ],
+    "index_text": "Slide 46. Invoice processing workflow with due date highlighted. Focus error analysis on subpar examples."
+  },
+  {
+    "slide_title": "Counting Invoice Errors",
+    "slide_paragraph": "This slide shows a structured error analysis table for invoice due-date failures. Developers select 10 to 100 invoices for which the agentic workflow extracted the wrong due date. The table separates errors by stage: PDF-to-text and LLM data extraction. Example entries include errors in extraction, wrong date selected, wrong data selected, and combined failures. The bottom row shows that 15% of errors may come from PDF-to-text while 87% may come from LLM data extraction. Although the percentages in the slide overlap visually, the main lesson is that most failures can often be attributed to a dominant component. If the LLM selects the wrong date much more often than OCR or PDF conversion fails, then improving the prompt, adding examples, or changing the model may be more valuable than replacing the PDF-to-text component.",
+    "key_concepts": [
+      "invoice failures",
+      "PDF-to-text errors",
+      "LLM extraction errors",
+      "wrong date selected",
+      "error percentages",
+      "root cause"
+    ],
+    "index_text": "Slide 47. Count errors for invoices with wrong due date. Columns: PDF-to-text and LLM data extraction. Examples: wrong date selected, wrong data selected."
+  },
+  {
+    "slide_title": "Customer Email Workflow",
+    "slide_paragraph": "This slide presents a customer email response workflow. The email from Susan Jones says she ordered a blue KitchenPro blender, order number 8847, but received a red toaster instead, and she needs the blender for her daughter’s birthday party this weekend. The workflow steps are to extract key information, find relevant customer records, and draft a response for human review. The tools include an orders database query and a request_review tool. This task has multiple possible failure points: the agent might extract the wrong order number, query the wrong database table, fail to notice the urgency, draft an insensitive response, or skip human review. The slide is used as another example where error analysis can be applied by separating the workflow into components.",
+    "key_concepts": [
+      "customer email",
+      "order issue",
+      "database query",
+      "draft response",
+      "human review",
+      "workflow decomposition"
+    ],
+    "index_text": "Slide 48. Customer email about wrong item shipped. Steps: extract key information, find customer records, draft response for human review."
+  },
+  {
+    "slide_title": "Counting Customer Email Errors",
+    "slide_paragraph": "This slide shows how to count errors in the customer email workflow. The table breaks failures into LLM-drafted query, orders database query, and LLM-drafted email. Example issues include wrong table, error in database entry, failure to address order details, incorrect math, and defensive tone. The bottom row shows approximate error proportions, such as 75% for LLM-drafted query, 4% for database query, and 30% for LLM-drafted email. The educational point is that the database itself may be mostly reliable, while the LLM’s query construction or email drafting may be the larger problem. This helps teams prioritize improvements: for example, add schema examples to the query prompt, use constrained query generation, or add a tone-checking evaluation for the drafted email.",
+    "key_concepts": [
+      "customer support errors",
+      "LLM-drafted query",
+      "database query",
+      "drafted email",
+      "tone error",
+      "error prioritization"
+    ],
+    "index_text": "Slide 49. Counting customer email errors. Error columns: LLM-drafted query, orders database query, LLM-drafted email. Examples: wrong table, defensive tone."
+  },
+  {
+    "slide_title": "Component-Level Evaluations",
+    "slide_paragraph": "This section divider introduces component-level evaluations. End-to-end evaluations measure whether the whole workflow succeeds, but they can be expensive, noisy, and difficult to diagnose. Component-level evaluations isolate one part of the system, such as a search tool, a retrieval step, an extraction prompt, a database query generator, or a final response writer. By evaluating components separately, developers can get clearer signals about what works and what needs improvement. This is especially useful in agentic AI because workflows are often composed of multiple LLM calls and tools.",
+    "key_concepts": [
+      "component-level evals",
+      "end-to-end evals",
+      "isolated testing",
+      "workflow components",
+      "debugging"
+    ],
+    "index_text": "Slide 50. Practical tips. Component-level evaluations."
+  },
+  {
+    "slide_title": "End-to-End Eval Is Expensive",
+    "slide_paragraph": "This slide uses the research agent workflow to explain why end-to-end evaluation can be expensive. The workflow includes web search, web fetch, PDF-to-text conversion, source selection, and essay drafting. Evaluating the final essay for every prompt may require running the full pipeline, paying for tools, consuming LLM tokens, and possibly using human or LLM judgment. The slide notes that the end-to-end eval is expensive. The table again shows example prompts and issues, such as missing high-profile results or leading companies. The point is not that end-to-end evals are unnecessary, but that they may be too costly for rapid iteration on a single component. Developers need component-level tests to optimize specific parts efficiently.",
+    "key_concepts": [
+      "expensive evals",
+      "research agent",
+      "end-to-end pipeline",
+      "web search",
+      "PDF-to-text",
+      "essay drafting"
+    ],
+    "index_text": "Slide 51. Research agent end-to-end evaluation is expensive. Workflow includes search, fetch, PDF-to-text, source selection, essay draft."
+  },
+  {
+    "slide_title": "Evaluating the Web Search Tool Only",
+    "slide_paragraph": "This slide gives a component-level evaluation example for the research agent. Instead of evaluating the final essay, developers evaluate only the web search tool. They create a list of gold-standard web resources for each topic, write code that calculates how many returned results correspond to those resources, and track a metric such as F1-score while varying hyperparameters. Hyperparameters might include the search engine, number of results, date range, or query formulation. This is more focused and efficient than evaluating the full agent every time. If the search component improves, the overall system may improve later, but the component eval gives a clearer signal during development.",
+    "key_concepts": [
+      "web search eval",
+      "gold-standard resources",
+      "F1-score",
+      "hyperparameters",
+      "component optimization",
+      "research agent"
+    ],
+    "index_text": "Slide 52. Component eval for web search. Use gold-standard websites, calculate matching results such as F1, vary search engine, number of results, dates."
+  },
+  {
+    "slide_title": "Benefits of Component-Level Evaluations",
+    "slide_paragraph": "This slide summarizes why component-level evaluations are useful. They provide a clearer signal for specific errors, avoid noise from the full end-to-end system, allow a focused team to optimize one component efficiently, and let developers work on smaller targeted problems faster. This is a key engineering principle: when a system is complex, isolate variables. If an end-to-end score changes, it may be unclear which part caused the change. But if a search-component score improves after changing the search query strategy, the causal connection is easier to understand. Component evals therefore complement end-to-end evals rather than replacing them.",
+    "key_concepts": [
+      "clear signal",
+      "noise reduction",
+      "focused optimization",
+      "targeted problems",
+      "component testing",
+      "agent engineering"
+    ],
+    "index_text": "Slide 53. Benefits of component-level evaluations: clearer signal, less noise, efficient optimization, targeted problems."
+  },
+  {
+    "slide_title": "How to Address Problems You Identify",
+    "slide_paragraph": "This section divider introduces the next practical question: once error analysis identifies a problem, how should developers fix it? The answer depends on whether the weak component is an LLM component or a non-LLM component. Different interventions are appropriate for search engines, retrieval systems, OCR, code execution, trained ML models, prompts, model choice, task decomposition, and fine-tuning. This section prepares students to connect diagnosis with action.",
+    "key_concepts": [
+      "fixing problems",
+      "workflow improvement",
+      "LLM components",
+      "non-LLM components",
+      "intervention strategies"
+    ],
+    "index_text": "Slide 54. Practical tips. How to address problems you identify."
+  },
+  {
+    "slide_title": "Improving Non-LLM Component Performance",
+    "slide_paragraph": "This slide focuses on improving components that are not the LLM itself. Examples include web search, RAG text retrieval, code execution, and trained machine learning models for speech recognition or people detection. The slide suggests two main strategies: tune the component’s hyperparameters or replace the component. For web search, hyperparameters might include number of results and date range. For RAG, developers might adjust similarity threshold or chunk size. For machine learning models, they might adjust a detection threshold. If tuning is insufficient, developers can switch to a different web search engine, RAG provider, or model. The key lesson is that not all agent failures should be solved by prompt engineering. Sometimes the external component is the bottleneck.",
+    "key_concepts": [
+      "non-LLM components",
+      "hyperparameter tuning",
+      "web search",
+      "RAG retrieval",
+      "chunk size",
+      "component replacement"
+    ],
+    "index_text": "Slide 55. Improving non-LLM components. Tune hyperparameters or replace component. Examples: web search results/date range, RAG threshold/chunk size, ML detection threshold."
+  },
+  {
+    "slide_title": "Improving LLM Component Performance",
+    "slide_paragraph": "This slide focuses on improving LLM-based components. The suggested options are improving prompts, trying a new model, splitting the step into smaller steps, or fine-tuning a model. Prompt improvements may include more explicit instructions or concrete few-shot examples. Trying multiple LLMs and using evals to select the best model helps when different models have different strengths. Splitting a step is useful when the original task is too complex, such as asking one model call to extract information, reason, write, and format all at once. Fine-tuning can help when there is enough internal data and the task is repeated often. The slide teaches that LLM improvement is a toolbox: developers should choose the simplest intervention that solves the measured problem.",
+    "key_concepts": [
+      "prompt improvement",
+      "model selection",
+      "task decomposition",
+      "fine-tuning",
+      "few-shot prompting",
+      "LLM component"
+    ],
+    "index_text": "Slide 56. Improving LLM components: improve prompts, try new model, split the step, fine-tune. Add explicit instructions and examples."
+  },
+  {
+    "slide_title": "Instruction Following Prompt for PII Redaction",
+    "slide_paragraph": "This slide gives a concrete instruction-following task. The input is a customer call summary containing personally identifiable information, including a full name, Social Security Number, and physical address. The prompt asks the model to identify all PII, return a list classified by type, redact all identified PII with five asterisks, and separate the list and redacted text with the label REDACTED:. This task tests multiple abilities at once: recognizing sensitive information, classifying it, following exact output formatting, and correctly redacting every occurrence. The example is useful because it shows why evaluation of LLM components must include both content correctness and instruction compliance. A model can partially identify PII but fail the formatting instruction, or follow format but miss a PII item.",
+    "key_concepts": [
+      "PII redaction",
+      "instruction following",
+      "format constraints",
+      "classification",
+      "redacted text",
+      "sensitive information"
+    ],
+    "index_text": "Slide 57. PII instruction-following prompt. Identify PII, classify by type, redact with ***** and separate list from redacted text with REDACTED:."
+  },
+  {
+    "slide_title": "Instruction Following Results: Llama 3.1 8B",
+    "slide_paragraph": "This slide shows an example result from Llama 3.1 8B on the PII redaction task. The model identifies a Social Security Number and an address, but the slide notes that it did not follow the instructions properly and missed some PII. In the visible output, the model does not clearly separate the list and redacted text using the requested REDACTED: delimiter, and it appears to miss the person’s full name. It also incompletely redacts the address by leaving Boulder, CO 80301 visible. This illustrates a common limitation of smaller or weaker models: they may understand part of the task but fail on strict formatting or complete coverage. The slide supports the idea that model choice matters, especially for tasks involving compliance, privacy, and exact output requirements.",
+    "key_concepts": [
+      "Llama 3.1 8B",
+      "instruction failure",
+      "missed PII",
+      "formatting error",
+      "redaction quality",
+      "model limitations"
+    ],
+    "index_text": "Slide 58. Llama 3.1 8B PII results. Misses some PII and does not follow formatting instructions properly."
+  },
+  {
+    "slide_title": "Instruction Following Results: GPT-5",
+    "slide_paragraph": "This slide compares the previous result with GPT-5 on the same PII redaction task. The output identifies the full name Jessica T. Alvarez, the Social Security Number, and the physical address. It also follows the requested formatting by separating the identified PII list from the redacted text using REDACTED:. The redacted text replaces sensitive values with asterisks and removes the visible address. The slide labels the result as having followed the formatting instruction and identified all PII. The educational point is that more capable models often perform better on complex instruction-following tasks, especially when the task requires both semantic recognition and exact formatting. However, the slide should also remind students that model choice should be validated with evals rather than assumed.",
+    "key_concepts": [
+      "GPT-5",
+      "instruction following",
+      "complete PII detection",
+      "format compliance",
+      "redaction",
+      "model comparison"
+    ],
+    "index_text": "Slide 59. GPT-5 PII results. Identifies full name, SSN, physical address; follows REDACTED formatting instruction."
+  },
+  {
+    "slide_title": "Developing Intuition for Model Intelligence",
+    "slide_paragraph": "This slide gives practical advice for understanding which models work best for which tasks. It recommends playing with models often, maintaining a personal set of evals, reading other people’s prompts, using different models in agentic workflows, and asking which models work for which types of tasks. It also mentions that aisuite makes it easy to swap models quickly. The main lesson is that model intelligence is not one-dimensional. A model that is good at writing may be weaker at structured extraction, and a model that is strong at reasoning may be slower or more expensive. Developers build intuition by experimenting systematically and comparing outputs with evals.",
+    "key_concepts": [
+      "model intuition",
+      "personal evals",
+      "prompt examples",
+      "model swapping",
+      "aisuite",
+      "task-model fit"
+    ],
+    "index_text": "Slide 60. Developing intuition for model intelligence. Play with models, use personal evals, read prompts, swap models with aisuite."
+  },
+  {
+    "slide_title": "Latency and Cost Optimization",
+    "slide_paragraph": "This section divider introduces latency and cost optimization. Agentic systems often involve multiple LLM calls, tool calls, retrieval operations, code execution, and external APIs. Even if the final answer is correct, the workflow may be too slow or expensive for production use. Optimizing latency means reducing response time, often through parallelism, caching, faster models, or fewer steps. Optimizing cost means reducing token usage, API calls, compute time, and unnecessary tool use. This section teaches that practical agentic AI requires engineering trade-offs, not only accuracy improvement.",
+    "key_concepts": [
+      "latency",
+      "cost optimization",
+      "production systems",
+      "token cost",
+      "API cost",
+      "workflow efficiency"
+    ],
+    "index_text": "Slide 61. Practical tips. Latency and cost optimization."
+  },
+  {
+    "slide_title": "Research Agent Runtime Analysis",
+    "slide_paragraph": "This slide annotates the research agent workflow with runtime values. The stages include web search, web fetch, PDF-to-text conversion, source selection, and essay drafting. Visible times include 11 seconds, 7 seconds, 5 seconds, 18 seconds, and 3 seconds for different steps. The slide asks whether parallelism should be considered and whether LLM steps are too long. It suggests trying a smaller or less intelligent model, or a faster LLM provider, when LLM steps dominate runtime. The key lesson is that latency optimization begins by measuring time per component. If web fetches can run in parallel, total time may decrease. If one LLM call takes most of the time, changing model, prompt length, or provider may be more effective.",
+    "key_concepts": [
+      "runtime analysis",
+      "parallelism",
+      "LLM latency",
+      "research agent",
+      "faster model",
+      "workflow timing"
+    ],
+    "index_text": "Slide 62. Research agent runtime: search, fetch, PDF-to-text, source selection, essay draft. Consider parallelism and faster LLM provider."
+  },
+  {
+    "slide_title": "Costing Your Workflow",
+    "slide_paragraph": "This slide lists the main sources of cost in an agentic workflow. LLM steps are often priced per token, so both prompt length and output length matter. API-calling tools may be priced per request, meaning frequent web search or data provider calls can add cost. Compute steps depend on server capacity and time, such as running code, processing PDFs, or hosting models. The slide encourages developers to view an agentic workflow as a cost graph, not just a logic graph. Every step has a financial or computational cost, and optimization may require reducing unnecessary calls, batching operations, caching repeated results, or using smaller models for simpler subtasks.",
+    "key_concepts": [
+      "workflow costing",
+      "token pricing",
+      "API calls",
+      "compute cost",
+      "cost graph",
+      "agent economics"
+    ],
+    "index_text": "Slide 63. Costing workflow: LLM steps pay per token, API tools pay per API call, compute steps based on server capacity/cost."
+  },
+  {
+    "slide_title": "Research Agent Cost Breakdown",
+    "slide_paragraph": "This slide provides a concrete cost breakdown for the research agent workflow. It assigns small token costs to LLM steps, such as $0.0004 and $0.009, API call costs such as $0.016 and $0.002, and a PDF-to-text cost of $0.03. The exact values are examples, but they show how costs accumulate across a multi-step workflow. A single inexpensive LLM call may not be the main cost; PDF processing or external API calls might dominate. The slide teaches that cost optimization should be based on measurement. Developers should identify the expensive steps and decide whether to reduce, replace, cache, or parallelize them. This is especially important when workflows run at scale for many users.",
+    "key_concepts": [
+      "cost breakdown",
+      "research agent",
+      "token cost",
+      "API call cost",
+      "PDF-to-text cost",
+      "scaling cost"
+    ],
+    "index_text": "Slide 64. Research agent cost example. Token costs, API call costs, PDF-to-text cost. Shows costs accumulate across workflow steps."
+  },
+  {
+    "slide_title": "Development Process Summary",
+    "slide_paragraph": "This section divider introduces the final summary of the development process. The previous slides covered evaluation, error analysis, component-level testing, improvement strategies, latency, and cost. This section condenses those ideas into a repeatable build-and-analyze cycle. The goal is to give students a practical mental model for developing agentic AI systems systematically rather than relying on trial-and-error prompting.",
+    "key_concepts": [
+      "development process",
+      "build and analyze",
+      "agentic AI engineering",
+      "workflow iteration",
+      "summary"
+    ],
+    "index_text": "Slide 65. Practical tips. Development process summary."
+  },
+  {
+    "slide_title": "Build-Analyze Improvement Loop",
+    "slide_paragraph": "This slide summarizes the recommended development process as a loop between building and analyzing. On the build side, developers create an end-to-end system and improve individual components. On the analyze side, they examine outputs and traces, build evals, compute metrics, perform error analysis, and create component-level evals. This loop captures the core engineering workflow for agentic AI. First, build something complete enough to observe. Second, analyze where it fails. Third, improve the component most responsible for failure. Fourth, measure again. The diagram emphasizes that agentic AI development is iterative. Because workflows involve LLMs, tools, data sources, and external systems, developers should expect repeated cycles of measurement and refinement.",
+    "key_concepts": [
+      "build-analyze loop",
+      "end-to-end system",
+      "traces",
+      "metrics",
+      "error analysis",
+      "component improvement"
+    ],
+    "index_text": "Slide 66. Development process summary. Build end-to-end system and improve components; analyze outputs, traces, evals, metrics, error analysis."
+  },
+  {
+    "slide_title": "Lecture References",
+    "slide_paragraph": "This final slide lists the reference source for the lecture: Agentic AI - DeepLearning.AI Course, Modules 4-5. The reference indicates that the content is based on practical modules about building, evaluating, debugging, and optimizing agentic AI systems. For students, this slide is useful because it points to the broader learning material behind the lecture. It also signals that the lecture has moved from conceptual design patterns into applied development practices such as evals, error analysis, component testing, latency analysis, and cost management.",
+    "key_concepts": [
+      "lecture references",
+      "DeepLearning.AI",
+      "Agentic AI",
+      "modules 4-5",
+      "course source"
+    ],
+    "index_text": "Slide 67. Lecture References. Agentic AI - DeepLearning.AI Course Modules 4-5."
+  }
+]

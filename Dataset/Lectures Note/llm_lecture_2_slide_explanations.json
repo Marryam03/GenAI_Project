@@ -1,0 +1,569 @@
+[
+  {
+    "slide_title": "Transformer Architecture",
+    "slide_paragraph": "This opening slide introduces the lecture topic: Transformer Architecture. The visual on the left shows a stylized human head filled with symbols of computation such as a CPU chip, gears, circuits, a brain icon, a monitor, and connected devices. This imagery strongly suggests that the lecture will explain how modern language models combine artificial neural computation, data processing, and algorithmic components to produce intelligent language behavior. Because the title specifically says Transformer Architecture, the focus of the lecture is not only on using large language models, but on understanding the internal design that makes them work. The instructor name, Dr. Tamer Arafa, indicates that this is a university lecture. As a course slide, it functions as a roadmap: students should expect to move from earlier language representation methods toward attention, self-attention, tokenization, transformer blocks, caching, sparse attention, positional encoding, and mixture-of-experts models.",
+    "key_concepts": [
+      "Transformer architecture",
+      "Large language models",
+      "Neural computation",
+      "Language modeling",
+      "Lecture roadmap"
+    ],
+    "index_text": "Slide 1 Transformer Architecture title slide Dr. Tamer Arafa LLM lecture neural computation transformer overview"
+  },
+  {
+    "slide_title": "Recent History of Language Models",
+    "slide_paragraph": "This slide presents a timeline showing how language modeling evolved from simple word-count methods to modern large language models. Around the year 2000, bag-of-words appears as an early non-transformer representation method, where text is treated mainly as counts of words. In 2013, Word2Vec marks a move toward learned vector representations, where words receive dense embeddings that capture semantic relationships. In 2017, attention appears as a major turning point because it allows models to focus on relevant parts of a sequence. The timeline then shows transformer-based families: BERT as an encoder-only model in 2018, GPT and later GPT-2 and GPT-3 as decoder-only models, and T5 and Flan-T5 as encoder-decoder models. ChatGPT appears near 2023 as a major practical milestone. The colors encode architecture families: decoder-only, encoder-only, encoder-decoder, and non-transformer models, helping students understand that modern language AI is not one architecture but a progression of design choices.",
+    "key_concepts": [
+      "Bag-of-words",
+      "Word2Vec",
+      "Attention",
+      "BERT",
+      "GPT",
+      "Encoder-decoder models",
+      "ChatGPT"
+    ],
+    "index_text": "Slide 2 recent history language models timeline bag of words Word2Vec attention BERT GPT GPT-2 GPT-3 T5 Flan-T5 ChatGPT encoder decoder"
+  },
+  {
+    "slide_title": "Language as Bag-of-Words",
+    "slide_paragraph": "This slide explains the bag-of-words representation, an early and simple way of converting text into numbers. The example input is \"My cat is cute\". The sentence is split by whitespace into tokens: my, cat, is, and cute. These tokens are compared against a vocabulary that includes words such as that, is, a, cute, dog, my, and cat. For each vocabulary word, the model records whether that word appears in the sentence. This creates the vector representation shown as a sequence of zeros and ones: words that appear in the sentence receive 1, while words that do not appear receive 0. The important limitation written on the slide is that bag-of-words does not consider the semantic meaning of text. It also ignores word order: \"my cat is cute\" and another sentence with the same words in a different order could receive a similar representation even if the meaning changes. This motivates later methods such as embeddings and transformers.",
+    "key_concepts": [
+      "Bag-of-words",
+      "Tokenization",
+      "Vocabulary",
+      "Vector representation",
+      "Semantic limitation",
+      "Word order"
+    ],
+    "index_text": "Slide 3 language as bag of words My cat is cute tokens vocabulary binary vector semantic meaning limitation"
+  },
+  {
+    "slide_title": "Word2Vec: Vector Embeddings",
+    "slide_paragraph": "This slide introduces Word2Vec as a method for learning meaningful vector embeddings for words. Instead of representing words only as counts or binary indicators, Word2Vec assigns each word a dense numerical vector. The diagram shows the words \"cat\" and \"cute\" entering a neural network as embeddings. The task shown inside the network asks whether the two words are neighbors, and the model prediction is 0.74, meaning the model assigns a relatively high score to the idea that these words are contextually related. The slide states that embeddings are randomly initialized and then iteratively optimized using gradient updates from the neural network. This means the vectors do not begin with meaning; they acquire meaning through training. Words that often appear in similar contexts gradually move toward useful positions in vector space. The main idea is that Word2Vec captures semantic relevance through learning, making it more expressive than bag-of-words.",
+    "key_concepts": [
+      "Word2Vec",
+      "Vector embeddings",
+      "Neural network training",
+      "Semantic relevance",
+      "Gradient updates",
+      "Neighbor prediction"
+    ],
+    "index_text": "Slide 4 Word2Vec vector embeddings cat cute neural network neighbors prediction 0.74 gradient updates semantic relevance"
+  },
+  {
+    "slide_title": "Word2Vec: Neural Network View",
+    "slide_paragraph": "This slide uses a simple neural-network diagram to explain the type of learning mechanism behind vector embeddings. The network contains an input layer, a hidden layer, and an output layer. The input side contains features, the hidden layer contains nodes connected by weighted links, and the output layer produces a decision such as \"Spam\" or \"Not Spam\" in the illustrative diagram. Although the output labels are generic, the point is to show that neural networks learn by adjusting weights between nodes. The slide explicitly notes that weights determine the strength and direction of connection between nodes, and each node takes weights, performs calculations, and produces output. In the context of Word2Vec, word vectors are learned through this same optimization principle: the model receives word-related input, predicts something about the surrounding context, measures error, and updates internal parameters. Over many examples, the embeddings become numerically organized around language meaning.",
+    "key_concepts": [
+      "Neural network",
+      "Input layer",
+      "Hidden layer",
+      "Output layer",
+      "Weights",
+      "Embedding learning"
+    ],
+    "index_text": "Slide 5 Word2Vec neural network input hidden output layer weights nodes embeddings learning architecture"
+  },
+  {
+    "slide_title": "Vector Embeddings",
+    "slide_paragraph": "This slide visualizes word embeddings as columns of numerical properties. The words cats, puppy, houses, apple, and baby are represented by values along dimensions such as animal, newborn, human, plural, and fruit. For example, cats has a high animal score and a high plural score, puppy has high animal and newborn-related values, apple has a high fruit value, and baby has high newborn and human values. The slide also indicates that real embeddings may contain many dimensions, showing \"1024 values\" as an example. The individual dimensions are not always human-interpretable in actual embedding models, but this simplified diagram helps students understand the intuition: a word vector is not just one number, but a long list of numbers that together encode properties and relationships. Words with similar meanings or roles tend to have similar patterns across these dimensions, which allows models to compare and reason about them mathematically.",
+    "key_concepts": [
+      "Embedding dimensions",
+      "Semantic properties",
+      "Dense vectors",
+      "Similarity",
+      "Numerical representation",
+      "High-dimensional space"
+    ],
+    "index_text": "Slide 6 vector embeddings cats puppy houses apple baby animal newborn human plural fruit 1024 dimensions semantic properties"
+  },
+  {
+    "slide_title": "Vector Embeddings in Space",
+    "slide_paragraph": "This slide shows word embeddings as points in a two-dimensional grid to make the idea of semantic distance intuitive. Words that are meaningfully related appear close together: cats and dog are near each other, puppy is also close to the animal group, apple and banana appear in the same region, and building and houses are positioned near one another. Baby and adult appear in a separate area, suggesting another kind of semantic relationship. In real models, embeddings are not usually two-dimensional; they may have hundreds or thousands of dimensions. However, the two-dimensional picture helps explain the core principle: similarity can be represented geometrically. If two words have similar meanings or are used in similar contexts, their vectors should be close in embedding space. This is why embeddings are useful for retrieval, clustering, classification, and language modeling: the model can use vector distances and directions as signals of meaning.",
+    "key_concepts": [
+      "Embedding space",
+      "Semantic distance",
+      "Word similarity",
+      "Vector geometry",
+      "Clustering",
+      "Dimensionality reduction"
+    ],
+    "index_text": "Slide 7 vector embeddings grid cats dog puppy apple banana building houses adult baby semantic distance similarity"
+  },
+  {
+    "slide_title": "Vector Embeddings and Static Representations",
+    "slide_paragraph": "This slide expands the idea of embeddings beyond individual words. It shows that a representation model can produce document embeddings, sentence embeddings, token embeddings, and word embeddings. The examples include short inputs such as \"My cat is cute\" and \"Her vocalization was melodic\", where text is first split into tokens, then passed into a representation model that embeds the input text. The slide emphasizes an important limitation of Word2Vec: it creates static embeddings. A static embedding means that the same word receives the same vector regardless of context. For example, the word \"bank\" would have one embedding whether it means a financial institution or the side of a river. This limitation motivates contextualized embeddings in transformers, where the representation of a word depends on the surrounding words. The slide therefore connects classical embeddings to modern representation learning.",
+    "key_concepts": [
+      "Static embeddings",
+      "Representation model",
+      "Document embeddings",
+      "Sentence embeddings",
+      "Token embeddings",
+      "Context limitation"
+    ],
+    "index_text": "Slide 8 vector embeddings representation model static Word2Vec document sentence token word embeddings context independent"
+  },
+  {
+    "slide_title": "Encoding and Decoding Context",
+    "slide_paragraph": "This slide introduces the encoder-decoder idea using neural machine translation. The input sequence is \"I love llamas\", and the output sequence is a translated phrase: \"Ik hou van lama's\". On the left, an encoder RNN is responsible for representing language: it reads the input sequence and compresses the information into an internal representation. The decoder RNN is responsible for generating language: it uses the encoded information to produce output tokens. On the right, the autoregressive process is shown step by step. At step 1, the model generates \"Ik\"; at step 2, the previous output becomes part of the next input so the model can generate \"hou\"; then it generates \"van\"; then \"lama's\". Autoregressive generation means the model produces one token at a time, and each new token depends on the tokens already generated. This process is central to many generative language models.",
+    "key_concepts": [
+      "Encoder",
+      "Decoder",
+      "RNN",
+      "Machine translation",
+      "Autoregressive generation",
+      "Sequence-to-sequence modeling"
+    ],
+    "index_text": "Slide 9 encoding decoding context RNN encoder decoder I love llamas Ik hou van lamas autoregressive process translation"
+  },
+  {
+    "slide_title": "Encoding and Decoding Context with Word2Vec Embeddings",
+    "slide_paragraph": "This slide shows a limitation of earlier encoder-decoder systems that used Word2Vec-style embeddings and recurrent processing. The input words \"I\", \"love\", and \"llamas\" are converted into word2vec embeddings, then processed sequentially by an encoder RNN. The diagram labels the order of processing as 1, 2, and 3, showing that the RNN reads the sentence one word at a time. The encoder then produces a context embedding, which is passed to the decoder RNN to generate output tokens in order. The key message on the slide is that representing the entire input sentence as a single context embedding makes it difficult to handle longer sentences. Long inputs may contain many details, dependencies, and relationships, so compressing everything into one vector can lose important information. This limitation motivates attention mechanisms, which allow the decoder to look back at different input positions instead of relying only on one compressed representation.",
+    "key_concepts": [
+      "Context embedding",
+      "Word2Vec embeddings",
+      "RNN encoder",
+      "RNN decoder",
+      "Long sentence limitation",
+      "Sequential processing"
+    ],
+    "index_text": "Slide 10 encoding decoding Word2Vec embeddings context embedding RNN long sentences single vector limitation"
+  },
+  {
+    "slide_title": "Attention",
+    "slide_paragraph": "This slide introduces attention as a mechanism that lets a model focus on the most relevant parts of the input when producing or interpreting output. The matrix on the left acts like an attention heatmap: rows correspond to output words such as \"Ik\", \"hou\", \"van\", and \"lama's\", while columns correspond to input words such as \"I\", \"love\", and \"llamas\". Darker blue cells indicate higher attention, meaning the model is assigning more importance to that input word for the current output word. For example, a translated output word should strongly attend to the input word that carries the same meaning. The slide states that attention allows parts of the input that are relevant to one another to attend to each other and amplify their signal. This is a major improvement over using a single context vector because the model can dynamically choose which input tokens matter most for each step.",
+    "key_concepts": [
+      "Attention",
+      "Attention heatmap",
+      "Relevance",
+      "Input-output alignment",
+      "Signal amplification",
+      "Translation"
+    ],
+    "index_text": "Slide 11 attention heatmap input output words relevance focus attend amplify signal translation"
+  },
+  {
+    "slide_title": "Attention in RNN Encoder-Decoder Models",
+    "slide_paragraph": "This slide shows attention added to an RNN-based encoder-decoder system. The input words are first embedded using word2vec embeddings and passed through an encoder RNN. The decoder is labeled as an attention decoder RNN, meaning that during generation it can attend to the most relevant input positions instead of relying only on one fixed context embedding. The note near the output says that during generation, the model attends to the most relevant input. This improves translation quality because each generated word can use the input tokens most related to it. However, the slide also highlights a major drawback: the sequential nature of this process prevents full parallelization of the model. Because RNNs process tokens in order, each step depends on the previous step, making training and inference slower. This limitation sets up the need for transformers, which remove recurrence and rely more directly on attention.",
+    "key_concepts": [
+      "Attention decoder",
+      "RNN limitation",
+      "Sequential processing",
+      "Parallelization",
+      "Word2Vec embeddings",
+      "Relevant input tokens"
+    ],
+    "index_text": "Slide 12 attention RNN encoder attention decoder sequential nature prevents parallelization attends relevant input"
+  },
+  {
+    "slide_title": "Transformers",
+    "slide_paragraph": "This slide introduces the transformer as a new architecture based solely on attention and without the RNN. The diagram keeps the same general sequence-to-sequence structure, with an input sequence \"I love llamas\" and an output sequence \"Ik hou van lama's\", but replaces the RNN encoder and decoder with transformer encoder and transformer decoder stacks. The multiple layered boxes indicate that transformers are typically built by stacking many transformer blocks. The crucial advantage stated on the slide is that transformers can be trained in parallel, which significantly speeds up computation. Unlike RNNs, which process tokens step by step, transformers can represent many token relationships at once through attention. This parallelism made it possible to scale language models to larger datasets, larger model sizes, and more powerful training hardware, which is one of the reasons transformer architecture became the foundation of modern LLMs.",
+    "key_concepts": [
+      "Transformer",
+      "Attention-only architecture",
+      "Encoder stack",
+      "Decoder stack",
+      "Parallel training",
+      "RNN replacement"
+    ],
+    "index_text": "Slide 13 transformers attention without RNN parallel training encoder decoder stack sequence translation"
+  },
+  {
+    "slide_title": "Transformers and Contextualized Embeddings",
+    "slide_paragraph": "This slide expands the internal structure of a transformer. On the left, the complete encoder-decoder transformer maps the input sequence \"I love llamas\" to the translated output. On the right, the encoder block is shown with self-attention followed by a feedforward neural network. The encoder produces contextualized embeddings, meaning each token representation is enriched by information from the other tokens in the input sequence. For example, the representation of \"llamas\" is influenced by the words \"I\" and \"love\". The decoder block is shown with masked self-attention, encoder attention, and a feedforward neural network. Masked self-attention uses previously generated words, while encoder attention allows the decoder to use information from the input sequence. The output at the bottom is the next generated word, \"llamas\". This slide therefore separates the two major jobs: the encoder builds context-aware input representations, and the decoder generates output step by step.",
+    "key_concepts": [
+      "Contextualized embeddings",
+      "Self-attention",
+      "Masked self-attention",
+      "Encoder attention",
+      "Feedforward network",
+      "Next-token generation"
+    ],
+    "index_text": "Slide 14 transformer contextualized embeddings encoder self-attention decoder masked self-attention encoder attention feedforward next word"
+  },
+  {
+    "slide_title": "Self-Attention vs. Masked Self-Attention",
+    "slide_paragraph": "This slide compares two attention patterns. On the left, self-attention is shown as a full attention matrix for the input \"I love llamas\". Each token can attend to all parts of the input sequence, including tokens before and after it. This is appropriate in encoder-style models because the entire input is already available and the model is trying to understand the sequence. On the right, masked self-attention is shown for generated tokens such as \"Ik\", \"hou\", \"van\", and \"lama's\". The matrix is triangular, meaning each token can only attend to itself and previous tokens. This prevents the model from looking into the future. The distinction is essential for generative models: when predicting the next token, the model must not use information from tokens that have not been generated yet. Masking preserves the autoregressive training objective and makes generation realistic.",
+    "key_concepts": [
+      "Self-attention",
+      "Masked self-attention",
+      "Causal masking",
+      "Future token prevention",
+      "Encoder attention",
+      "Decoder attention"
+    ],
+    "index_text": "Slide 15 self-attention vs masked self-attention full matrix causal triangular mask prevent looking into future"
+  },
+  {
+    "slide_title": "Generative Models vs. Representation Models",
+    "slide_paragraph": "This slide contrasts decoder-based generative models with encoder-based representation models. On the left, the generative model is represented by GPT-1, a transformer decoder stack. It uses masked self-attention and a feedforward neural network inside the decoder block, and its goal is to generate the next word. The example input is \"I love\", and the next generated word is \"llamas\". This reflects the autoregressive objective: predict what comes next from previous tokens. On the right, the representation model is represented by BERT, which stands for Bidirectional Encoder Representations from Transformers. BERT uses stacked transformer encoders and includes a special classification token, [CLS], at the beginning of the sequence. Its output is contextualized word embeddings rather than directly generated next words. Representation models are therefore better suited for understanding tasks, while generative decoder models are designed for producing text.",
+    "key_concepts": [
+      "Generative models",
+      "Representation models",
+      "GPT",
+      "BERT",
+      "Transformer decoder",
+      "Transformer encoder",
+      "CLS token"
+    ],
+    "index_text": "Slide 16 generative models vs representation models GPT decoder next word BERT encoder CLS contextualized embeddings"
+  },
+  {
+    "slide_title": "Representation Models",
+    "slide_paragraph": "This slide focuses specifically on BERT as a representation model. The input sequence begins with a classification token, [CLS], followed by words such as \"I\", \"love\", and \"llamas\". The sequence is passed through a stack of transformer encoder layers, labeled as BERT base with multiple layers. The slide visually shows layer numbers and contextualized word embeddings at the bottom. BERT is called bidirectional because its self-attention can use both left and right context: the representation of a token can depend on words before it and words after it. This is different from a decoder-only generative model, which must hide future tokens. The output of BERT is not primarily a sentence continuation; instead, it is a rich representation of the input that can be used for classification, similarity, named entity recognition, and other language-understanding tasks.",
+    "key_concepts": [
+      "BERT",
+      "Representation model",
+      "Transformer encoder",
+      "Bidirectional context",
+      "CLS token",
+      "Contextualized word embeddings"
+    ],
+    "index_text": "Slide 17 representation models BERT base transformer encoder bidirectional CLS token contextualized embeddings"
+  },
+  {
+    "slide_title": "Representation Models Trained with Masked Language Modeling",
+    "slide_paragraph": "This slide explains the training objective used by BERT-style representation models: masked language modeling. The input sequence contains a classification token, then \"I\", then a [MASK] token, then \"llamas\". The slide indicates that words are randomly masked and the model is trained to predict the masked words. This forces the encoder to use context from both sides of the missing token. For example, the model must use the words before and after [MASK] to infer what word fits in that position. The output box at the bottom shows a predicted token. The important idea is that BERT is trained to understand language structure by filling in missing pieces rather than generating only left-to-right. Because the model sees surrounding context, it learns strong representations useful for downstream tasks, but it is not naturally optimized as a free-form text generator in the same way as GPT-like models.",
+    "key_concepts": [
+      "Masked language modeling",
+      "Random masking",
+      "BERT training",
+      "Bidirectional context",
+      "Masked token prediction",
+      "Language understanding"
+    ],
+    "index_text": "Slide 18 representation models BERT masked language modeling randomly mask words predict masked token CLS I MASK llamas"
+  },
+  {
+    "slide_title": "Representation Models: Pre-training and Fine-tuning",
+    "slide_paragraph": "This slide presents the two-stage workflow commonly used with BERT. In stage 1, BERT is pre-trained on a large dataset such as Wikipedia, with the objective labeled as masked language modeling. Pre-training teaches the model general language patterns, grammar, factual associations, and contextual relationships from large-scale text. In stage 2, the same BERT model is fine-tuned for downstream tasks. The slide lists examples such as classification, named entity recognition, and paraphrase identification. Fine-tuning means the model starts from its general pre-trained knowledge and then updates its parameters for a specific task using supervised examples. This design is powerful because the expensive general language learning happens once, and then the model can be adapted to many applications with much smaller task-specific datasets. The slide therefore explains why representation models became widely useful in NLP before the current wave of generative LLMs.",
+    "key_concepts": [
+      "Pre-training",
+      "Fine-tuning",
+      "Masked language modeling",
+      "BERT",
+      "Classification",
+      "Named entity recognition",
+      "Paraphrase identification"
+    ],
+    "index_text": "Slide 19 BERT pre-train large dataset Wikipedia masked language modeling fine-tune downstream classification NER paraphrase"
+  },
+  {
+    "slide_title": "Generative Models",
+    "slide_paragraph": "This slide focuses on GPT-style generative models. The diagram shows an input sequence containing \"I\" and \"love\", which is passed through a stack of transformer decoder layers. Inside the highlighted decoder block, there is masked self-attention followed by a feedforward neural network. The masking is essential because the model is trained to predict the next token using only the tokens that came before it. At the bottom, the next generated word is \"llamas\". This is the basic mechanism behind autoregressive language generation: the model repeatedly predicts one token, appends it to the context, and then predicts the next token. Unlike BERT, which produces contextual representations for understanding tasks, a generative model directly produces text. This architecture is the foundation of chatbot-style systems, story generation, summarization, code generation, and other open-ended generation tasks.",
+    "key_concepts": [
+      "Generative model",
+      "GPT",
+      "Transformer decoder",
+      "Masked self-attention",
+      "Next-token prediction",
+      "Autoregressive generation"
+    ],
+    "index_text": "Slide 20 generative models GPT transformer decoder masked self-attention feedforward next generated word llamas"
+  },
+  {
+    "slide_title": "Context Length",
+    "slide_paragraph": "This slide explains context length, which is the number of tokens the model can currently consider when generating the next token. The example prompt is \"Tell me something about llamas.\" and it is tokenized into tokens such as Tell, me, something, about, llamas, and punctuation. The model has also already generated tokens \"Llamas\" and \"are\", so the current input to the generative LLM includes both the original prompt and the previously generated tokens. The diagram labels the current context length as 8 before the next token is produced. The generative LLM has a maximum context length of 512 in this example, meaning it cannot process more than 512 tokens at once. The model outputs one token at a time, here \"domesticated\". After generation, the new token is fed back into the input, increasing the context length to 9. This illustrates why long conversations or documents are limited by the context window.",
+    "key_concepts": [
+      "Context length",
+      "Context window",
+      "Prompt tokens",
+      "Generated tokens",
+      "Autoregressive decoding",
+      "Maximum context length"
+    ],
+    "index_text": "Slide 21 context length prompt generated tokens Tell me something about llamas maximum context length 512 domesticated autoregressive"
+  },
+  {
+    "slide_title": "Model Parameters",
+    "slide_paragraph": "This slide uses a bubble chart to compare large language models by their parameter counts. Each bubble represents a model, and larger bubbles indicate more parameters. Examples visible on the slide include GPT-3 with 175B parameters, Jurassic-1 with 178B, LaMDA with 137B, Gopher with 280B, MT-NLG with 530B, PaLM with 540B, BLOOM with 176B, OPT-175B, GLM-130B, and a very large GPT-4 bubble labeled as 100 trillion ML parameters. The chart helps students understand that parameter count is one way to describe model scale: parameters are the learned numerical weights that store patterns acquired during training. More parameters can increase modeling capacity, but they also increase memory, training cost, and inference cost. The slide also visually distinguishes different AI labs or groups and whether models are available or closed. The main educational point is that modern LLM progress is closely tied to scale, but scale must be considered alongside data quality, architecture, and compute.",
+    "key_concepts": [
+      "Model parameters",
+      "Parameter count",
+      "Model scale",
+      "LLM capacity",
+      "Training cost",
+      "Inference cost",
+      "Closed and available models"
+    ],
+    "index_text": "Slide 22 model parameters bubble chart GPT-3 175B MT-NLG 530B PaLM 540B BLOOM 176B GPT-4 scale"
+  },
+  {
+    "slide_title": "Year of Generative AI",
+    "slide_paragraph": "This slide presents a timeline of generative AI models around 2023 and 2024, separating proprietary models from open models. The upper blue region lists proprietary systems such as ChatGPT, GPT-4, Bard, PaLM 2, Claude 2, Grok, Gemini, and Command R. The lower orange region lists open or more openly available model families such as Llama, MPT, Falcon, Llama 2, Qwen, Mistral, Yi, Mixtral, Phi-2, and DeciLM, with some parameter sizes shown. The visual message is that 2023 marked a rapid expansion in both closed commercial models and open model ecosystems. Proprietary models often emphasize strong hosted capabilities, while open models are important for research, customization, deployment control, and fine-tuning. The slide also shows that open models vary widely in size, from small models like Phi-2 at 2.7B to larger mixture or dense models. This context helps explain why transformer architecture is important: many competing models share the same architectural foundation but differ in scale, data, training, and accessibility.",
+    "key_concepts": [
+      "Generative AI timeline",
+      "Proprietary models",
+      "Open models",
+      "ChatGPT",
+      "GPT-4",
+      "Llama",
+      "Mistral"
+    ],
+    "index_text": "Slide 23 year of generative AI 2023 2024 proprietary models open models ChatGPT GPT-4 Bard PaLM Claude Gemini Llama Mistral Qwen Mixtral"
+  },
+  {
+    "slide_title": "Tokenization",
+    "slide_paragraph": "This slide explains tokenization, the process of converting raw text into smaller pieces that a language model can process. On the left, the input phrase begins \"Have the bards who preceded...\" and tokenization breaks it into pieces such as Have, the, bards, who, and preceded. These tokens are then converted into embeddings, which are numerical vectors capturing information used by the model. On the right, the slide shows a more detailed encode/decode pipeline. The tokenizer maps tokens to token IDs, such as Have to 6,975, the to 278, b to 278, ards to 3,163, and who to 1,058. The word \"bards\" is shown split into subword pieces, illustrating that tokenizers do not always use whole words. The language model operates on token IDs, not raw text. After generation, an output token ID, 1,394, is decoded back into text, shown as \"Or\". This explains why tokenization affects model behavior, cost, and context length.",
+    "key_concepts": [
+      "Tokenization",
+      "Tokenizer encoding",
+      "Token IDs",
+      "Subword tokens",
+      "Embeddings",
+      "Tokenizer decoding",
+      "Language model input"
+    ],
+    "index_text": "Slide 24 tokenization Have the bards who preceded tokens token IDs embeddings tokenizer encode decode subword b ards output token ID Or"
+  },
+  {
+    "slide_title": "Code Sample: Comparing Trained LLM Tokenizers",
+    "slide_paragraph": "This slide is a transition into a practical code example about comparing trained LLM tokenizers. The title indicates that students will likely examine how different pretrained tokenizers split the same text into different tokens. This is important because tokenization is not universal: one model may treat a word as a single token, another may split it into multiple subword pieces, and another may handle punctuation, spaces, or rare words differently. Comparing tokenizers helps students understand why the same prompt can have different token counts across models, why non-English text may be more expensive or fragmented in some tokenizers, and why vocabulary design affects downstream modeling. Although the slide does not show code, the icon suggests a hands-on activity where students inspect tokenizer outputs, token IDs, and perhaps reconstructed decoded text. This practical step connects the previous conceptual slide on tokenization to real implementation.",
+    "key_concepts": [
+      "Code sample",
+      "Tokenizer comparison",
+      "Pretrained tokenizers",
+      "Token count",
+      "Subword segmentation",
+      "Vocabulary design"
+    ],
+    "index_text": "Slide 25 code sample comparing trained LLM tokenizers tokenizer outputs token IDs vocabulary subword segmentation"
+  },
+  {
+    "slide_title": "Architectural Overview",
+    "slide_paragraph": "This slide gives a high-level view of how a transformer LLM turns a prompt into a generated token. The example prompt asks the model to write an email apologizing to Sarah for a tragic gardening mishap and to explain how it happened. This prompt enters a box labeled Transformer LLM, and the model outputs the first generated token, \"Dear\". The expanded view on the right breaks the transformer LLM into three main parts: a tokenizer, a stack of transformer blocks, and an LM head. The tokenizer converts text into token IDs and embeddings. The stack of transformer blocks performs the main contextual processing using attention and feedforward layers. The LM head converts the final hidden representation into a probability distribution over possible next tokens. This slide is important because it shows that a language model is not a single mysterious component; it is a pipeline from text preprocessing to deep neural computation to next-token prediction.",
+    "key_concepts": [
+      "Transformer LLM pipeline",
+      "Tokenizer",
+      "Transformer blocks",
+      "LM head",
+      "Prompt processing",
+      "Next-token prediction"
+    ],
+    "index_text": "Slide 26 architectural overview prompt email apology Sarah gardening mishap Transformer LLM tokenizer stack transformer blocks LM head output Dear"
+  },
+  {
+    "slide_title": "Architectural Overview: Vocabulary, Embeddings, and Token Probabilities",
+    "slide_paragraph": "This slide expands the internal components of the transformer LLM. The tokenizer connects to a token vocabulary table, where each token has a token ID, such as 0 mapped to punctuation, 1 mapped to a quotation mark, and 50,000 mapped to a rare-looking token. The transformer block stack connects to token embeddings, showing that token IDs are converted into numerical vectors before processing. The LM head connects to a token probability table, where possible next tokens receive probabilities. The slide highlights an example in which the token \"Dear\" with token ID 1,102 has a high probability of 40%, while other tokens receive much smaller probabilities such as 0.01%, 0.03%, or 1.00%. This illustrates the core inference mechanism of a language model: given a context, it assigns probabilities to every token in its vocabulary, and a decoding strategy selects one token to output. The diagram connects vocabulary, embeddings, transformer computation, and probability prediction.",
+    "key_concepts": [
+      "Token vocabulary",
+      "Token embeddings",
+      "LM head",
+      "Token probability",
+      "Next-token distribution",
+      "Vocabulary IDs"
+    ],
+    "index_text": "Slide 27 architectural overview token vocabulary token ID embeddings transformer blocks LM head token probability Dear 40 percent"
+  },
+  {
+    "slide_title": "Caching",
+    "slide_paragraph": "This slide explains caching during autoregressive generation. The prompt asks the model to write an apologetic email, and the first generated token \"Dear\" has already been produced. Inside the model, the previous prompt tokens and the generated token are shown across the tokenizer row. A large blue area labeled \"Cached calculation\" indicates that the model stores intermediate computations for previous tokens rather than recomputing everything from scratch at every generation step. This is commonly called key-value caching in transformer decoders. When the next token is needed, the model can reuse the cached information for tokens such as Write, Explain, how, it, happened, punctuation, and Dear. The red arrow points to the next generated token \"Sarah\". The slide’s main idea is that caching makes generation much faster because only the new token needs fresh computation while the model reuses the representations of earlier tokens. This is especially important for long prompts and long generated responses.",
+    "key_concepts": [
+      "Caching",
+      "Key-value cache",
+      "Autoregressive generation",
+      "Reuse of previous computation",
+      "Inference speed",
+      "Next-token decoding"
+    ],
+    "index_text": "Slide 28 caching transformer LLM prompt Dear cached calculation key value cache reuse previous tokens output Sarah"
+  },
+  {
+    "slide_title": "Self Attention",
+    "slide_paragraph": "This slide introduces self-attention at an intuitive level. The diagram shows a current position being processed, represented by a vertical pink line and a small vector labeled current position information. Other positions in the sequence feed into the same self-attention module. Inside the module, there are two conceptual stages: relevance scoring and combining information. Relevance scoring decides how important each other token is for understanding the current token. Combining information then uses those relevance scores to mix information from different positions into a richer representation. The output at the bottom is labeled as enriched with context information from other positions. This is the fundamental idea behind transformers: a token representation is not fixed in isolation; it becomes context-aware by looking at other tokens in the same sequence. For example, the meaning of a pronoun, ambiguous word, or phrase depends on the surrounding words, and self-attention provides a mechanism for injecting that surrounding information.",
+    "key_concepts": [
+      "Self-attention",
+      "Current position",
+      "Relevance scoring",
+      "Combining information",
+      "Context enrichment",
+      "Token representation"
+    ],
+    "index_text": "Slide 29 self attention current position other positions relevance scoring combining information enriched context representation"
+  },
+  {
+    "slide_title": "Self Attention: Query, Key, and Value",
+    "slide_paragraph": "This slide explains the query-key-value structure inside one attention head. The current token and previous tokens enter the attention head, and projection matrices transform the token representations into three types of vectors: queries, keys, and values. The equations shown are Q = XW_Q, K = XW_K, and V = XW_V. Here, X represents the input token representations, while W_Q, W_K, and W_V are learned projection matrices. The query represents what the current position is looking for, the keys represent what each token offers for matching, and the values represent the information that will be passed forward if a token is considered relevant. The diagram also shows that after attention, the current position becomes enriched with context from other positions. This decomposition is powerful because the model can learn different similarity spaces for matching and different information spaces for content transfer.",
+    "key_concepts": [
+      "Query",
+      "Key",
+      "Value",
+      "Projection matrices",
+      "Attention head",
+      "Learned weights",
+      "Contextual representation"
+    ],
+    "index_text": "Slide 30 self attention query key value Q=XWq K=XWk V=XWv projection matrices attention head previous tokens current token"
+  },
+  {
+    "slide_title": "Self Attention: Relevance Scores",
+    "slide_paragraph": "This slide shows how self-attention computes relevance scores between the current token and other tokens. The current token produces a query vector, and the tokens in the context produce key vectors. The formula on the right shows the main scoring operation: softmax(QK^T / sqrt(d_k)). The query is multiplied by the transposed keys to produce similarity scores; these scores are scaled by the square root of the key dimension d_k to keep the values numerically stable; then softmax converts the scores into probabilities that sum to one. The example bar chart gives relevance scores for words such as \"The\", \"dog\", \"chased\", \"the\", \"llama\", \"because\", and \"it\". In the visible example, \"dog\" has 40% and \"The\" has 30%, meaning the current token is paying more attention to those words. The output is a context-enriched representation for the current position.",
+    "key_concepts": [
+      "Attention scores",
+      "Softmax",
+      "Query-key similarity",
+      "Scaled dot-product attention",
+      "Relevance probabilities",
+      "d_k scaling"
+    ],
+    "index_text": "Slide 31 self attention relevance scores softmax Q K transpose sqrt dk The dog chased llama because it attention probabilities"
+  },
+  {
+    "slide_title": "Self Attention: Weighted Values",
+    "slide_paragraph": "This slide completes the attention computation by showing how relevance scores are applied to value vectors. On the left, each word has a relevance score, such as 30% for \"The\", 40% for \"dog\", 5% for \"chased\", 10% for \"the\", 3% for \"llama\", 5% for \"because\", and 7% for \"it\". These scores are multiplied by the corresponding value vectors. The result is a set of weighted values: important tokens contribute more strongly, while less relevant tokens contribute less. On the right, the formula shows the full attention output: softmax(QK^T / sqrt(d_k)) multiplied by V, producing Z. In words, attention first decides how much each token matters, then combines the information carried by those tokens. The final vector Z is the updated representation for the current position, enriched with context information from the rest of the sequence.",
+    "key_concepts": [
+      "Weighted values",
+      "Attention output",
+      "Value vectors",
+      "Scaled dot-product attention",
+      "Context combination",
+      "Z representation"
+    ],
+    "index_text": "Slide 32 self attention weighted values softmax QK transpose sqrt dk times V equals Z relevance scores values output context"
+  },
+  {
+    "slide_title": "Introducing Parallelizm",
+    "slide_paragraph": "This slide explains how attention can be parallelized through multiple attention heads. The self-attention module splits the representation into heads, shown as attention head #1 through attention head #4. Each head has queries, while keys and values are organized into groups. The bullet points state that each attention head has separate keys, values, and queries, but also introduce variants where keys and values are shared among all heads or shared between groups of heads. This corresponds to different attention implementations such as standard multi-head attention, multi-query attention, and grouped-query attention. The diagram labels n_attention_heads and n_groups, showing that the architecture can control how many query heads exist and how keys/values are shared. Finally, the outputs from all heads are combined to produce a representation enriched with context information. The key idea is that multiple heads let the model attend to different relationships in parallel, such as syntax, coreference, position, or semantic similarity.",
+    "key_concepts": [
+      "Multi-head attention",
+      "Parallelism",
+      "Attention heads",
+      "Grouped-query attention",
+      "Shared keys and values",
+      "Combining heads"
+    ],
+    "index_text": "Slide 33 introducing parallelism multi-head attention queries keys values groups n_attention_heads n_groups grouped query sharing"
+  },
+  {
+    "slide_title": "Sparse Attention",
+    "slide_paragraph": "This slide introduces sparse attention as an efficiency improvement over full attention. The diagram compares global autoregressive self-attention with local autoregressive self-attention. In global autoregressive attention, the current token can attend to all previous tokens in the sequence, so the attention region grows as the sequence becomes longer. In local autoregressive attention, the current token only attends to a limited window of previous positions. The caption states that local attention boosts performance by only paying attention to a small number of previous positions. The word \"performance\" here refers to computational efficiency rather than necessarily prediction quality: fewer attended positions means fewer attention computations, lower memory use, and better scalability for long sequences. This is especially useful when processing long contexts, where full attention can become expensive because every token interacts with many earlier tokens. Sparse attention trades complete connectivity for efficiency by designing a restricted attention pattern.",
+    "key_concepts": [
+      "Sparse attention",
+      "Local attention",
+      "Global autoregressive attention",
+      "Attention window",
+      "Long-context efficiency",
+      "Computational cost"
+    ],
+    "index_text": "Slide 34 sparse attention global autoregressive self-attention local autoregressive self-attention previous positions efficiency"
+  },
+  {
+    "slide_title": "Full Attention Vs. Sparse Attention",
+    "slide_paragraph": "This slide compares three attention patterns using matrix diagrams. In the first matrix, labeled Transformer, the blue lower-triangular region shows full causal attention: each token can attend to all previous tokens but not future tokens. This is powerful but computationally expensive for long sequences. In the second matrix, labeled Sparse Transformer (strided), attention is concentrated along the diagonal and at periodic stride positions, meaning the model attends locally and also jumps at regular intervals to capture longer-range dependencies. In the third matrix, labeled Sparse Transformer (fixed), the pattern uses fixed sparse blocks, giving each token access to selected previous positions rather than the entire past. The slide cites sparse transformers for generating long sequences. The main point is that sparse attention reduces the number of token-to-token interactions while still trying to preserve enough connectivity for useful context modeling. Different sparse patterns represent different trade-offs between efficiency and information flow.",
+    "key_concepts": [
+      "Full attention",
+      "Sparse Transformer",
+      "Strided attention",
+      "Fixed sparse attention",
+      "Causal mask",
+      "Long sequence modeling"
+    ],
+    "index_text": "Slide 35 full attention vs sparse attention transformer lower triangular sparse transformer strided fixed attention patterns long sequences"
+  },
+  {
+    "slide_title": "Llama 3 Herd of Models",
+    "slide_paragraph": "This slide uses Llama 3 as a concrete example of modern transformer design. The table compares several model sizes: 8B, 70B, and 405B. For the 8B model, highlighted values include 32 layers, a model dimension of 4,096, an FFN dimension of 14,336, 32 attention heads, and 8 key/value heads. The vocabulary size is shown as 128,000, and the positional embedding method is RoPE with a large theta value. The central diagram shows a vector of dimension 4,096 passing through Transformer Block 1, Transformer Block 2, and continuing until Transformer Block 32. On the right, self-attention is summarized with n_groups = 8 and n_attention_heads = 32, indicating grouped-query attention where multiple query heads share fewer key/value heads. The lower diagram shows a transformer block with layer normalization, masked self-attention, and FFNN components. Overall, the slide connects abstract transformer concepts to a real model family and its architectural hyperparameters.",
+    "key_concepts": [
+      "Llama 3",
+      "Model dimension",
+      "Transformer blocks",
+      "Attention heads",
+      "Key/value heads",
+      "Vocabulary size",
+      "RoPE"
+    ],
+    "index_text": "Slide 36 Llama 3 herd models 8B 70B 405B 32 layers 4096 dimension 32 attention heads 8 key value heads 128000 vocabulary RoPE"
+  },
+  {
+    "slide_title": "Code Sample: Model Example",
+    "slide_paragraph": "This slide is a transition into a practical code sample titled Model Example. The icon suggests that students will move from architectural diagrams to implementation. Based on the surrounding slides, this code example likely demonstrates how to load or inspect a transformer language model, examine its tokenizer, configuration, layers, attention heads, vocabulary size, or generation behavior. The educational role of this slide is to signal that transformer architecture should not remain purely theoretical: students should be able to connect concepts such as transformer blocks, model dimensions, attention heads, and tokenizers to actual model objects in code. Even without visible code on the slide, it prepares the learner for a hands-on section where model architecture can be explored programmatically. This is important because real LLM engineering requires reading configurations, understanding memory requirements, and knowing how the architecture maps to implementation.",
+    "key_concepts": [
+      "Code sample",
+      "Model implementation",
+      "Transformer configuration",
+      "Tokenizer inspection",
+      "Architecture in code",
+      "Hands-on learning"
+    ],
+    "index_text": "Slide 37 code sample model example transformer implementation configuration tokenizer architecture hands-on"
+  },
+  {
+    "slide_title": "Recent Improvements",
+    "slide_paragraph": "This slide compares a 2017 transformer decoder block with a 2024-era transformer decoder block. The 2017 diagram shows positional encoding added to token inputs, followed by self-attention, add-and-normalize steps, and feedforward layers. The 2024 diagram shows several modern refinements. It places normalization before major operations, explicitly labels RMSNorm, includes self-attention with grouped-query attention and rotary embeddings, and uses residual connections around the attention and feedforward sections. The comparison shows that while the core transformer idea remains attention plus feedforward computation, practical LLM architectures have evolved significantly. Modern decoders are optimized for stability, scalability, and efficient inference. Rotary embeddings improve how positions are represented, grouped-query attention reduces key/value computation and memory, and RMSNorm is a normalization method commonly used in modern decoder-only models. This slide helps students see that today’s LLMs are not merely the original transformer copied exactly; they are refined versions of the same foundation.",
+    "key_concepts": [
+      "Transformer decoder",
+      "RMSNorm",
+      "Grouped-query attention",
+      "Rotary embeddings",
+      "Residual connections",
+      "Modern LLM improvements"
+    ],
+    "index_text": "Slide 38 recent improvements 2017 transformer decoder 2024 transformer decoder RMSNorm grouped-query attention rotary embeddings feedforward residual"
+  },
+  {
+    "slide_title": "Specific Positional Encoding",
+    "slide_paragraph": "Although the slide title says Specific Positional Encoding, the visible diagram focuses on how training documents are organized within a fixed context size. The top part shows a naive and inefficient organization of training data: Document 1 and Document 2 each occupy separate rows in a batch, followed by large padding regions. Padding represents empty tokens inserted to fill the required context length, but excessive padding wastes computation because the model processes positions that carry no real document content. The lower part shows efficient training data packing. Multiple documents are placed into the same context row, separated by special separator tokens labeled \"Sep\", with only a smaller amount of padding at the end. This packing strategy uses the available context window more efficiently. The connection to positional handling is that packed sequences must still keep document boundaries clear so the model does not incorrectly treat separate documents as one continuous text. Efficient packing improves training throughput by reducing wasted padding.",
+    "key_concepts": [
+      "Training data packing",
+      "Padding",
+      "Context size",
+      "Separator tokens",
+      "Batch efficiency",
+      "Document boundaries"
+    ],
+    "index_text": "Slide 39 specific positional encoding training data packing naive inefficient padding context size separator tokens batch documents efficient packing"
+  },
+  {
+    "slide_title": "Mixture of Experts (MOE)",
+    "slide_paragraph": "This slide introduces mixture of experts by comparing a dense decoder with a sparse decoder. On the left, the dense model has a standard decoder block containing layer normalization, masked self-attention, another layer normalization, and a single FFNN block. In a dense model, the same feedforward network is used for every token. On the right, the sparse model keeps the general decoder structure but replaces the single FFNN with many FFNNs, labeled FFNN 1, FFNN 2, FFNN 3, and FFNN 4. The slide says each FFNN represents an \"expert\". The idea is that instead of sending every token through one large feedforward module, the model can route tokens to selected expert networks. This increases total model capacity because many experts exist, but only some experts are activated for a given token. Mixture-of-experts architectures are therefore called sparse because not all parameters are used on every forward pass.",
+    "key_concepts": [
+      "Mixture of Experts",
+      "Sparse model",
+      "Dense model",
+      "FFNN experts",
+      "Decoder block",
+      "Conditional computation"
+    ],
+    "index_text": "Slide 40 mixture of experts MOE dense decoder sparse decoder replace FFNN with many FFNN experts masked self-attention layer norm"
+  },
+  {
+    "slide_title": "Mixture of Experts (MOE): Router and Expert Selection",
+    "slide_paragraph": "This slide explains how an MoE model decides which expert to use. At the top, an input enters a router. The router selects among experts at different layers. Purple boxes show the active chosen experts, while gray boxes show experts that are not selected for that token. For example, the path may select Expert 1 in Layer 1, Expert 3 in Layer 2, and another selected expert in a later layer before producing output. The lower-right part gives an intuitive example of what experts might specialize in: Expert 1 for punctuation, Expert 2 for verbs, Expert 3 for conjunctions, and Expert 4 for visual descriptions. This is a simplified explanation, because real expert specialization is learned and may not be so neatly interpretable. However, the diagram helps students understand the routing concept: different tokens or contexts can be processed by different subnetworks. This allows the model to have many total parameters while activating only a subset during inference.",
+    "key_concepts": [
+      "Router",
+      "Expert selection",
+      "Sparse activation",
+      "Token routing",
+      "Expert specialization",
+      "Conditional computation"
+    ],
+    "index_text": "Slide 41 mixture of experts router expert selection layer 1 layer 2 expert punctuation verbs conjunctions visual descriptions sparse activation"
+  },
+  {
+    "slide_title": "Sample Computational Requirements",
+    "slide_paragraph": "This slide uses Mixtral 8x7B to illustrate the computational difference between loading a sparse MoE model and running it. The model contains shared parameters such as embeddings, attention, router, and LM head, plus a large set of expert parameters. In the Load Model column, the listed components include embeddings, attention, router, experts, and LM head; the sparse parameter total is shown as 46.7B. This means many parameters must exist in memory when the model is loaded. In the Run Model column, however, the expert parameter count is smaller because only selected experts are active during a forward pass. The slide states \"Use 2 experts at a time\" and shows active parameters as 12.8B. The key lesson is that MoE models can have a large total parameter count but a much smaller active parameter count per token. This provides high capacity without requiring every parameter to be computed for every token, though memory is still needed to store the full model.",
+    "key_concepts": [
+      "Mixtral 8x7B",
+      "Sparse parameters",
+      "Active parameters",
+      "Shared parameters",
+      "Expert parameters",
+      "MoE compute",
+      "Two active experts"
+    ],
+    "index_text": "Slide 42 sample computational requirements Mixtral 8x7B load model run model sparse parameters 46.7B active parameters 12.8B use 2 experts"
+  },
+  {
+    "slide_title": "Lecture References",
+    "slide_paragraph": "This final slide lists the main references used to prepare the lecture. The first reference is Hands-On Large Language Models by Jay Alammar and Maarten Grootendorst, a resource that explains modern LLM concepts with practical and visual explanations. The second reference is DeepLearning.AI's How Transformer LLMs Work course, which focuses on the internal mechanisms of transformer-based large language models. The presence of references is important academically because it tells students where the lecture content is grounded and where they can continue studying. It also shows that the lecture combines textbook-style explanation with structured online course material. For a student reviewing the lecture independently, these references are useful follow-up resources for topics such as tokenization, transformer blocks, attention, decoding, caching, modern model architectures, and mixture-of-experts systems.",
+    "key_concepts": [
+      "Lecture references",
+      "Hands-On Large Language Models",
+      "DeepLearning.AI",
+      "Transformer LLMs",
+      "Further study",
+      "Academic sources"
+    ],
+    "index_text": "Slide 43 lecture references Hands-On Large Language Models Jay Alammar Maarten Grootendorst DeepLearning.AI How Transformer LLMs Work"
+  }
+]

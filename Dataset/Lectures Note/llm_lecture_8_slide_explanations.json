@@ -1,0 +1,973 @@
+[
+  {
+    "slide_title": "Understanding Agentic AI",
+    "slide_paragraph": "This opening slide introduces the lecture topic, Understanding Agentic AI. The visual theme shows a human head surrounded by digital devices, a CPU, gears, messages, and connected circuits, which suggests AI systems that do more than generate text: they interact with tools, information sources, and workflows. The title signals that the lecture will focus on agentic AI, meaning LLM-based systems that can perform multi-step tasks, make intermediate decisions, use tools, reflect on outputs, and coordinate actions toward a goal. Unlike a simple chatbot that only answers one prompt at a time, an agentic system is designed as a process: it can break a task into steps, execute those steps, inspect results, and continue until the task is completed. This slide therefore frames the course topic as a move from single-response language modeling toward practical AI systems that behave more like task-solving assistants.",
+    "key_concepts": [
+      "Agentic AI",
+      "LLM applications",
+      "multi-step workflows",
+      "tool use",
+      "AI assistants"
+    ],
+    "index_text": "Slide 1 | Understanding Agentic AI | Dr. Tamer Arafa | lecture title | agentic workflows"
+  },
+  {
+    "slide_title": "Introduction to Agentic Workflows: What is Agentic AI?",
+    "slide_paragraph": "This slide begins the first section of the lecture by asking what Agentic AI is. It acts as a transition from the title slide into the conceptual definition of agentic workflows. The phrase 'agentic workflows' indicates that the lecture is not only about a model, but about a structured process in which an LLM-based application performs a sequence of actions. The slide prepares the student to think about autonomy, planning, tool usage, reflection, and task decomposition. In this context, 'agentic' does not necessarily mean fully independent or human-like; it means that the system has some ability to decide or execute intermediate steps rather than simply producing a single final answer in one pass.",
+    "key_concepts": [
+      "agentic workflows",
+      "Agentic AI definition",
+      "autonomy",
+      "LLM-based application",
+      "task process"
+    ],
+    "index_text": "Slide 2 | Introduction to Agentic Workflows | What is Agentic AI | autonomy and workflow"
+  },
+  {
+    "slide_title": "Agentic AI",
+    "slide_paragraph": "This slide contrasts a non-agentic workflow with an agentic workflow using essay writing as the example. In the non-agentic zero-shot workflow, the user asks the model to type an essay from start to finish in one go without using backspace. This represents direct generation: the model must produce the final answer immediately, with no explicit planning, research, checking, or revision. The agentic workflow, by contrast, breaks the task into multiple stages: write an outline, decide whether web research is needed, write a first draft, inspect which parts require revision or more research, and then revise the draft. The diagram emphasizes that agentic AI adds intermediate thinking, research, and revision loops. This is closer to how humans solve difficult tasks: we usually plan, gather information, draft, critique, and improve rather than expecting the first attempt to be final. The key lesson is that agentic systems improve output quality by organizing LLM work into iterative steps.",
+    "key_concepts": [
+      "non-agentic workflow",
+      "zero-shot generation",
+      "agentic workflow",
+      "essay writing",
+      "revision loop",
+      "research"
+    ],
+    "index_text": "Slide 3 | Non-agentic workflow vs agentic workflow | essay outline | web research | first draft | revise"
+  },
+  {
+    "slide_title": "Agentic AI Workflows",
+    "slide_paragraph": "This slide defines an agentic AI workflow as a process where an LLM-based application executes multiple steps to complete a task. The essay-writing example shows several LLM calls and possible tool interactions: one LLM step writes an outline, another determines whether web research is needed, another writes a first draft, another considers revision needs, and another may request human review. The diagram makes clear that an agentic workflow can combine pure language generation with tool use, web search, and human-in-the-loop review. The same model may be called repeatedly, or different models and tools may be used at different stages. The important idea is that the intelligence of the application comes not only from the LLM itself but from the workflow design around it. By decomposing the task, the system can handle complexity more reliably than a single prompt-response interaction.",
+    "key_concepts": [
+      "agentic workflow",
+      "multi-step execution",
+      "web search",
+      "human review",
+      "LLM orchestration",
+      "task decomposition"
+    ],
+    "index_text": "Slide 4 | Agentic AI workflows | LLM executes multiple steps | essay-writing example | web search | human review"
+  },
+  {
+    "slide_title": "Degrees of Agenticness",
+    "slide_paragraph": "This slide introduces the idea that agentic AI is not a strict yes-or-no category. The slide references Andrew Ng and includes the message that instead of arguing about whether a system is a true agent, it is more useful to acknowledge different degrees of agentic behavior. The image from a talk and the social-media-style cartoon both reinforce this idea: some systems may be more agentic than others depending on how much autonomy they have, how many decisions they make, and how much they can interact with tools or the environment. This is important because many real-world systems fall between a simple chatbot and a fully autonomous agent. A system that follows a fixed chain of tool calls may be only mildly agentic, while a system that plans, chooses tools, evaluates results, and revises its strategy is more agentic. The slide encourages a spectrum-based understanding of agentic AI.",
+    "key_concepts": [
+      "degrees of autonomy",
+      "agenticness",
+      "Andrew Ng",
+      "agent spectrum",
+      "autonomous systems"
+    ],
+    "index_text": "Slide 5 | Degrees of agenticness | Andrew Ng | Sequoia Ascent | different degrees systems can be agentic"
+  },
+  {
+    "slide_title": "Degrees of Autonomy",
+    "slide_paragraph": "This slide illustrates increasing levels of autonomy using the task 'write an essay about black holes.' On the less autonomous side, the workflow is mostly predetermined: the user asks for the essay, the system may perform a fixed web search and fetch pages, and then the LLM writes the essay. The middle of the slide shows a more structured workflow where tools such as web fetch and PDF-to-text are available, and the system may retrieve the five best sources, draft the essay, and reflect to improve the draft. On the more autonomous side, the LLM itself can write web search queries, decide which search tool to use, search the web or arXiv, fetch information, and refine the essay. The diagram therefore explains that autonomy depends on how many decisions are delegated to the agent. More autonomy means the agent chooses steps and tools dynamically rather than simply executing a hard-coded path.",
+    "key_concepts": [
+      "degrees of autonomy",
+      "tool choice",
+      "web search",
+      "PDF-to-text",
+      "reflection",
+      "dynamic planning"
+    ],
+    "index_text": "Slide 6 | Degrees of autonomy | less autonomous to more autonomous | black holes essay | tools web search arXiv pdf to text"
+  },
+  {
+    "slide_title": "Degrees of Agenticness",
+    "slide_paragraph": "This slide summarizes the autonomy spectrum using three categories: less autonomous, semi-autonomous, and highly autonomous. In less autonomous systems, all steps are predetermined and all tool use is hard-coded; the main autonomy is only in text generation. For example, a fixed pipeline may always search, retrieve, summarize, and answer in the same order. In semi-autonomous systems, the agent can make some decisions and choose among predefined tools, but it cannot invent or add new tools on its own. In highly autonomous systems, the agent can make many decisions independently and may even create new tools on the fly. The slide helps students understand that agentic AI design involves deciding how much freedom to give the model. More autonomy can increase flexibility but also increases the need for evaluation, safety controls, monitoring, and clear boundaries.",
+    "key_concepts": [
+      "less autonomous",
+      "semi-autonomous",
+      "highly autonomous",
+      "tool selection",
+      "hard-coded workflow",
+      "autonomy spectrum"
+    ],
+    "index_text": "Slide 7 | Degrees of agenticness | all steps predetermined | choose tools | create new tools on the fly"
+  },
+  {
+    "slide_title": "Agentic Systems on Coding Benchmarks",
+    "slide_paragraph": "This slide presents evidence that agentic systems can improve performance on coding benchmarks such as HumanEval. The chart compares non-agentic systems with agentic design patterns including reflection, tool use, planning, multiagent collaboration, tree search, Reflexion, CodeT, AgentCoder, MetaGPT, and related approaches. The slide indicates that for GPT-3.5, non-agentic performance is around 67%, and for GPT-4, non-agentic performance is around 48% in the displayed comparison, while several agentic methods achieve higher scores. The exact numbers are less important than the pattern: systems that can reason through steps, critique outputs, use tools, or involve multiple agents often perform better than direct generation. The slide also shows that agentic AI is not one technique; it is a family of workflow patterns. Students should understand this as empirical motivation for building structured LLM applications rather than relying only on a single prompt.",
+    "key_concepts": [
+      "HumanEval",
+      "coding benchmark",
+      "reflection",
+      "tool use",
+      "planning",
+      "multiagent systems",
+      "performance improvement"
+    ],
+    "index_text": "Slide 8 | Non-agentic vs agentic systems | Coding benchmark HumanEval | Reflection Tool Use Planning Multiagent"
+  },
+  {
+    "slide_title": "Parallelization for Speed",
+    "slide_paragraph": "This slide shows how agentic workflows can become faster through parallelization. In the essay-writing example, instead of performing a single search and then fetching pages one at a time, the system can run three web searches in parallel, fetch the top three results from each search in parallel, and then pass the collected material to LLM steps that synthesize the essay. The diagram contains multiple LLM and web fetch boxes running side by side, illustrating that tasks which do not depend on each other can be executed simultaneously. This is one practical advantage of agentic design: a human researcher may open sources one by one, but an AI workflow can launch multiple searches and downloads at the same time. Parallelization can reduce latency and improve coverage, especially for research tasks, data collection, document review, and multi-source retrieval.",
+    "key_concepts": [
+      "parallelization",
+      "web search",
+      "web fetch",
+      "speed",
+      "agentic workflow",
+      "source collection"
+    ],
+    "index_text": "Slide 9 | Parallelization for speed | 3 parallel searches | 9 parallel web page downloads | write essay"
+  },
+  {
+    "slide_title": "Modular Workflows",
+    "slide_paragraph": "This slide explains that agentic workflows are modular, meaning individual components can be added, removed, or replaced without redesigning the entire system. The diagram again uses the essay-writing workflow, but it highlights that a new tool such as a news search tool can be added alongside web search and web fetch. Modularity is important because real applications evolve: a developer may replace one search API with another, add a PDF parser, swap an LLM for a stronger model, add a reranker, or insert a human-review stage. The workflow architecture separates the task into components, and each component can be improved independently. This makes agentic systems flexible and maintainable. Rather than building a single monolithic prompt, developers can treat the application as a pipeline of tools, models, prompts, and decision points.",
+    "key_concepts": [
+      "modularity",
+      "tool swapping",
+      "workflow components",
+      "web search",
+      "news tool",
+      "maintainability"
+    ],
+    "index_text": "Slide 10 | Modular add swap components | new web news tool | web search | web fetch | LLM essay workflow"
+  },
+  {
+    "slide_title": "Key Benefits of Agentic Workflows",
+    "slide_paragraph": "This slide summarizes three major benefits of agentic workflows. First, they can produce much better performance because difficult tasks are broken down into planning, retrieval, execution, reflection, and revision instead of relying on a single model call. Second, they can be faster than humans because independent steps can be parallelized, such as running multiple searches or processing multiple documents at the same time. Third, they are modular, allowing developers to add tools, update tools, swap models, or change individual workflow components without rewriting the whole application. These benefits explain why agentic AI is useful for real applications: it improves quality, speed, and engineering flexibility. However, the same benefits also imply that agentic systems require careful design, logging, evaluation, and safety controls because they involve multiple moving parts.",
+    "key_concepts": [
+      "performance",
+      "parallelization",
+      "modularity",
+      "tool updates",
+      "workflow design",
+      "agentic benefits"
+    ],
+    "index_text": "Slide 11 | Key benefits of agentic workflows | better performance | faster than humans | modular components"
+  },
+  {
+    "slide_title": "Agentic AI Applications",
+    "slide_paragraph": "This slide introduces the next section of the lecture, focusing on practical applications of agentic AI. After defining agentic workflows and their benefits, the lecture now moves toward concrete examples where LLM-based systems perform useful business or productivity tasks. The phrase 'Agentic AI applications' signals that the upcoming slides will show workflows such as invoice processing, customer email handling, customer service, information extraction, and database updates. The main educational purpose of this transition is to move from abstract concepts like autonomy and modularity to implementation thinking: what real tasks can be decomposed into model calls, tools, and decision steps? Students should prepare to analyze each example by identifying the goal, required data, tools, workflow steps, and points where human review or validation may be needed.",
+    "key_concepts": [
+      "agentic applications",
+      "workflow examples",
+      "business automation",
+      "task decomposition",
+      "LLM tools"
+    ],
+    "index_text": "Slide 12 | Introduction to Agentic Workflows | Agentic AI applications | practical examples"
+  },
+  {
+    "slide_title": "Example: Invoice Processing Workflow",
+    "slide_paragraph": "This slide presents an invoice-processing workflow as a simple agentic application. The invoice image contains information from TechFlow Solutions LLC, including address, phone, email, due date, invoice date, item description, quantity, unit price, line total, and total due. The slide identifies four required fields: biller, biller address, amount due, and due date. The workflow converts the PDF to text, passes the extracted text to an LLM, and then uses an update-database tool to create a record. The diagram emphasizes that the LLM is not acting alone; it is part of a pipeline that includes document conversion and a database action. This is a good example of a relatively structured workflow because the required fields and final action are known ahead of time. The agentic behavior is mainly in extracting the correct fields and invoking the database update correctly.",
+    "key_concepts": [
+      "invoice processing",
+      "PDF-to-text",
+      "information extraction",
+      "database update",
+      "required fields",
+      "structured workflow"
+    ],
+    "index_text": "Slide 13 | Invoice processing workflow | Biller Biller address Amount due Due date | PDF to text | LLM | update database"
+  },
+  {
+    "slide_title": "Example: Responding to Customer Email",
+    "slide_paragraph": "This slide shows an agentic workflow for responding to a customer email about a wrong item being shipped. The email from Susan Jones says she ordered a blue KitchenPro blender with order number 8847 but received a red toaster instead, and she needs help because the blender is for her daughter's birthday party. The workflow has three steps: extract key information, find relevant customer records, and draft a response for human review. The tools include an orders database query and a request-review tool. This example is more complex than invoice extraction because it requires understanding the customer's problem, using the order number to verify records, and producing a helpful response. The human review step is important because sending customer-facing messages or making fulfillment decisions may require approval. The slide illustrates how agentic AI can combine language understanding, database access, and human-in-the-loop supervision.",
+    "key_concepts": [
+      "customer email",
+      "order lookup",
+      "database query",
+      "human review",
+      "response drafting",
+      "customer support"
+    ],
+    "index_text": "Slide 14 | Responding to customer email | wrong item shipped | Order 8847 | orders database query | request review"
+  },
+  {
+    "slide_title": "More Challenging: Customer Service Agent",
+    "slide_paragraph": "This slide explains why a general customer service agent is harder than a fixed workflow. The first customer asks whether black jeans or blue jeans are available, so the system must check inventory for both colors and respond. The second customer wants to return a beach towel, so the system must verify the purchase, check return policies, and if the return is allowed, issue a return packing slip and update the database status to return pending. The key phrase is that required steps are not known ahead of time. Unlike invoice processing, where the fields are fixed, customer service involves many possible intents: product questions, returns, refunds, shipping issues, complaints, and policy questions. Therefore, the agent must plan dynamically, choose tools based on the situation, and possibly branch depending on results. This makes the workflow more agentic and more difficult to evaluate safely.",
+    "key_concepts": [
+      "customer service agent",
+      "dynamic planning",
+      "inventory check",
+      "return policy",
+      "branching workflow",
+      "unknown steps"
+    ],
+    "index_text": "Slide 15 | Customer service agent | black jeans blue jeans | return beach towel | required steps not known ahead of time"
+  },
+  {
+    "slide_title": "What Tasks Is Agentic AI Suited To?",
+    "slide_paragraph": "This slide compares easier and harder tasks for agentic AI. Easier tasks have a clear step-by-step process, standard procedures to follow, and mainly text-based assets. Examples include invoice extraction, structured email handling, simple data lookup, or report generation from documents. Harder tasks have steps that are not known ahead of time, require planning or solving as the system goes, and may involve multimodal inputs such as sound or vision. The slide helps students understand that agentic AI is not equally suitable for every problem. When the process is predictable, developers can build robust workflows with predefined tools and checks. When the process is open-ended, the agent needs more autonomy and more careful evaluation. Multimodal tasks add additional difficulty because the system must interpret images, audio, or video before acting.",
+    "key_concepts": [
+      "task suitability",
+      "standard procedures",
+      "planning",
+      "multimodal tasks",
+      "difficulty spectrum",
+      "workflow design"
+    ],
+    "index_text": "Slide 16 | What tasks is agentic AI suited to | easier clear step-by-step | harder plan solve as you go multimodal"
+  },
+  {
+    "slide_title": "Task Decomposition: Identifying Workflow Steps",
+    "slide_paragraph": "This slide introduces task decomposition as a core skill for building agentic workflows. Task decomposition means breaking a large goal into smaller steps that can be handled by an LLM, a tool, another AI model, a database, or a human reviewer. The section title emphasizes that before building an agent, the developer must identify the workflow steps. Without decomposition, the system may rely on a single broad prompt, which is often unreliable for complex tasks. Decomposition also helps developers decide where tools are needed, where outputs should be validated, and where failures may occur. This slide prepares students for the examples that follow, where essay writing, email response, and invoice processing are broken into sequential or branching components.",
+    "key_concepts": [
+      "task decomposition",
+      "workflow steps",
+      "agent design",
+      "tool assignment",
+      "failure analysis"
+    ],
+    "index_text": "Slide 17 | Task decomposition | identifying steps in a workflow | agentic workflow design"
+  },
+  {
+    "slide_title": "Example: Writing an Essay",
+    "slide_paragraph": "This slide uses essay writing to show how direct generation can be improved through decomposition but may still be insufficient. A single prompt such as 'Write an essay on topic X' produces a surface-level answer that covers only obvious facts. A three-step workflow improves structure by asking the model to write an outline, search the web, and then write the essay. A five-step workflow adds more quality control: write an outline, search the web, write a first draft, consider what parts need revision, and revise the draft. The slide notes that even this may still not be good enough, which is important because task decomposition is not magic; the quality depends on the steps, prompts, tools, and evaluation criteria. The diagram shows that agentic workflows allow repeated LLM calls and tool calls, but good design still requires deciding what each step should accomplish.",
+    "key_concepts": [
+      "essay writing",
+      "direct generation",
+      "outline",
+      "web search",
+      "revision",
+      "quality improvement"
+    ],
+    "index_text": "Slide 18 | Example Writing an Essay | surface level | 3-step workflow | 5-step workflow | revise draft"
+  },
+  {
+    "slide_title": "Recap: Breaking Down Essay Writing Into Steps",
+    "slide_paragraph": "This slide summarizes the progression from direct generation to increasingly detailed workflows. Direct generation uses one step: write an essay on topic X, but the slide states this is not good enough. The three-step workflow adds an outline, web search, and essay writing, but it may still be insufficient. The five-step workflow further separates first drafting, revision analysis, and final revision. The educational point is that decomposition can be made more granular when the current output quality is inadequate. However, adding steps has tradeoffs: it increases cost, latency, complexity, and the number of potential failure points. A well-designed agentic workflow should add steps that meaningfully improve quality, not simply add complexity. Students should learn to treat decomposition as an iterative design process guided by evaluation results.",
+    "key_concepts": [
+      "workflow granularity",
+      "direct generation",
+      "three-step workflow",
+      "five-step workflow",
+      "revision",
+      "evaluation-driven design"
+    ],
+    "index_text": "Slide 19 | Recap essay writing steps | direct generation | 3-step workflow | 5-step workflow | not good enough"
+  },
+  {
+    "slide_title": "Example: Responding to Customer Email",
+    "slide_paragraph": "This slide decomposes the customer email response task into three operational steps. First, the LLM extracts key information from the email, such as sender identity, order number, ordered item, received item, urgency, and requested help. Second, the system queries an orders database to find relevant customer records and verify what the customer purchased. Third, the LLM writes and sends a response. The diagram shows LLM calls connected to a database query tool and an email-sending tool. This example demonstrates how task decomposition clarifies responsibilities: the LLM handles understanding and language generation, the database provides factual records, and the email tool performs the external action. It also reveals risk points, such as sending an incorrect response if the database query fails or if the LLM misreads the order details. In production, a human review or validation step may be added before sending.",
+    "key_concepts": [
+      "email response",
+      "information extraction",
+      "orders database",
+      "send email",
+      "tool use",
+      "customer support workflow"
+    ],
+    "index_text": "Slide 20 | Responding to customer email | extract key information | find customer records | write and send response"
+  },
+  {
+    "slide_title": "Example: Extracting Information From Invoice",
+    "slide_paragraph": "This slide decomposes invoice extraction into two steps: find required information and create a new database entry. The invoice image is shown on the left, while the right side shows that an LLM can identify the necessary fields and then work with an update-database tool to save the result. This example highlights a common agentic pattern: the LLM converts unstructured or semi-structured input into structured data, and a tool commits that data to a system of record. The first step is semantic and document-oriented: the model must understand which text corresponds to biller, due date, amount due, and other fields. The second step is operational: the application must update a database in a reliable format. The slide also implies that the database update should not be done from raw text alone; the extracted fields should be validated before insertion.",
+    "key_concepts": [
+      "invoice extraction",
+      "structured data",
+      "database entry",
+      "LLM extraction",
+      "update database",
+      "document workflow"
+    ],
+    "index_text": "Slide 21 | Extracting information from invoice | find required information | create new database entry | LLM update database"
+  },
+  {
+    "slide_title": "What Building Blocks Do You Have?",
+    "slide_paragraph": "This slide lists the main building blocks available when designing agentic systems: models and tools. Under models, it includes LLMs and other AI models. LLMs are useful for text generation, tool use, and information extraction, while other AI models may handle PDF-to-text, text-to-speech, image analysis, and other specialized tasks. Under tools, the slide lists APIs, information retrieval, and code execution. APIs can perform real-world actions such as web search, getting real-time data, sending email, or checking a calendar. Information retrieval includes databases and RAG systems. Code execution can support calculators and data analysis. The table teaches that agentic AI is built by combining specialized capabilities rather than expecting one LLM to do everything. Good architecture means assigning each step to the component best suited for it.",
+    "key_concepts": [
+      "building blocks",
+      "LLMs",
+      "AI models",
+      "APIs",
+      "RAG",
+      "code execution",
+      "tools"
+    ],
+    "index_text": "Slide 22 | Building blocks | Models LLMs Other AI models | Tools API information retrieval code execution"
+  },
+  {
+    "slide_title": "Tips for Task Decomposition",
+    "slide_paragraph": "This slide gives practical guidance for decomposing tasks. Using the customer email example, it shows three steps: extract key information, find relevant customer records, and write and send a response. The slide asks whether an LLM, a tool, or both can complete each step. This question is central to designing agentic workflows. If a step cannot be reliably completed by the LLM or available tools, the developer should break it into smaller steps or add human-in-the-loop review. For example, 'respond to customer' may be too broad, but 'extract order number', 'query database', 'draft response', and 'request approval' are more manageable. The slide encourages students to think like system designers: each step needs an owner, input, output, success criteria, and failure handling strategy.",
+    "key_concepts": [
+      "task decomposition tips",
+      "LLM vs tool",
+      "human-in-the-loop",
+      "workflow reliability",
+      "step design",
+      "customer email"
+    ],
+    "index_text": "Slide 23 | Tips for task decomposition | Can LLM tool or both complete each step | break down further | human in loop"
+  },
+  {
+    "slide_title": "Evaluating Agentic AI",
+    "slide_paragraph": "This slide introduces the evaluation section for agentic AI systems. Evaluation is especially important for agentic workflows because the system may involve multiple LLM calls, tools, branching decisions, and external actions. A simple final answer may hide errors that occurred earlier in the workflow, so developers need both end-to-end evaluation and component-level evaluation. The section title prepares students to learn how to identify low-quality outputs, create objective checks, use LLMs as judges, inspect traces, and perform error analysis. In agentic AI, evaluation is not optional: it is the mechanism that tells the developer whether the decomposition, prompts, tools, and autonomy level are actually improving outcomes.",
+    "key_concepts": [
+      "agent evaluation",
+      "evals",
+      "end-to-end evaluation",
+      "component evaluation",
+      "error analysis"
+    ],
+    "index_text": "Slide 24 | Evaluating Agentic AI | evals | agentic workflows | quality measurement"
+  },
+  {
+    "slide_title": "Look for Low-Quality Outputs",
+    "slide_paragraph": "This slide shows why agentic workflows need evaluation by giving examples of bad customer-service responses. In the email workflow, the customer complains about receiving the wrong item. A low-quality response might mention competitors, such as saying 'we're much better than our competitor CompCo' or 'Unlike RivalCo, we make returns easy.' These statements are inappropriate because they distract from the customer's issue, may violate brand guidelines, and could create legal or reputational risk. The slide demonstrates that even if the workflow completes all technical steps, the final response may still be poor. Therefore, evaluation should check not only correctness but also tone, policy compliance, professionalism, and undesired content. This example motivates automated checks for known failure modes.",
+    "key_concepts": [
+      "low-quality output",
+      "customer response",
+      "competitor mention",
+      "brand safety",
+      "policy compliance",
+      "quality control"
+    ],
+    "index_text": "Slide 25 | Look for low-quality outputs | competitor mentions | CompCo RivalCo | customer email response"
+  },
+  {
+    "slide_title": "Add an Evaluation to Track the Error",
+    "slide_paragraph": "This slide shows an objective evaluation for tracking competitor mentions in customer responses. The workflow takes a customer inquiry and LLM response, then uses code to check whether any competitor names appear in the response. A list of competitors such as CompCo, RivalCo, and The Other Co is used, and if a competitor is found, the counter num_competitor_mentions is increased. This is an example of an objective, code-based eval because the error can be detected with pattern matching. The slide teaches that not all evaluations require another LLM; some errors are easier and more reliable to check with simple code. Code-based evaluations are useful for forbidden words, required fields, length limits, formatting rules, JSON validity, citation presence, and policy-specific constraints.",
+    "key_concepts": [
+      "objective eval",
+      "code-based evaluation",
+      "pattern matching",
+      "competitor detection",
+      "quality metric",
+      "automated testing"
+    ],
+    "index_text": "Slide 26 | Add evaluation | competitor in response | num_competitor_mentions | CompCo RivalCo The Other Co"
+  },
+  {
+    "slide_title": "Using LLM as a Judge",
+    "slide_paragraph": "This slide introduces LLM-as-a-judge evaluation for outputs that are more subjective. The diagram shows an agentic research-and-writing workflow involving web search, web fetch, PDF-to-text, and essay drafting. The final essay can be passed to another LLM with a prompt such as 'Assign the following essay a quality score between 1 and 5, where 5 is the best.' The slide gives example topics such as black holes and robotic harvesting with LLM-assigned scores. This kind of evaluation is useful when quality cannot be easily measured with code, such as coherence, helpfulness, writing quality, completeness, or relevance. However, students should understand that LLM judges are not perfect. Their scores depend on the rubric, prompt wording, model quality, and possible biases, so they should be used carefully and consistently.",
+    "key_concepts": [
+      "LLM-as-judge",
+      "subjective evaluation",
+      "essay scoring",
+      "quality score",
+      "rubric",
+      "agent evaluation"
+    ],
+    "index_text": "Slide 27 | Using LLM as a judge | assign essay quality score 1 to 5 | black holes | robotic harvesting"
+  },
+  {
+    "slide_title": "Evaluating Agentic AI Summary",
+    "slide_paragraph": "This slide summarizes key evaluation practices for agentic AI. It states that evaluation can use code for objective checks or LLM-as-judge for subjective assessments. It also distinguishes end-to-end evaluation from component-level evaluation. End-to-end evaluation asks whether the entire workflow achieved the desired result, while component-level evaluation checks individual steps such as extraction, retrieval, tool selection, or final writing. The slide also recommends examining traces to perform error analysis. A trace is the record of what the agent did: prompts, model outputs, tool calls, observations, intermediate decisions, and final response. Traces are essential because agentic systems can fail in many places. By inspecting traces, developers can identify whether the problem came from retrieval, planning, tool execution, reasoning, or final generation.",
+    "key_concepts": [
+      "objective evals",
+      "subjective evals",
+      "end-to-end evaluation",
+      "component-level evaluation",
+      "traces",
+      "error analysis"
+    ],
+    "index_text": "Slide 28 | Evaluating Agentic AI | code evals | LLM as judge | end-to-end component-level | traces"
+  },
+  {
+    "slide_title": "Agentic Design Patterns",
+    "slide_paragraph": "This slide introduces the section on agentic design patterns. A design pattern is a reusable solution structure for a common type of problem. In agentic AI, design patterns describe ways to organize model calls, tools, feedback, planning, and collaboration. The upcoming slides focus on reflection, tool use, planning, and multi-agent collaboration. This transition is important because it moves from examples and evaluation into reusable methods students can apply when building their own systems. Instead of treating each agentic application as completely new, developers can recognize patterns: let a model critique its own output, let the model call tools, let the model plan before acting, or let multiple agents debate or collaborate. These patterns are building blocks for more complex AI systems.",
+    "key_concepts": [
+      "design patterns",
+      "reflection",
+      "tool use",
+      "planning",
+      "multi-agent collaboration",
+      "reusable workflow"
+    ],
+    "index_text": "Slide 29 | Agentic design patterns | Reflection Tool Use Planning Multiagent"
+  },
+  {
+    "slide_title": "Agentic Design Patterns Overview",
+    "slide_paragraph": "This slide lists four core agentic design patterns: reflection, tool use, planning, and multi-agent collaboration. Reflection means the model or another model reviews an output and improves it. Tool use means the LLM can call external functions, APIs, databases, code interpreters, search engines, or other systems. Planning means the agent breaks a task into steps and decides what to do next. Multi-agent collaboration means multiple LLM agents interact, debate, specialize, or coordinate to solve a problem. These four patterns often appear together. For example, a research assistant may plan search steps, use web tools, draft an answer, reflect on missing evidence, and ask a critic agent to review the final response. The slide provides a compact taxonomy for understanding agentic workflows.",
+    "key_concepts": [
+      "reflection",
+      "tool use",
+      "planning",
+      "multi-agent collaboration",
+      "agentic patterns",
+      "taxonomy"
+    ],
+    "index_text": "Slide 30 | Agentic Design Patterns | 1 Reflection 2 Tool use 3 Planning 4 Multi-agent collaboration"
+  },
+  {
+    "slide_title": "Reflection",
+    "slide_paragraph": "This slide introduces reflection using a code-writing example. A user asks a coder agent to write code for a task, producing an initial function such as def do_task(x). The output is then checked carefully for correctness, style, and efficiency, and constructive criticism is generated. The slide shows feedback such as 'There's a bug on line 5. Fix it by...' and 'It failed Unit Test 3. Try changing...' The coder can then produce improved versions such as do_task_v2 and do_task_v3. The essential idea is that the first answer is treated as a draft, not the final result. Reflection creates an iterative improvement loop where the model evaluates or receives evaluation of its own work and revises accordingly. This is especially useful for code, writing, reasoning, and structured outputs.",
+    "key_concepts": [
+      "reflection",
+      "coder agent",
+      "critique",
+      "unit tests",
+      "iterative improvement",
+      "code revision"
+    ],
+    "index_text": "Slide 31 | Reflection | coder agent | check correctness style efficiency | bug line 5 | failed Unit Test 3"
+  },
+  {
+    "slide_title": "Reflection With Coder and Critic Agents",
+    "slide_paragraph": "This slide expands the reflection pattern by separating the coder agent and critic agent. The coder agent receives the task and produces code drafts, while the critic agent reviews the code and provides constructive feedback. The diagram shows a user request, multiple code versions, and feedback bubbles pointing out bugs or failed tests. This separation can improve quality because the critic role is specialized: instead of trying to both create and evaluate in the same step, the system gives one model or prompt the job of writing and another the job of reviewing. The critic can check correctness, style, efficiency, and test failures. The coder then uses this feedback to revise. The slide illustrates an important design principle: different LLM calls can use different roles, instructions, or even different models to improve the final output.",
+    "key_concepts": [
+      "coder agent",
+      "critic agent",
+      "reflection loop",
+      "role specialization",
+      "constructive feedback",
+      "code improvement"
+    ],
+    "index_text": "Slide 32 | Reflection | Coder Agent LLM | Critic Agent LLM | code versions | bug feedback"
+  },
+  {
+    "slide_title": "Tool Use",
+    "slide_paragraph": "This slide introduces tool use by listing categories of tools that an LLM agent can call. The example code calculates compound interest using principal, interest_rate, and years, showing code execution as a tool for analysis. The slide groups tools into analysis tools such as code execution, Wolfram Alpha, and code interpreters; information-gathering tools such as web search, Wikipedia, and database access; productivity tools such as email, calendar, and messaging; and image tools such as image generation, image captioning, and OCR. The key idea is that tools extend the capabilities of the LLM beyond text prediction. Instead of guessing calculations, current facts, or database records, the agent can call the appropriate tool and use its output. Tool use is one of the most important foundations of agentic AI.",
+    "key_concepts": [
+      "tool use",
+      "code execution",
+      "web search",
+      "database access",
+      "productivity tools",
+      "image tools",
+      "OCR"
+    ],
+    "index_text": "Slide 33 | Tool use | code execution | Wolfram Alpha | web search | email calendar | image generation OCR"
+  },
+  {
+    "slide_title": "Planning",
+    "slide_paragraph": "This slide illustrates planning with a multimodal task adapted from HuggingGPT. The user asks the system to generate an image where a girl is reading a book and has the same pose as a boy in an example image, then describe the new image with voice. The workflow requires several specialized models: an OpenPose model for pose determination, a pose-to-image model for generating the image, a vision-language or image-to-text model such as ViT-GPT2 for captioning, and a text-to-speech model such as FastSpeech for spoken output. This is a strong example of planning because no single model directly solves the whole request. The agent must decompose the request into subtasks, select the appropriate models, execute them in order, and pass outputs between steps. The final caption 'A girl is sitting on a bed reading a book' demonstrates how multimodal tool coordination can satisfy a complex user request.",
+    "key_concepts": [
+      "planning",
+      "HuggingGPT",
+      "multimodal workflow",
+      "OpenPose",
+      "pose-to-image",
+      "image captioning",
+      "text-to-speech"
+    ],
+    "index_text": "Slide 34 | Planning | Pose-to-Image | Image-to-text | Pose Determination | Text-to-Speech | girl reading book"
+  },
+  {
+    "slide_title": "Multi-Agentic Workflows",
+    "slide_paragraph": "This slide introduces multi-agentic workflows and shows a comparison from multiagent debate research. The visual on the left suggests a simulated collaborative environment where different agents may take different roles, such as coding, testing, designing, or documentation. The table on the right compares single-agent and multi-agent performance on tasks including biographies, MMLU, and chess moves. In the displayed results, multi-agent systems outperform single-agent systems: biographies improve from 66.0% to 73.8%, MMLU from 63.9% to 71.1%, and chess moves from 29.3% to 45.2%. The lesson is that multiple agents can improve factuality and reasoning by debating, checking each other, or bringing different perspectives. However, multi-agent workflows also increase complexity, cost, and evaluation needs, so they should be used when collaboration adds measurable value.",
+    "key_concepts": [
+      "multi-agent workflows",
+      "multiagent debate",
+      "MMLU",
+      "biographies",
+      "chess move",
+      "factuality",
+      "reasoning"
+    ],
+    "index_text": "Slide 35 | Multi-agentic workflows | Multiagent Debate | single agent vs multi-agent | biographies MMLU chess move"
+  },
+  {
+    "slide_title": "Reflection Design Pattern",
+    "slide_paragraph": "This slide starts a deeper section on the reflection design pattern, described as reflection to improve outputs of a task. Reflection means the system creates an initial output, reviews it against criteria or feedback, and produces an improved version. The phrase 'improve outputs' is important because reflection is not a separate goal; it is a mechanism for enhancing quality. It can be used for emails, code, charts, essays, structured outputs, reasoning tasks, and any output that benefits from review. This section will explain why reflection is useful, how humans naturally use it, how LLMs can implement it, and how to evaluate its impact. Students should understand reflection as an iterative refinement loop.",
+    "key_concepts": [
+      "reflection design pattern",
+      "output improvement",
+      "iterative refinement",
+      "review",
+      "quality control"
+    ],
+    "index_text": "Slide 36 | Reflection Design Pattern | Reflection to improve outputs of a task"
+  },
+  {
+    "slide_title": "Reflection - Humans",
+    "slide_paragraph": "This slide uses human email writing to make reflection intuitive. The first email draft says the writer will be in New York next month and asks Tommy to be free for dinner, but it has issues: vague timing, a typo, and no signature. The slide labels these problems as missing specific dates, typo, and not signing the name. The revised email fixes these problems by specifying the dates from the 5th to the 7th, improving wording, and signing 'Andrew.' This example shows that humans rarely produce perfect outputs on the first attempt. We draft, notice errors, revise, and improve. The slide uses this everyday process to justify LLM reflection: if humans benefit from reviewing and revising, LLM outputs can also benefit from explicit critique and improvement steps.",
+    "key_concepts": [
+      "human reflection",
+      "email revision",
+      "typo correction",
+      "specific dates",
+      "draft improvement",
+      "self-editing"
+    ],
+    "index_text": "Slide 37 | Reflection humans | Email V1 Email V2 | specific dates typo sign name | Andrew"
+  },
+  {
+    "slide_title": "Reflection to Improve Code",
+    "slide_paragraph": "This slide applies reflection to code generation. The workflow begins with an LLM asked to write code for task X. It produces a first draft, such as def do_task(args). A second LLM call, possibly a different LLM such as a stronger reasoning model, checks for bugs and writes an improved second draft. The output becomes def do_task_v2(args). This process separates generation from review: the first step creates a candidate solution, and the second step inspects it and improves it. The slide also notes that the reflection model can be different from the original model, which is useful because a cheaper model may draft while a stronger model critiques. Reflection is particularly valuable for code because code has objective properties such as syntax, test correctness, edge cases, and efficiency.",
+    "key_concepts": [
+      "code reflection",
+      "first draft",
+      "second draft",
+      "reasoning model",
+      "bug checking",
+      "LLM review"
+    ],
+    "index_text": "Slide 38 | Reflection to improve code | write first draft | check bugs | improved second draft | different LLM"
+  },
+  {
+    "slide_title": "Reflection With External Feedback",
+    "slide_paragraph": "This slide adds external feedback to the reflection loop. The LLM writes a first code draft, then the code is executed. If execution produces an error, such as a SyntaxError for an unterminated string literal, the error output is passed back to the LLM. The LLM then reflects on the code output or error and writes an improved second draft. This is more powerful than self-reflection alone because the feedback comes from an external tool that can objectively detect failure. Execution feedback can reveal syntax errors, runtime errors, failing tests, wrong outputs, or performance issues. The slide teaches a key agentic pattern: use tools not only to perform tasks, but also to generate feedback that helps the model improve its next attempt.",
+    "key_concepts": [
+      "external feedback",
+      "code execution",
+      "SyntaxError",
+      "reflection loop",
+      "tool feedback",
+      "debugging"
+    ],
+    "index_text": "Slide 39 | Reflection with external feedback | execute code | code output errors | SyntaxError unterminated string literal"
+  },
+  {
+    "slide_title": "Why Not Just Direct Generation?",
+    "slide_paragraph": "This slide introduces a question that motivates reflection: why not simply ask the model to generate the final answer directly? The question is important because direct generation is simpler, cheaper, and faster. However, as the upcoming slides show, direct generation often fails for tasks requiring accuracy, completeness, formatting, reasoning, or high-quality writing. Reflection adds additional steps, but those steps can catch omissions, improve structure, correct errors, and apply criteria that were not fully satisfied in the first draft. This slide prepares students to compare direct prompting with reflective workflows and to understand when the additional cost of reflection is justified.",
+    "key_concepts": [
+      "direct generation",
+      "reflection motivation",
+      "quality improvement",
+      "tradeoff",
+      "prompting strategy"
+    ],
+    "index_text": "Slide 40 | Reflection Design Pattern | Why not just direct generation | motivation"
+  },
+  {
+    "slide_title": "Direct Generation",
+    "slide_paragraph": "This slide gives examples of direct generation: asking an LLM to write an essay about black holes or write a Python function to calculate compound interest annually. In direct generation, the LLM receives a prompt and immediately produces the final output. The code example returns principal * (1 + rate) ** time, which is the standard compound interest formula when time is measured in years and rate is expressed as a decimal. The essay example begins with a general statement about black holes. Direct generation is useful for simple tasks and quick drafts, but it provides no explicit review step. If the generated code has a hidden bug, the explanation is incomplete, or the essay lacks evidence, the system does not automatically detect or fix the issue. This is the limitation reflection is meant to address.",
+    "key_concepts": [
+      "direct generation",
+      "compound interest",
+      "essay generation",
+      "Python function",
+      "single-step prompting",
+      "draft quality"
+    ],
+    "index_text": "Slide 41 | Direct generation | essay about black holes | python compound interest function | one-step output"
+  },
+  {
+    "slide_title": "Zero, One, and Few-Shot Prompting",
+    "slide_paragraph": "This slide reviews prompting styles using date conversion to MM/DD/YYYY format. A zero-shot prompt gives only the instruction and the input date, with no examples. A one-shot prompt includes one example, such as converting Jan 1st, 2025 to 01/01/2025, before asking the model to convert another date. A two-shot or few-shot prompt includes multiple examples, such as also converting 21st June, 2025 to 06/21/2025. The educational point is that examples guide the model by showing the desired input-output pattern. However, few-shot prompting is still direct generation because the model produces the final answer in one pass after reading the examples. Reflection differs because it adds review and revision after the first output has been produced.",
+    "key_concepts": [
+      "zero-shot prompting",
+      "one-shot prompting",
+      "few-shot prompting",
+      "date conversion",
+      "examples",
+      "prompt design"
+    ],
+    "index_text": "Slide 42 | Zero one few-shot prompting | Convert to MM/DD/YYYY | Jan 1st 2025 | 21st June 2025"
+  },
+  {
+    "slide_title": "Direct Generation as Zero-Shot Prompting",
+    "slide_paragraph": "This slide connects direct generation to zero-shot prompts. The examples ask the model to write an essay about black holes or write a Python function for compound interest without providing demonstrations, intermediate steps, or feedback. The slide labels these as zero-shot prompts because the model is expected to infer the task from the instruction alone. Zero-shot prompting can be effective when the task is familiar and simple, but it is weaker when the task requires careful checking, exact constraints, or domain-specific expectations. This slide helps students see that direct generation is the simplest form of LLM use, while agentic workflows add structure around it. Reflection can be viewed as an upgrade from zero-shot direct generation because it adds explicit self-checking or tool-based checking.",
+    "key_concepts": [
+      "zero-shot prompts",
+      "direct generation",
+      "compound interest",
+      "essay writing",
+      "reflection contrast",
+      "prompt simplicity"
+    ],
+    "index_text": "Slide 43 | Direct generation | Zero-shot prompts | black holes | compound interest function"
+  },
+  {
+    "slide_title": "Reflection Has Been Tested",
+    "slide_paragraph": "This slide provides empirical evidence that reflection can improve performance. The chart, adapted from the Self-Refine paper, compares direct generation and self-refinement across tasks such as sentiment reversal, dialogue response, code optimization, code readability, math reasoning, acronym generation, and constrained generation. The main message on the slide is that reflection consistently outperforms direct generation on a variety of tasks. The chart shows performance gains for different models and tasks, demonstrating that iterative feedback is not only an intuitive idea but also experimentally supported. The reason reflection helps is that a model's first output often contains correct partial information but may miss constraints, make small errors, or choose a weaker structure. A critique-and-revise loop can target those weaknesses and improve the final answer.",
+    "key_concepts": [
+      "Self-Refine",
+      "reflection evaluation",
+      "performance improvement",
+      "iterative refinement",
+      "math reasoning",
+      "code readability"
+    ],
+    "index_text": "Slide 44 | Reflection has been tested | Self-refine | performance improvement with reflection | sentiment code math constrained generation"
+  },
+  {
+    "slide_title": "Tasks Where Reflection Works Better",
+    "slide_paragraph": "This slide lists examples of tasks where reflection is especially useful. For HTML table generation, reflection can validate the HTML code and catch errors such as a missing greater-than symbol. For instructions like brewing a perfect cup of tea, reflection can check whether steps are missing and whether the instructions are coherent and complete. For generating domain names, reflection can evaluate whether a name has unintended meanings, negative connotations, or pronunciation difficulties. The key pattern is that reflection works well when there are clear criteria for judging the output. If the model can inspect the output against those criteria, or if a tool can provide feedback, the second draft can improve. The slide teaches students to ask what can be checked after the first output is generated, because those checks become the basis of the reflection prompt.",
+    "key_concepts": [
+      "reflection use cases",
+      "HTML validation",
+      "instruction completeness",
+      "domain names",
+      "negative connotations",
+      "output criteria"
+    ],
+    "index_text": "Slide 45 | Tasks where reflection works better | Generate html table | perfect cup of tea | domain names | validation criteria"
+  },
+  {
+    "slide_title": "Tips for Writing Reflection Prompts",
+    "slide_paragraph": "This slide gives practical guidance for writing reflection prompts. The first example asks the model to review domain names, check whether each name is easy to pronounce, consider whether it may have negative meanings in other languages, and output only the names that meet the criteria. The second example asks the model to review an email draft, check whether the tone is professional, identify rude or insensitive phrases, verify facts, dates, and promises, and then write the next draft. The slide highlights two principles: clearly indicate the reflection action and specify the criteria to check. A weak reflection prompt such as 'make it better' is vague, while a strong reflection prompt tells the model what quality dimensions matter. This makes the revision more targeted, consistent, and evaluable.",
+    "key_concepts": [
+      "reflection prompts",
+      "criteria",
+      "professional tone",
+      "fact verification",
+      "domain names",
+      "revision instruction"
+    ],
+    "index_text": "Slide 46 | Tips for writing reflection prompts | brainstorming domain names | improving email | specify criteria"
+  },
+  {
+    "slide_title": "Visualizing Coffee Sales",
+    "slide_paragraph": "This slide introduces a data visualization task: create a plot comparing Q1 coffee sales in 2024 and 2025. The sample data table contains columns such as date, price, and coffee_name, with examples including Latte, Hot Chocolate, and Cappuccino across dates in January, February, March, and later March 2025. The task is not simply to write text; it requires reading tabular data, filtering for Q1 months, grouping or aggregating sales, comparing years, and producing a plot. This makes it a strong example for an agentic workflow because the LLM must write code, execute it, inspect the resulting chart, and possibly revise the code if the visualization is unclear. The slide sets up the next workflow where reflection is applied to chart generation.",
+    "key_concepts": [
+      "data visualization",
+      "coffee sales",
+      "Q1 comparison",
+      "tabular data",
+      "Python plotting",
+      "agentic workflow"
+    ],
+    "index_text": "Slide 47 | Visualizing coffee sales | compare Q1 coffee sales 2024 and 2025 | date price coffee_name"
+  },
+  {
+    "slide_title": "Chart Generation Agentic Workflow",
+    "slide_paragraph": "This slide shows a full agentic workflow for generating a chart. The user asks for a plot comparing Q1 coffee sales in 2024 and 2025 using coffee_sales.csv. The LLM first writes Python code, which is executed to produce V1 code and plot.png. Then another LLM step critiques the image and updates the code, producing V2 code. The new code is executed to create plot_v2.png. The diagram shows that the first chart is less clear, while the revised chart is more readable and better structured. The workflow demonstrates reflection with external artifacts: the model does not only read its code, it also sees the generated plot and critiques the visualization. This is a practical example of using execution plus visual feedback to improve an output that would be difficult to perfect in a single prompt.",
+    "key_concepts": [
+      "chart generation",
+      "Python code",
+      "execute code",
+      "visual reflection",
+      "plot critique",
+      "iterative visualization"
+    ],
+    "index_text": "Slide 48 | Chart generation agentic workflow | coffee_sales.csv | V1 code plot.png | critique image | V2 code plot_v2.png"
+  },
+  {
+    "slide_title": "Reflection With a Different LLM",
+    "slide_paragraph": "This slide shows that reflection can be performed by a different LLM from the one that generated the original output. The first prompt asks an LLM to write Python code to generate a visualization that answers the user's question. The second prompt frames another model as an expert data analyst who provides constructive feedback on visualizations. It receives the V1 code, the generated plot image, and conversation history, then follows two steps: critique the chart for readability, clarity, and completeness, and write new code to implement improvements. This separation lets the system use specialized roles: one model call focuses on code generation, while another focuses on visualization critique. In real systems, the reflection model could be stronger, more expensive, multimodal, or simply prompted differently to behave like a reviewer.",
+    "key_concepts": [
+      "different LLM",
+      "code generation",
+      "reflection model",
+      "data analyst",
+      "visualization critique",
+      "role specialization"
+    ],
+    "index_text": "Slide 49 | Reflection with a different LLM | expert data analyst | critique chart | write new code"
+  },
+  {
+    "slide_title": "Evaluating the Impact of Reflection",
+    "slide_paragraph": "This slide begins a section on measuring whether reflection actually improves performance. Reflection adds cost and complexity, so developers should not assume it helps in every case. The purpose of evaluation is to compare outputs with and without reflection using a dataset of prompts and expected answers or quality criteria. The upcoming examples show objective tasks, such as generating SQL queries and comparing answers to ground truth, and subjective tasks, such as judging whether a chart is clearer after revision. This slide reminds students that agentic design should be evaluation-driven. A reflection loop is useful only if it measurably improves accuracy, quality, safety, or user satisfaction compared with direct generation.",
+    "key_concepts": [
+      "reflection evaluation",
+      "impact measurement",
+      "baseline comparison",
+      "with reflection",
+      "without reflection",
+      "agentic evaluation"
+    ],
+    "index_text": "Slide 50 | Reflection Design Pattern | Evaluating the impact of reflection | compare with and without reflection"
+  },
+  {
+    "slide_title": "Create a Dataset of Prompts and Answers",
+    "slide_paragraph": "This slide explains how to evaluate reflection on objective tasks using a dataset of prompts and ground-truth answers. The example contains questions such as number of items sold in May 2025, most expensive item, and how many styles are carried. The workflow asks the LLM to generate a SQL query, reflect on the first SQL query to write a second version, execute the SQL, and then answer the question from the query results. The table compares no-reflection and with-reflection performance, showing improvement from 87% correct to 95% correct in the example. The key lesson is that objective tasks can be evaluated systematically: build a benchmark set, run the workflow each time the reflection prompt changes, execute outputs, and compare final answers to known ground truth. This makes prompt and workflow engineering measurable rather than subjective.",
+    "key_concepts": [
+      "objective evaluation",
+      "ground truth",
+      "SQL generation",
+      "reflection prompt",
+      "accuracy",
+      "benchmark dataset"
+    ],
+    "index_text": "Slide 51 | Create dataset of prompts and answers | SQL query | no reflection 87% | with reflection 95% | ground truth"
+  },
+  {
+    "slide_title": "What About Subjective Tasks?",
+    "slide_paragraph": "This slide asks how to evaluate subjective tasks such as chart quality. The workflow is the same chart-generation loop: write Python code, execute it, produce a first plot, critique the image, update the code, and execute again to create a revised plot. The slide asks whether we can measure which chart is better with an eval. This is harder than SQL correctness because there may not be a single ground-truth answer. A chart can be judged by readability, clarity, appropriate chart type, label quality, color use, axis scaling, and whether it answers the user's question. The slide prepares students for rubric-based LLM evaluation, where subjective quality is broken into smaller criteria that can be scored more consistently.",
+    "key_concepts": [
+      "subjective evaluation",
+      "chart quality",
+      "visualization",
+      "rubric",
+      "LLM judge",
+      "before and after reflection"
+    ],
+    "index_text": "Slide 52 | What about subjective tasks | chart generation workflow | before reflection after reflection | measure chart quality"
+  },
+  {
+    "slide_title": "Using an LLM as a Judge",
+    "slide_paragraph": "This slide shows a simple approach to judging subjective outputs: ask an LLM which image is better, given plot.png and plot_v2.png. The slide also warns about known issues. LLMs may not always provide high-quality comparisons, and they can suffer from position bias, meaning they may prefer the first or second option based on order rather than true quality. The visual note that the LLM picks A more often illustrates this bias. This slide is important because it prevents students from treating LLM-as-judge as automatically reliable. Direct pairwise comparison can be useful, but it should be controlled carefully, perhaps by randomizing order, using multiple judges, or replacing broad comparison questions with rubric-based grading.",
+    "key_concepts": [
+      "LLM-as-judge",
+      "image comparison",
+      "position bias",
+      "subjective scoring",
+      "plot evaluation",
+      "evaluation reliability"
+    ],
+    "index_text": "Slide 53 | Using an LLM as a judge | Which image is better | plot.png plot_v2.png | position bias"
+  },
+  {
+    "slide_title": "Grading With a Rubric",
+    "slide_paragraph": "This slide explains that rubric-based grading gives more consistent subjective evaluations. Instead of asking the LLM which chart is better, the prompt asks it to assess an attached image against a quality rubric, assigning each item a score of 1 for true or 0 for false and returning the scores as JSON. Example rubric criteria include clear title, axis labels present, appropriate chart type, and axes using an appropriate numerical range. The table compares no-reflection and with-reflection scores for multiple user queries, showing that the rubric can be run repeatedly when changing the reflection prompt. The key idea is to decompose subjective quality into specific checkable criteria. This makes LLM judging more structured, easier to compare across experiments, and more useful for prompt improvement.",
+    "key_concepts": [
+      "rubric grading",
+      "structured evaluation",
+      "JSON scores",
+      "chart rubric",
+      "subjective eval",
+      "reflection prompt testing"
+    ],
+    "index_text": "Slide 54 | Grading with a rubric | clear title | axis labels | appropriate chart type | JSON object scores"
+  },
+  {
+    "slide_title": "Evaluating Reflection",
+    "slide_paragraph": "This slide summarizes how to evaluate reflection. For objective evaluations, code-based checks are easier and should be used when possible. Developers should build a dataset of ground-truth examples so they can measure accuracy before and after reflection. For subjective evaluations, an LLM can be used as a judge, but rubric-based grading is better than vague comparison because it gives clearer criteria and more consistent results. The slide reinforces a practical engineering principle: reflection should be tested, not assumed. If reflection improves results, the evaluation should show it. If it does not, the workflow may need better prompts, better criteria, stronger feedback, or fewer unnecessary steps.",
+    "key_concepts": [
+      "reflection evaluation",
+      "objective evals",
+      "subjective evals",
+      "code-based evals",
+      "ground truth",
+      "rubric-based grading"
+    ],
+    "index_text": "Slide 55 | Evaluating reflection | objective evals | subjective evals | LLM as judge | rubric-based grading"
+  },
+  {
+    "slide_title": "Using External Feedback",
+    "slide_paragraph": "This slide introduces the next part of the reflection design pattern: using external feedback. External feedback means the system does not rely only on the model's own judgment; it uses signals from tools, tests, execution results, search results, validators, or other systems. This is important because self-reflection may miss errors that an external check can catch. For example, a model may believe code is correct, but running the code can reveal a syntax error. A model may think a fact is true, but a web search can show it is false. This section will show how external feedback can make reflection more effective and more reliable by grounding the revision step in observable results.",
+    "key_concepts": [
+      "external feedback",
+      "tool feedback",
+      "validation",
+      "reflection reliability",
+      "execution results",
+      "fact checking"
+    ],
+    "index_text": "Slide 56 | Reflection Design Pattern | Using external feedback | tools tests validators"
+  },
+  {
+    "slide_title": "Return on Investment on Prompt Engineering",
+    "slide_paragraph": "This slide presents a conceptual graph of performance versus time spent on prompt engineering. The graph compares no reflection, reflection, and reflection with external feedback. The idea is that direct prompting improves slowly or reaches a lower performance ceiling, while reflection can achieve better performance, and reflection with external feedback can provide even higher returns. External feedback gives the model concrete information about what went wrong, reducing the amount of manual prompt tuning needed to discover failures. This slide teaches a practical lesson: agentic patterns can increase the return on prompt engineering because the workflow itself helps detect and correct errors. Rather than endlessly refining one prompt, developers can design a loop that generates, checks, and revises outputs.",
+    "key_concepts": [
+      "prompt engineering",
+      "return on investment",
+      "external feedback",
+      "performance",
+      "reflection",
+      "workflow optimization"
+    ],
+    "index_text": "Slide 57 | ROI prompt engineering | performance vs time | no reflection | with reflection | external feedback"
+  },
+  {
+    "slide_title": "Reflection With External Feedback",
+    "slide_paragraph": "This slide repeats the code-execution reflection workflow to emphasize the role of external feedback. The LLM writes a first draft of code, the code is executed, and the resulting output or error message is given back to the LLM. The shown error is a SyntaxError for an unterminated string literal, which gives a precise signal about where the code failed. The LLM then reflects on that error and writes an improved second draft. The slide reinforces that reflection is strongest when the model receives specific feedback rather than vague instructions. External feedback can come from compilers, unit tests, linters, validators, search engines, calculators, or databases, depending on the task.",
+    "key_concepts": [
+      "code execution",
+      "error feedback",
+      "SyntaxError",
+      "reflection loop",
+      "debugging",
+      "external validator"
+    ],
+    "index_text": "Slide 58 | Reflection with external feedback | execute code | code output errors | improved second draft"
+  },
+  {
+    "slide_title": "Other Examples of Tools to Help Reflection",
+    "slide_paragraph": "This slide lists additional sources of external feedback for reflection. If the problem is competitor mentions, the system can use pattern matching to detect competitor names such as RivalCo. If the problem is fact checking, such as whether the Taj Mahal was built in 1648, the system can use web search results as evidence. If the LLM fails to follow output length guidelines, a word count tool can measure whether the essay is over the limit. These examples show that reflection can be assisted by simple specialized tools, not only complex AI models. The best feedback tool depends on the failure mode: pattern matching for forbidden terms, retrieval for facts, word count for length, code execution for programs, and schema validation for structured output.",
+    "key_concepts": [
+      "tool-assisted reflection",
+      "pattern matching",
+      "fact checking",
+      "web search",
+      "word count",
+      "failure modes"
+    ],
+    "index_text": "Slide 59 | Tools to help reflection | competitor names | fact checking | word count | RivalCo | Taj Mahal"
+  },
+  {
+    "slide_title": "Tool Use: What Are Tools?",
+    "slide_paragraph": "This slide begins the tool-use section by asking what tools are. In agentic AI, tools are external functions, APIs, programs, databases, or services that the LLM can request to use. Tools allow the model to access capabilities it does not have internally, such as current time, web search, database queries, calculations, code execution, email sending, calendar scheduling, OCR, or image generation. This section will explain how tool execution works, how the model decides when to use a tool, and how tools can be described to the model. Understanding tools is essential because tool use is what turns an LLM from a text generator into an application component that can act on the world or retrieve reliable information.",
+    "key_concepts": [
+      "tool use",
+      "external functions",
+      "APIs",
+      "code execution",
+      "databases",
+      "agentic AI"
+    ],
+    "index_text": "Slide 60 | Tool Use | What are tools | functions APIs external systems"
+  },
+  {
+    "slide_title": "Simple Tool Execution",
+    "slide_paragraph": "This slide illustrates a simple tool-execution problem using the question 'What time is it?' Without tool access, the LLM says it does not have access to the current time, because the current time changes continuously and is not stored in the model parameters. With a get_current_time function, the system can execute code using Python's datetime module and return the current time as a string. The contrast shows the difference between model knowledge and tool capability. The LLM should not guess the current time; it should call a tool that can compute or retrieve it. This example is deliberately simple, but it captures the general pattern: when the answer depends on live data, calculation, private data, or external state, the agent should use a tool instead of relying on language generation.",
+    "key_concepts": [
+      "simple tool execution",
+      "current time",
+      "datetime",
+      "function call",
+      "live data",
+      "tool capability"
+    ],
+    "index_text": "Slide 61 | Simple tool execution | What time is it | get_current_time function | datetime now"
+  },
+  {
+    "slide_title": "LLMs Can Choose Tools When Appropriate",
+    "slide_paragraph": "This slide shows that an LLM should use tools selectively. When the user asks 'What time is it?', the LLM chooses the get_current_time tool, receives the output such as 15:20:45, and then responds in natural language. When the user asks how much caffeine is in green tea, the model does not need the time tool and can answer from general knowledge. The lesson is that tool availability does not mean every prompt requires a tool call. The agent must decide whether a tool is relevant to the user's request. Good tool-using systems therefore require clear tool descriptions, appropriate selection logic, and safeguards against unnecessary or incorrect tool calls. The slide demonstrates the decision-making aspect of agentic tool use.",
+    "key_concepts": [
+      "tool selection",
+      "get_current_time",
+      "relevance",
+      "natural language response",
+      "selective tool use",
+      "agent decision"
+    ],
+    "index_text": "Slide 62 | LLMs choose tools | What time is it | green tea caffeine | get_current_time only when appropriate"
+  },
+  {
+    "slide_title": "Tool Use Examples",
+    "slide_paragraph": "This slide gives three examples of prompts, tools, and outputs. For finding Italian restaurants near Mountain View, California, the system can call a web_search tool with a location-specific query and return restaurant results. For calculating compound interest on a $500 deposit at 5% for 10 years, the system can call an interest_calc tool or execute the expression 500 * (1 + 0.05) ** 10, producing $814.45. For finding customers who bought white sunglasses, the system can query a sales database with product and color filters. These examples show that tools can support information retrieval, mathematical calculation, and database lookup. The LLM's role is to interpret the user's request, choose the right tool, pass correct parameters, and explain the result clearly.",
+    "key_concepts": [
+      "web search",
+      "interest calculator",
+      "database query",
+      "tool parameters",
+      "restaurant search",
+      "compound interest"
+    ],
+    "index_text": "Slide 63 | Examples | restaurants near Mountain View | interest_calc | query_database sales sunglasses white | $814.45"
+  },
+  {
+    "slide_title": "Multiple Tools",
+    "slide_paragraph": "This slide shows a multi-tool workflow for scheduling an appointment with Alice. The user asks the system to find a free slot on Thursday and make an appointment. The LLM has access to tools such as check_calendar, make_appointment, and delete_appointment. The workflow first checks the calendar and receives available times such as Thursday at 3 PM, 4 PM, and 6 PM. Then it uses make_appointment to create the meeting, receives a success output, and finally tells the user that the appointment is set up at 3 PM Thursday. This example demonstrates that tools can be chained: one tool's output becomes input to the next decision. It also shows why agentic systems need careful action validation, because calendar changes affect the user's real world.",
+    "key_concepts": [
+      "multiple tools",
+      "calendar",
+      "make appointment",
+      "check calendar",
+      "tool chaining",
+      "action validation"
+    ],
+    "index_text": "Slide 64 | Multiple tools | check_calendar | make_appointment | delete_appointment | appointment with Alice Thursday"
+  },
+  {
+    "slide_title": "Your Code as a Tool",
+    "slide_paragraph": "This slide states that tools are just code the LLM can request to be executed. The example function get_current_time uses datetime.now().strftime to return the current time as a string. This is a simple but important point: developers can expose their own functions as tools, allowing the LLM to call controlled pieces of application logic. A tool does not have to be a large external service; it can be a small function that performs a calculation, queries a database, formats data, validates an input, sends an email, or checks policy rules. The developer defines what the tool can do, what parameters it accepts, and what output it returns. This gives the system controlled access to capabilities while keeping the LLM itself focused on deciding and communicating.",
+    "key_concepts": [
+      "custom tools",
+      "Python function",
+      "get_current_time",
+      "controlled execution",
+      "developer-defined tools",
+      "function interface"
+    ],
+    "index_text": "Slide 65 | Your code as a tool | get_current_time | tools are code LLM can request to execute"
+  },
+  {
+    "slide_title": "Prompting an LLM to Use Tools",
+    "slide_paragraph": "This slide shows one way to prompt an LLM to call a tool using a specific output format. The system prompt tells the model that it has access to get_current_time and must return exactly 'FUNCTION: get_current_time()' to use it. The application then checks whether 'FUNCTION' appears in the model output. If it does, the tool is executed, producing a time such as 08:00:00. The LLM then receives the tool result and responds to the user, for example 'It's 8am.' This slide explains the mechanics behind simple function calling before more formal tool APIs. The main idea is that the model outputs a structured request, the application executes the function, and the result is fed back to the model for final response generation.",
+    "key_concepts": [
+      "tool prompting",
+      "function call",
+      "system prompt",
+      "get_current_time",
+      "tool result",
+      "structured output"
+    ],
+    "index_text": "Slide 66 | Prompting an LLM to use tools | FUNCTION get_current_time | if FUNCTION in output | 08:00:00"
+  },
+  {
+    "slide_title": "Prompting an LLM to Use Tools With Parameters",
+    "slide_paragraph": "This slide extends tool calling to a function with parameters. The user asks what time it is in New Zealand, and the system prompt tells the model that get_current_time requires a timezone argument written as get_current_time('timezone'). The LLM returns a structured function call such as get_current_time('Pacific/Auckland'). The tool uses Python's ZoneInfo to compute the current time in that timezone and returns a result such as 04:00:00. The final response is then written in natural language. This example shows why tool schemas need parameter descriptions: the model must know what arguments are valid and how to format them. It also shows that tools can convert vague user language, like 'New Zealand', into formal API parameters, such as an IANA timezone string.",
+    "key_concepts": [
+      "tool parameters",
+      "timezone",
+      "Pacific/Auckland",
+      "ZoneInfo",
+      "function schema",
+      "structured tool call"
+    ],
+    "index_text": "Slide 67 | Prompting LLM to use tools | get_current_time timezone | Pacific/Auckland | New Zealand time"
+  },
+  {
+    "slide_title": "Defining Tool Syntax",
+    "slide_paragraph": "This slide shows how tools can be passed to an LLM client in code. The Python function get_current_time contains a docstring describing what it returns. In the aisuite example, the function is included in the tools list when calling client.chat.completions.create with model openai:gpt-4o, messages, and max_turns. The slide notes that the function get_current_time is automatically described to the LLM so it can decide when to use it. This is important because modern tool-calling APIs often convert function names, docstrings, and parameter types into structured descriptions. The model does not execute Python directly; it selects a tool call based on the tool description, and the surrounding application executes the function and returns the result.",
+    "key_concepts": [
+      "tool syntax",
+      "aisuite",
+      "function description",
+      "docstring",
+      "chat completions",
+      "tool calling API"
+    ],
+    "index_text": "Slide 68 | Defining tools syntax | aisuite client | tools=[get_current_time] | function automatically described"
+  },
+  {
+    "slide_title": "Behind the Scenes",
+    "slide_paragraph": "This slide reveals the JSON schema representation behind a function tool. The get_current_time function has a name, a description taken from the docstring, and an empty parameters object because it takes no arguments. The diagram shows that the function name and description are added automatically when the tool is passed to the model. The JSON schema gives the LLM a structured description of what tools exist and how to call them. This structured format is more reliable than relying only on plain-text instructions because the application can validate tool names and parameters. The slide helps students understand the implementation layer behind high-level tool calling: functions become machine-readable tool specifications that guide the model's tool-use decisions.",
+    "key_concepts": [
+      "JSON schema",
+      "function metadata",
+      "tool specification",
+      "tool name",
+      "description",
+      "parameters"
+    ],
+    "index_text": "Slide 69 | Behind the scenes | JSON Schema | get_current_time | name description parameters"
+  },
+  {
+    "slide_title": "Behind the Scenes: Functions With Parameters",
+    "slide_paragraph": "This slide shows a tool schema for a function with parameters. The get_current_time(timezone) function is described as returning current time for a given timezone. The JSON schema includes a timezone parameter of type string, with a description explaining that it should be an IANA time zone string such as America/New_York or Pacific/Auckland. This metadata helps the LLM produce valid tool calls. The slide also shows the Python implementation using ZoneInfo to convert the timezone string into a timezone object and return the time formatted as hours, minutes, and seconds. The key lesson is that parameter descriptions matter: if the schema is clear, the model is more likely to call the tool with valid arguments. Tool design is therefore part API engineering and part prompt engineering.",
+    "key_concepts": [
+      "function parameters",
+      "JSON schema",
+      "IANA timezone",
+      "ZoneInfo",
+      "tool arguments",
+      "parameter description"
+    ],
+    "index_text": "Slide 70 | Behind the scenes functions with parameters | get_current_time(timezone) | JSON schema | America/New_York Pacific/Auckland"
+  },
+  {
+    "slide_title": "A Simple Calculator",
+    "slide_paragraph": "This slide illustrates the limitations of predefined tools using a calculator example. If the user asks to add 13.2 and 18.9, the LLM can choose the add tool from a list containing add, subtract, multiply, and divide, then return 32.1. However, if the user asks for the square root of 2, none of the listed tools directly supports square root. The slide asks whether we should make a new tool. This highlights a design challenge: if every operation requires a separate tool, the toolset may become large and inflexible. For narrow applications, predefined tools are useful and safe. For broader mathematical tasks, it may be better to allow code execution or a more general calculator tool. The slide motivates the next alternative: letting the model write code to solve the user's query.",
+    "key_concepts": [
+      "calculator tools",
+      "add tool",
+      "limited toolset",
+      "square root",
+      "tool design",
+      "predefined functions"
+    ],
+    "index_text": "Slide 71 | A simple calculator | add subtract multiply divide | Add 13.2 and 18.9 | square root of 2 | make new tool"
+  },
+  {
+    "slide_title": "Alternative Approach: Writing Code",
+    "slide_paragraph": "This slide presents code execution as a more flexible alternative to creating many small tools. The system prompt tells the model to write Python code to solve the user's query and return it between execute_python tags. When the user asks for the square root of 2, the model writes code that imports math and prints math.sqrt(2). The application executes the code, receives the output 1.4142135623730951, and the LLM converts that into a natural-language answer: the square root of 2 is approximately 1.4142. This approach is powerful because Python can handle many calculations, data transformations, and analyses without defining a separate tool for each operation. However, it also introduces security risks, which is why later slides discuss secure code execution and sandboxing.",
+    "key_concepts": [
+      "code execution",
+      "Python interpreter",
+      "math.sqrt",
+      "execute_python tags",
+      "flexible tools",
+      "calculator alternative"
+    ],
+    "index_text": "Slide 72 | Alternative approach writing code | square root of 2 | execute_python | import math print math.sqrt(2)"
+  },
+  {
+    "slide_title": "Reflection With External Feedback Revisited",
+    "slide_paragraph": "This slide returns to the reflection-with-code-execution pattern. The LLM writes code for a task, execution produces output or errors, and the LLM uses that external feedback to generate an improved second draft. The repeated slide reinforces the connection between tool use and reflection: tools are not only for answering user questions, but also for testing intermediate outputs. For coding tasks, execution feedback is one of the most reliable ways to improve quality because it provides concrete evidence of failure or success. In a full agentic system, the same idea can be extended to unit tests, schema validators, linters, web search fact checks, database constraints, or simulation results.",
+    "key_concepts": [
+      "reflection",
+      "external feedback",
+      "code execution",
+      "debugging loop",
+      "tool-based validation",
+      "iterative improvement"
+    ],
+    "index_text": "Slide 73 | Reflection with external feedback | write code | execute code | errors | improved second draft"
+  },
+  {
+    "slide_title": "Secure Code Execution",
+    "slide_paragraph": "This slide warns that running code outside a sandbox can be risky. If an LLM can generate code and the application executes it directly, the code might accidentally or maliciously read files, delete data, access secrets, consume excessive resources, or connect to unauthorized systems. Sandboxes help protect against catastrophic errors by isolating execution, limiting permissions, restricting file system access, controlling network access, and setting time or memory limits. This is a critical safety consideration for agentic AI because tool use gives the model operational power. The lesson is that code execution should be treated as a controlled capability, not an unrestricted permission. Developers should use secure execution environments whenever agents can run generated code.",
+    "key_concepts": [
+      "secure code execution",
+      "sandbox",
+      "tool safety",
+      "permission control",
+      "risk mitigation",
+      "generated code"
+    ],
+    "index_text": "Slide 74 | Secure code execution | sandbox | running outside sandbox risky | protect against catastrophic errors"
+  },
+  {
+    "slide_title": "Lecture References",
+    "slide_paragraph": "This final slide lists the lecture reference: Agentic AI from the DeepLearning.AI course, modules 1 through 3. The reference indicates that the lecture content is based on educational material covering agentic workflows, reflection, tool use, planning, and related implementation patterns. This slide is important for academic traceability because it tells students where the conceptual framework and examples come from. It also signals that the lecture is part of a broader sequence, so students who want deeper explanations or hands-on practice can consult the referenced course modules. In the context of the full lecture, the reference closes the topic after moving from definitions of agentic AI to applications, decomposition, evaluation, reflection, and tool execution.",
+    "key_concepts": [
+      "lecture references",
+      "DeepLearning.AI",
+      "Agentic AI",
+      "modules 1-3",
+      "course material"
+    ],
+    "index_text": "Slide 75 | Lecture References | Agentic AI DeepLearning.AI Course Modules 1-3"
+  }
+]

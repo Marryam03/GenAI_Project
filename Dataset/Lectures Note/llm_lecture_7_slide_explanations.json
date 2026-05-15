@@ -1,0 +1,1159 @@
+[
+  {
+    "slide_title": "Retrieval Augmented Generation (RAG)",
+    "slide_paragraph": "This opening slide introduces the lecture topic: Retrieval Augmented Generation, commonly abbreviated as RAG. The slide positions RAG as a central technique for building more reliable LLM-powered applications. The illustration of a human head connected to digital symbols suggests the broader theme of connecting language models to external information, tools, and computational resources. In this lecture, the focus is not simply on asking an LLM to answer from its internal training knowledge, but on augmenting that LLM with retrieval from a knowledge base so the model can answer using relevant, current, or private information. The phrase 'Retrieval Augmented Generation' itself contains the two major stages: retrieval, where useful documents or facts are found, and generation, where the LLM uses that information to produce a coherent response. This framing is important because it separates factual access from linguistic generation: the retriever supplies evidence, while the LLM organizes and explains it.",
+    "key_concepts": [
+      "Retrieval Augmented Generation",
+      "RAG",
+      "LLM applications",
+      "external knowledge",
+      "retrieval",
+      "generation"
+    ],
+    "index_text": "Slide 1 | Retrieval Augmented Generation (RAG) | Dr. Tamer Arafa | lecture title | RAG overview"
+  },
+  {
+    "slide_title": "Two Steps for Answering Questions",
+    "slide_paragraph": "This slide explains that answering questions can require two different cognitive stages: collecting information and then reasoning or responding. The left side labels the first stage as 'Retrieval', meaning the system gathers relevant information before answering. The right side labels the second stage as 'Generation', meaning the system synthesizes the information and produces the final response. The examples contrast easy questions that can be answered from existing knowledge with questions requiring extensive research. For example, a general question such as why hotels are expensive on weekends may be answered from general knowledge about demand, pricing, and travel behavior. In contrast, a specific question such as why Vancouver does not have more hotel capacity close to downtown may require current or specialized information about zoning, land costs, tourism, urban planning, and local development constraints. The slide therefore motivates RAG: when the answer depends on information not already available to the model, retrieval must happen before generation.",
+    "key_concepts": [
+      "retrieval",
+      "generation",
+      "question answering",
+      "information collection",
+      "reasoning",
+      "synthesis"
+    ],
+    "index_text": "Slide 2 | Two Steps for Answering Questions | retrieval collect information | generation reason and respond | Vancouver hotel capacity"
+  },
+  {
+    "slide_title": "Traditional Language Model Usage",
+    "slide_paragraph": "This slide describes the standard way an LLM is used without retrieval. A prompt is sent directly to the LLM, and the model generates an answer based on patterns learned from its training data. The slide shows that this can lead to either a great answer or a not-so-great answer depending on whether the model already has enough relevant information. The training data examples include broad public topics such as Italian dishes, movies, and United States history, which are areas where a general model may perform well because they are widely represented online. However, the slide also highlights two cases where traditional use often fails: very recent information and specialized knowledge. Recent information may be absent because the model has a training cut-off, while specialized knowledge may be missing because it is rare, private, domain-specific, or not widely available on the internet. This sets up the need for an architecture that can add information at inference time rather than relying only on pretraining.",
+    "key_concepts": [
+      "traditional LLM usage",
+      "training data",
+      "knowledge cutoff",
+      "specialized knowledge",
+      "prompting",
+      "model limitations"
+    ],
+    "index_text": "Slide 3 | Traditional Language Model Usage | prompt LLM response | internet data | recent information | specialized knowledge"
+  },
+  {
+    "slide_title": "Training Data and Model Knowledge",
+    "slide_paragraph": "This slide visualizes how an LLM learns from a massive dataset collected from the open internet, including web pages, books, forums, code, and mathematical models. The diagram shows that the LLM is trained on broad public data and then receives a user query, such as why Vancouver has limited hotel capacity near downtown. The example snippets on the right show possible sources of relevant information: one about urban development and zoning laws, and another forum-style comment about high land costs. The key idea is that useful evidence may exist in external documents, but unless that evidence was included in the model's training data and retained accurately, the model may not answer reliably. The slide therefore distinguishes between knowledge stored implicitly in model parameters and knowledge stored explicitly in documents. RAG uses the explicit document form at inference time, so the model can respond using actual retrieved evidence rather than only relying on statistical memory.",
+    "key_concepts": [
+      "training data",
+      "open internet",
+      "implicit knowledge",
+      "external documents",
+      "urban development",
+      "evidence"
+    ],
+    "index_text": "Slide 4 | Training Data | Web pages books forums code | LLM | Vancouver hotel capacity | urban development | zoning laws"
+  },
+  {
+    "slide_title": "What LLMs Don’t Know",
+    "slide_paragraph": "This slide identifies major categories of information that LLMs cannot reliably know by default. First, LLMs cannot access confidential information, such as private databases, internal company policies, customer records, or proprietary documents, unless that information is explicitly provided to them. Second, some information is hard to access or not widely available online, meaning it may never have appeared in the public training data. Third, LLMs do not automatically update with real-time data, so even if they once knew something, it may become outdated. The slide asks how we can ensure the LLM knows useful information, and the implied answer is to connect it to external sources through retrieval. The mention of private databases is especially important for enterprise and research applications, where the most valuable knowledge is often internal, domain-specific, and continuously changing. RAG addresses this by letting the application retrieve relevant information from controlled sources when the user asks a question.",
+    "key_concepts": [
+      "confidential information",
+      "private databases",
+      "real-time data",
+      "knowledge gaps",
+      "RAG motivation",
+      "external sources"
+    ],
+    "index_text": "Slide 5 | What LLMs don’t know | confidential information | private databases | real time data | hard to access information"
+  },
+  {
+    "slide_title": "Just Put It in the Prompt",
+    "slide_paragraph": "This slide presents the simplest possible form of retrieval augmentation: manually placing relevant information into the prompt. The user asks why hotels in Vancouver are expensive on a specific weekend, and the prompt is augmented with news reports and forum posts before being sent to the LLM. The idea is straightforward: if the LLM lacks current information, provide the missing context directly in the input. However, this approach does not scale well if there are many documents, if the documents are long, or if the user asks many different questions. The context window is limited, and manually choosing the right information is inefficient. This slide therefore introduces the intuition behind RAG before formalizing it: instead of expecting the user to paste all potentially relevant information, a retrieval system can automatically search a knowledge base, select the most useful pieces, and insert them into the prompt.",
+    "key_concepts": [
+      "augmented prompt",
+      "manual context",
+      "news reports",
+      "forum posts",
+      "context window",
+      "RAG intuition"
+    ],
+    "index_text": "Slide 6 | Just put it in the prompt | Vancouver hotels expensive weekend | news reports | forum posts | augmented prompt"
+  },
+  {
+    "slide_title": "Augmented Prompt Example",
+    "slide_paragraph": "This slide shows a complete RAG-style interaction. The user asks why hotels in Vancouver are expensive this weekend. Instead of sending only the original question to the LLM, the RAG system creates an augmented prompt by adding retrieved information: Taylor Swift is performing her Eras Tour in Vancouver at BC Place Stadium from December 6 to 8, 2024. This added context gives the LLM a concrete reason for increased hotel demand and therefore allows it to generate a better grounded answer. The diagram separates the original user prompt, the RAG system, the augmented prompt, the LLM, and the response. The important concept is that the LLM does not need to have memorized this event during pretraining. The application can retrieve the event information at inference time and supply it as context. This is the core practical value of RAG: the model can answer questions about current events, local facts, or private documents using retrieved evidence.",
+    "key_concepts": [
+      "augmented prompt",
+      "RAG system",
+      "retrieved context",
+      "current events",
+      "Taylor Swift",
+      "grounded generation"
+    ],
+    "index_text": "Slide 7 | RAG System | augmented prompt | Taylor Swift Eras Tour Vancouver BC Place December 6-8 2024 | hotel prices"
+  },
+  {
+    "slide_title": "Retriever",
+    "slide_paragraph": "This slide defines the retriever as the component that manages a knowledge base and finds information relevant to the user's query. The diagram shows a retriever connected to a knowledge base, emphasizing that retrieval is not the same as generation. The retriever's job is to search trusted information sources, select the most relevant documents, and pass them to the LLM. This improves generation because the LLM receives factual material to use in its answer. A good retriever must balance recall and precision: it should retrieve enough relevant information to answer the question, but not so much irrelevant material that the context becomes noisy. The slide also emphasizes trust: the knowledge base should contain reliable information that the application owner wants the model to use. In RAG systems, the retriever is often implemented using keyword search, semantic vector search, metadata filters, or a hybrid of these methods.",
+    "key_concepts": [
+      "retriever",
+      "knowledge base",
+      "trusted information",
+      "relevance",
+      "retrieval quality",
+      "generation improvement"
+    ],
+    "index_text": "Slide 8 | Retriever | manages knowledge base | finds relevant information | shares information with LLM | improves generation"
+  },
+  {
+    "slide_title": "Retrieval Augmented Generation",
+    "slide_paragraph": "This slide acts as a section divider introducing the formal concept of Retrieval Augmented Generation. The title indicates that the lecture is moving from the motivation for RAG into its architecture and implementation. RAG combines two systems: an information retrieval system that searches external knowledge and a generative language model that writes the final answer. The name is descriptive: generation is augmented, or strengthened, by retrieval. This is different from simply fine-tuning a model because the knowledge can be updated independently from the model parameters. It is also different from ordinary prompting because the retrieval step is automated. In practical applications, RAG is used for document question answering, customer support, legal search, medical knowledge assistants, internal company chatbots, and any scenario where the model must answer from a controlled body of evidence.",
+    "key_concepts": [
+      "RAG",
+      "section introduction",
+      "retrieval",
+      "generation",
+      "external knowledge",
+      "architecture"
+    ],
+    "index_text": "Slide 9 | Retrieval Augmented Generation | section heading | RAG architecture | retrieval plus generation"
+  },
+  {
+    "slide_title": "RAG Architecture Overview",
+    "slide_paragraph": "This slide introduces the architecture overview section. It signals that the following slides will break down the components of a RAG pipeline and explain how a user prompt becomes an augmented prompt and then a grounded LLM response. A typical RAG architecture contains a user interface, a retriever, a knowledge base or vector database, retrieved documents, prompt construction logic, and the LLM. The system may also include metadata filtering, reranking, citation handling, and response validation. The purpose of the architecture view is to show that RAG is not a single model but an application pattern composed of multiple cooperating modules. Understanding this architecture is essential because failures in RAG often come from retrieval errors, poor chunking, bad prompt templates, or irrelevant context rather than from the LLM alone.",
+    "key_concepts": [
+      "RAG architecture",
+      "pipeline",
+      "retriever",
+      "knowledge base",
+      "augmented prompt",
+      "LLM response"
+    ],
+    "index_text": "Slide 10 | RAG Architecture Overview | architecture section | retriever knowledge base augmented prompt LLM"
+  },
+  {
+    "slide_title": "RAG System Compared with Normal LLM Use",
+    "slide_paragraph": "This slide compares normal LLM usage with a RAG system. In normal use, a prompt goes directly into the LLM, and the model returns a response. In the RAG system shown above that flow, the prompt is first used by a retriever, which searches a knowledge base and returns relevant documents. These documents are then available to be inserted into the prompt before the LLM answers. The diagram clearly separates the knowledge base, retriever, relevant documents, prompt, LLM, and response. This separation matters because each component has a different responsibility: the knowledge base stores information, the retriever selects evidence, and the LLM transforms the evidence into an answer. The slide helps students see RAG as an extension of the standard prompt-response pattern rather than a replacement for the language model. The LLM is still responsible for generation, but it is no longer isolated from external knowledge.",
+    "key_concepts": [
+      "normal LLM use",
+      "RAG system",
+      "retriever",
+      "knowledge base",
+      "relevant documents",
+      "prompt-response pipeline"
+    ],
+    "index_text": "Slide 11 | RAG System | normal LLM use | prompt LLM response | retriever knowledge base relevant documents"
+  },
+  {
+    "slide_title": "Augmented Prompt in RAG",
+    "slide_paragraph": "This slide focuses on how retrieved documents are inserted into the prompt. The example augmented prompt asks why hotels in Vancouver are expensive this coming weekend and then tells the LLM that five relevant articles may help it respond. The placeholder '<retrieved articles>' represents the selected documents returned by the retriever. The important idea is that the LLM receives both the original question and the retrieved context in a single input. This gives the LLM evidence to reason over. The slide also shows that the retriever and knowledge base operate before the LLM response is generated. In practice, the augmented prompt usually contains system instructions, conversation history, retrieved chunks, metadata such as document titles or source IDs, and the user's current query. Good prompt construction is critical because the LLM must understand which text is evidence and how it should use that evidence.",
+    "key_concepts": [
+      "augmented prompt",
+      "retrieved articles",
+      "context injection",
+      "prompt construction",
+      "RAG system",
+      "relevant documents"
+    ],
+    "index_text": "Slide 12 | Augmented Prompt | retrieved articles | Vancouver hotels | knowledge base | retriever | prompt construction"
+  },
+  {
+    "slide_title": "RAG Architecture and Added Latency",
+    "slide_paragraph": "This slide shows the full RAG flow and highlights an important tradeoff: added latency. In a standard LLM call, the prompt can be sent directly to the model. In a RAG system, the prompt must first pass through retrieval, the knowledge base must be searched, relevant documents must be selected, and the augmented prompt must be built before the LLM can generate a response. This extra work improves factual grounding but increases response time. The diagram therefore teaches that RAG is an engineering tradeoff: better knowledge access and reduced hallucination usually come at the cost of additional computation, indexing, search, and prompt-processing overhead. In production applications, latency can be reduced through fast vector databases, caching, small retrieval limits, reranking only the top candidates, and efficient chunking. Students should understand that RAG quality is not only about accuracy but also about performance and user experience.",
+    "key_concepts": [
+      "added latency",
+      "RAG tradeoff",
+      "retrieval overhead",
+      "augmented prompt",
+      "production performance",
+      "response time"
+    ],
+    "index_text": "Slide 13 | RAG architecture | added latency | retriever knowledge base relevant documents | augmented prompt | LLM response"
+  },
+  {
+    "slide_title": "Advantages of RAG",
+    "slide_paragraph": "This slide lists the main benefits of RAG. First, RAG injects missing knowledge by adding information that may not exist in the model's training data, such as policies, updates, or specialized documents. Second, it reduces hallucinations by grounding answers in retrieved context. Third, it keeps models up to date because the knowledge base can be updated without retraining the LLM. Fourth, it enables source citation, allowing users to verify where an answer came from. Fifth, it lets the LLM focus on generation while the retriever handles factual lookup. The diagram reinforces this by showing the retriever, knowledge base, and augmented prompt surrounding the original user question. The key lesson is that RAG improves reliability not by making the LLM magically know everything, but by giving it the right context at the right time and asking it to answer using that context.",
+    "key_concepts": [
+      "missing knowledge",
+      "hallucination reduction",
+      "up-to-date knowledge",
+      "source citation",
+      "grounding",
+      "retriever role"
+    ],
+    "index_text": "Slide 14 | Advantages of RAG | injects missing knowledge | reduces hallucinations | source citation | keeps models up to date"
+  },
+  {
+    "slide_title": "Why LLMs Hallucinate",
+    "slide_paragraph": "This slide explains hallucination as a natural consequence of how LLMs generate text. LLMs produce likely word sequences based on statistical patterns learned during training. Because the objective is to generate probable text, not to directly verify truth, a response can sound fluent and plausible while being factually incorrect. The slide highlights three causes: LLMs reproduce statistical patterns, knowledge gaps cause inaccurate responses, and truthful text is not always the same as probable text. This distinction is fundamental. A model may generate a confident answer because similar wording appeared often in training, even if the specific fact is missing, outdated, or false. RAG addresses this weakness by adding relevant evidence to the prompt, making the truthful answer more likely because the facts are explicitly present in the context. The slide therefore motivates retrieval as a grounding mechanism rather than just a search convenience.",
+    "key_concepts": [
+      "hallucination",
+      "probable text",
+      "truthfulness",
+      "knowledge gaps",
+      "statistical patterns",
+      "grounding"
+    ],
+    "index_text": "Slide 15 | Why LLMs Hallucinate | probable word sequences | truthful not equal probable | knowledge gaps | inaccurate responses"
+  },
+  {
+    "slide_title": "How RAG Solves the Problem",
+    "slide_paragraph": "This slide summarizes the central solution offered by RAG: relevant context grounds the LLM's responses. The diagram shows a retriever connected to a knowledge base, with retrieved context added before the LLM answers. The plus sign indicates that the LLM is combined with external information rather than used alone. Grounding means the model has explicit evidence available in the input and can base its answer on that evidence. This reduces the chance that it invents unsupported details. The slide also implies that retrieval quality determines grounding quality. If the retrieved context is irrelevant or incomplete, the LLM may still answer poorly. Therefore, a strong RAG system depends on both a capable generator and a reliable retrieval mechanism. In applications, this is often reinforced by system instructions such as 'use only the retrieved documents' and 'say you do not know if the answer is missing.'",
+    "key_concepts": [
+      "grounding",
+      "retrieved context",
+      "knowledge base",
+      "retriever",
+      "hallucination reduction",
+      "evidence-based answering"
+    ],
+    "index_text": "Slide 16 | How RAG solves the problem | relevant context grounds responses | retriever knowledge base LLM"
+  },
+  {
+    "slide_title": "Retriever Reasoning About Similar Documents",
+    "slide_paragraph": "This slide explains the retriever's task using a pizza example. The user asks, 'How can I make New York style pizza at home?' The retriever must interpret what the prompt means and then search the knowledge base for documents with similar meaning. The knowledge base contains documents such as 'A History of NYC', 'Sauce Secrets', 'Cooking at Home', and 'Pizza Basics'. The important point is that retrieval is not just string matching; the system must determine which documents are useful for answering the question. A history document about New York may contain the word 'New York' but not help with making pizza. A cooking document may be relevant even if it does not contain the exact phrase 'New York style pizza'. This slide prepares students for the distinction between keyword search and semantic search, both of which attempt to rank documents by relevance.",
+    "key_concepts": [
+      "retriever",
+      "semantic relevance",
+      "knowledge base",
+      "document similarity",
+      "pizza example",
+      "query understanding"
+    ],
+    "index_text": "Slide 17 | Retriever | New York style pizza at home | what does prompt mean | similar documents | knowledge base"
+  },
+  {
+    "slide_title": "Retriever Scores and Ranking",
+    "slide_paragraph": "This slide adds numerical relevance scores to the pizza retrieval example. The question about making New York style pizza at home is compared with documents in the knowledge base, and the documents receive similarity scores such as 0.95, 0.8, 0.7, and 0.6. These scores represent the retriever's estimate of how relevant each document is to the query. The highest-scoring document is likely the best candidate to include in the augmented prompt, but lower-ranked documents may still contain useful supporting information. The slide illustrates ranking: retrieval is not simply about finding one matching document, but about ordering many candidates by estimated usefulness. The scores may come from semantic similarity, keyword scoring, or hybrid methods. In RAG, the system often selects the top-k documents, meaning the top few highest-ranked chunks, and inserts them into the context window.",
+    "key_concepts": [
+      "relevance score",
+      "ranking",
+      "top-k retrieval",
+      "similarity",
+      "document selection",
+      "retriever output"
+    ],
+    "index_text": "Slide 18 | Retriever scores | 0.95 0.8 0.7 0.6 | rank documents | New York style pizza | top k"
+  },
+  {
+    "slide_title": "Retriever Tradeoffs",
+    "slide_paragraph": "This slide explains that retrieval involves tradeoffs rather than perfect answers. A retriever must return relevant documents while withholding irrelevant ones. Returning every document would maximize coverage but would flood the context window with noise, waste tokens, and confuse the LLM. Returning only the single highest-ranked document might reduce noise but could miss important supporting information. The slide emphasizes that there is no perfect solution because retrievers usually do not rank documents perfectly. Therefore, RAG systems must be monitored and tuned experimentally. Important settings include the number of returned documents, chunk size, metadata filters, semantic versus keyword weighting, reranking, and thresholds for similarity. The broader lesson is that retrieval quality is an empirical engineering problem: students should test different configurations on realistic user questions and measure whether the retrieved context is actually useful for answering.",
+    "key_concepts": [
+      "retriever tradeoffs",
+      "relevance",
+      "irrelevance",
+      "context window",
+      "top-k",
+      "monitoring"
+    ],
+    "index_text": "Slide 19 | Retriever Tradeoffs | relevance vs irrelevance | return every document | highest ranked document | monitor and experiment"
+  },
+  {
+    "slide_title": "Information Retrieval Foundations",
+    "slide_paragraph": "This slide introduces the information retrieval foundations section. The lecture is now moving from the high-level RAG architecture into the search methods that make retrieval possible. Information retrieval is the field concerned with finding relevant documents from a collection in response to a query. In RAG, this is a crucial component because the LLM's final answer depends heavily on what the retriever supplies. The upcoming concepts include keyword search, metadata filtering, semantic search, vector embeddings, distance metrics, approximate nearest neighbor search, and vector databases. This section is foundational because a student cannot build strong RAG systems by only understanding LLM prompting. They must also understand how documents are represented, indexed, searched, ranked, and filtered before being passed to the model.",
+    "key_concepts": [
+      "information retrieval",
+      "search methods",
+      "ranking",
+      "indexing",
+      "RAG foundation",
+      "document retrieval"
+    ],
+    "index_text": "Slide 20 | Information Retrieval Foundations | search methods | indexing ranking retrieval | RAG foundations"
+  },
+  {
+    "slide_title": "Prompts and Documents Are Messy",
+    "slide_paragraph": "This slide explains the practical difficulty faced by retrieval systems. User prompts are often unstructured and conversational, meaning they may be incomplete, informal, ambiguous, or phrased differently from the documents. Documents also come in a wide range of formats and are usually written for humans, not for retrieval algorithms. The retriever must rapidly find relevant documents despite this mismatch. This is why retrieval requires robust representation methods. Simple exact matching may fail when the query uses different wording from the document, while semantic methods may fail when exact terms, IDs, dates, or names matter. The slide motivates the need for multiple retrieval approaches that can handle messy natural language and heterogeneous documents. In real applications, documents may include PDFs, web pages, emails, policies, tables, code snippets, and database records, each requiring careful preprocessing.",
+    "key_concepts": [
+      "unstructured prompts",
+      "documents",
+      "messy data",
+      "retrieval challenge",
+      "heterogeneous formats",
+      "query-document mismatch"
+    ],
+    "index_text": "Slide 21 | Prompts unstructured conversational | documents wide formats | retriever rapidly finds relevant documents"
+  },
+  {
+    "slide_title": "Two Search Approaches",
+    "slide_paragraph": "This slide introduces two major retrieval approaches: keyword search and semantic search. Keyword search looks for documents containing the exact words found in the prompt. It is useful when exact terms matter, such as product names, legal case numbers, error codes, dates, or quoted phrases. Semantic search, in contrast, looks for documents with similar meaning to the prompt, even if the exact words are different. For example, a query about 'fixing a broken laptop battery' may match a document about 'repairing notebook power issues' through semantic similarity. The slide's contrast is central to modern RAG: neither method is universally best. Keyword search is precise and interpretable, while semantic search is flexible and meaning-aware. High-performing systems often combine them because user queries may require both exact matching and conceptual similarity.",
+    "key_concepts": [
+      "keyword search",
+      "semantic search",
+      "exact words",
+      "similar meaning",
+      "retrieval approaches",
+      "hybrid retrieval"
+    ],
+    "index_text": "Slide 22 | Two Search Approaches | keyword search exact words | semantic search similar meaning"
+  },
+  {
+    "slide_title": "Search Techniques Pipeline",
+    "slide_paragraph": "This slide shows how multiple search techniques can be combined. Keyword search and semantic search each return ranked lists of documents, often around 20 to 50 candidates. Each list can then be filtered using metadata, such as author, date, title, section, access permissions, or document type. The filtered results are then combined into a final set of documents to pass to the LLM. The diagram shows different rankings from keyword and semantic search: one may rank Document A first while the other ranks Document C first. This reflects their different notions of relevance. Keyword search favors lexical overlap, while semantic search favors meaning similarity. Metadata filtering adds rigid constraints. The combined result is a more controlled retrieval process. This slide is important because practical RAG is rarely a single retrieval method; it is usually a retrieval pipeline with search, filtering, merging, and sometimes reranking.",
+    "key_concepts": [
+      "keyword search",
+      "semantic search",
+      "metadata filter",
+      "candidate lists",
+      "hybrid pipeline",
+      "document ranking"
+    ],
+    "index_text": "Slide 23 | Search Techniques | keyword search semantic search | metadata filter | 20-50 documents | knowledge base"
+  },
+  {
+    "slide_title": "Hybrid Search and Metadata Filtering",
+    "slide_paragraph": "This slide summarizes three techniques that high-performing retrievers balance: keyword search, semantic search, and metadata filtering. Keyword search ensures sensitivity to exact words from the prompt. Semantic search finds documents with similar meaning even when the wording differs. Metadata filtering excludes documents based on rigid criteria, such as date, author, section, or permissions. Hybrid search combines keyword and semantic signals so the retriever benefits from both exact matching and meaning-based matching. The slide emphasizes that the best balance depends on project needs. For example, a legal RAG system may give more weight to exact terms and metadata because case numbers and dates are crucial. A general knowledge assistant may use more semantic search because users phrase questions naturally. The practical lesson is to choose retrieval methods based on the information structure and the consequences of retrieving wrong documents.",
+    "key_concepts": [
+      "hybrid search",
+      "metadata filtering",
+      "keyword relevance",
+      "semantic relevance",
+      "retriever design",
+      "project requirements"
+    ],
+    "index_text": "Slide 24 | Hybrid Search | keyword search | semantic search | metadata filtering | high-performing retrievers"
+  },
+  {
+    "slide_title": "Metadata Filtering",
+    "slide_paragraph": "This slide explains metadata filtering using a database-style example. The SQL query returns all articles published on a specific date: SELECT * FROM articles WHERE publication_date = '2023-10-01'. The slide defines metadata filtering as narrowing documents using rigid criteria such as title, author, creation date, access privileges, section, and tags. The example newspaper-style table contains fields like title, publication date, author, section, and tags, and the filter example includes conditions such as section equals 'Opinion', author equals 'Michael Chen', and date between June and July 2024. Metadata filtering is different from semantic search because it does not judge meaning. It enforces exact constraints. In RAG, metadata filters are useful for limiting retrieval to the correct domain, time range, user permissions, department, document type, or source collection before ranking documents by relevance.",
+    "key_concepts": [
+      "metadata filtering",
+      "SQL filter",
+      "publication date",
+      "author",
+      "section",
+      "access privileges"
+    ],
+    "index_text": "Slide 25 | Metadata Filtering | SELECT articles WHERE publication_date | title author section tags | rigid criteria"
+  },
+  {
+    "slide_title": "Advantages and Limitations of Metadata Filtering",
+    "slide_paragraph": "This slide lists the pros and cons of metadata filtering. On the positive side, metadata filtering is simple to understand and debug. It is fast, mature, optimized, and reliable because database systems are designed to filter structured fields efficiently. It also enforces strict retrieval rules, meaning documents must match exact criteria. This is useful for permissions, dates, departments, or source types. However, the slide also emphasizes limitations. Metadata filtering is not true content search: it does not understand whether the document text actually answers the question. It is rigid, ignores document content, and does not provide a meaningful relevance ranking by itself. Therefore, metadata filtering is usually useless alone for open-ended question answering. Its best role in RAG is to narrow the search space before keyword or semantic ranking is applied.",
+    "key_concepts": [
+      "metadata filter pros",
+      "metadata filter cons",
+      "strict rules",
+      "debuggability",
+      "content ignorance",
+      "retrieval pipeline"
+    ],
+    "index_text": "Slide 26 | Advantages and Limitations | metadata filtering pros cons | simple fast reliable | not true search | rigid"
+  },
+  {
+    "slide_title": "Keyword Search - TF-IDF",
+    "slide_paragraph": "This slide introduces keyword search using TF-IDF, which stands for Term Frequency-Inverse Document Frequency. Keyword search represents documents according to the words they contain, and TF-IDF improves simple word counting by considering both how often a term appears in a document and how rare that term is across the document collection. A term that appears frequently in one document but rarely across all documents is likely to be important for retrieval. For example, in a collection of food articles, 'pizza' may be more informative than a common word such as 'the'. This slide marks the start of the mathematical foundation for lexical retrieval. TF-IDF is important because it explains why keyword retrieval can rank documents rather than simply checking whether a word appears. It also prepares students to understand BM25, a more advanced and widely used keyword ranking method.",
+    "key_concepts": [
+      "keyword search",
+      "TF-IDF",
+      "term frequency",
+      "inverse document frequency",
+      "lexical retrieval",
+      "ranking"
+    ],
+    "index_text": "Slide 27 | Keyword search TF-IDF | Term Frequency Inverse Document Frequency | lexical retrieval"
+  },
+  {
+    "slide_title": "Introduction to Keyword Search",
+    "slide_paragraph": "This slide emphasizes that keyword search has powered retrieval systems for decades because of its simplicity and effectiveness. Unlike semantic search, keyword search does not require deep neural embeddings; it can rely on tokenization, counts, indexes, and scoring formulas. This makes it fast, explainable, and reliable. The slide calls keyword search a key component of modern RAG systems, which is important because students may assume that semantic embeddings have replaced lexical methods. In reality, keyword search remains valuable because exact wording often matters. If a user searches for a case number, product code, name, abbreviation, or rare term, keyword search can retrieve documents that semantic search might miss. The slide therefore positions keyword search as a proven baseline and a practical component of hybrid retrieval rather than an outdated method.",
+    "key_concepts": [
+      "keyword search",
+      "retrieval history",
+      "simplicity",
+      "effectiveness",
+      "modern RAG",
+      "lexical matching"
+    ],
+    "index_text": "Slide 28 | Introduction to Keyword Search | decades of proven simplicity | modern RAG systems"
+  },
+  {
+    "slide_title": "Keyword Search Example",
+    "slide_paragraph": "This slide uses the query 'How can I make New York style pizza at home?' to show how keyword search can retrieve documents based on word overlap. The example documents contain phrases such as 'Use bread flour for New York pizza dough', 'New York pizzerias stay open late for home delivery', and 'At New York Pizza Mexico, they serve pizza with jalapeño'. These documents may share keywords like 'New York', 'pizza', and 'home', but they differ in true relevance. The first document appears most useful because it discusses making New York pizza dough. The second contains overlapping words but is about pizzerias and delivery. The third contains 'New York Pizza' as a restaurant name and may not help with the cooking question. The slide illustrates both the strength and weakness of keyword search: it can quickly find lexical matches, but word overlap alone does not guarantee that the document answers the user's intent.",
+    "key_concepts": [
+      "keyword overlap",
+      "pizza query",
+      "lexical matching",
+      "relevance",
+      "false positives",
+      "search example"
+    ],
+    "index_text": "Slide 29 | Keyword Search Example | New York style pizza at home | Doc 1 Doc 2 Doc 3 | word overlap"
+  },
+  {
+    "slide_title": "Bag of Words",
+    "slide_paragraph": "This slide explains the bag-of-words representation using the prompt 'Making pizza without a pizza oven'. In a bag-of-words model, word order is ignored and only word presence or frequency matters. The example counts the words: 'pizza' appears twice, while 'without', 'making', 'oven', and 'a' each appear once. This representation converts text into a set of keyword counts. It is simple and useful for keyword search, but it loses grammar, syntax, and meaning. For example, 'pizza without oven' and 'oven without pizza' may look similar even though their wording differs. The name 'bag of words' is intuitive: the sentence is treated as if its words were thrown into a bag and counted without preserving sequence. This is the foundation for sparse vector representations used in classical information retrieval.",
+    "key_concepts": [
+      "bag of words",
+      "word frequency",
+      "keyword counts",
+      "word order ignored",
+      "sparse representation",
+      "lexical search"
+    ],
+    "index_text": "Slide 30 | Bag of Words | Making pizza without a pizza oven | word order ignored | pizza count 2"
+  },
+  {
+    "slide_title": "Sparse Vectors",
+    "slide_paragraph": "This slide shows how bag-of-words representations become sparse vectors. A vocabulary is listed with words such as making, pizza, without, a, cake, drink, pan, pasta, oven, tea, burger, salad, taco, blend, and the. For the sentence 'Making pizza without a pizza oven', only a few vocabulary entries have non-zero values, while most are zero. This is why the representation is called sparse: the vector may have thousands or millions of possible word dimensions, but any single document uses only a small subset of them. Sparse vectors are efficient when stored with specialized data structures because there is no need to store every zero explicitly. In retrieval, sparse vectors make it possible to compare queries and documents based on shared terms. However, they cannot naturally represent synonymy or deeper meaning unless additional techniques are added.",
+    "key_concepts": [
+      "sparse vectors",
+      "vocabulary",
+      "zero entries",
+      "bag-of-words vector",
+      "keyword search",
+      "high-dimensional representation"
+    ],
+    "index_text": "Slide 31 | Sparse Vectors | bag of words sparse | making pizza without oven | many zero entries"
+  },
+  {
+    "slide_title": "Keyword Match Counts Across Documents",
+    "slide_paragraph": "This slide illustrates how keyword overlap can be used to score documents. The query contains words such as making, pizza, without, a, and oven. Several documents are compared based on how many of these query terms they contain, producing overlap scores such as 3/5, 1/5, 4/5, 4/5, and 5/5. The visual plus signs indicate matched terms between the query and each document. The document with 5/5 matches appears most lexically similar because it contains all query words. This is a simple scoring approach: more shared keywords means a higher score. However, the slide also prepares students for why more sophisticated scoring is needed. Some words, such as 'a', are common and not very informative. Other words, such as 'pizza' or 'oven', may be more useful. TF-IDF and BM25 improve on simple matching by weighting words differently and normalizing for document length.",
+    "key_concepts": [
+      "keyword overlap",
+      "match count",
+      "document scoring",
+      "query terms",
+      "simple retrieval",
+      "lexical similarity"
+    ],
+    "index_text": "Slide 32 | Keyword matching | making pizza without a pizza oven | 3/5 1/5 4/5 5/5 | plus signs"
+  },
+  {
+    "slide_title": "Frequency Based Scoring",
+    "slide_paragraph": "This slide compares simple keyword scoring with term-frequency scoring. The example query is 'pizza oven'. Document 1 contains 'pizza' twice and 'oven' once, so simple scoring gives two points because both query terms appear, while term-frequency scoring gives three points because it counts repeated occurrences. Document 2 contains 'pizza' once and 'oven' three times, so simple scoring again gives two points, but term-frequency scoring gives four points. The slide demonstrates that counting occurrences can better reflect how strongly a document discusses the query terms. However, raw frequency also has a weakness: longer documents may repeat keywords more often simply because they are longer, not because they are more relevant. This motivates normalization by document length on the next slide. The core intuition is that frequency matters, but frequency must be controlled to avoid biased rankings.",
+    "key_concepts": [
+      "term frequency",
+      "frequency-based scoring",
+      "simple scoring",
+      "keyword occurrence",
+      "pizza oven",
+      "document ranking"
+    ],
+    "index_text": "Slide 33 | Frequency Based Scoring | pizza oven | simple scoring | TF scoring | keyword occurrences"
+  },
+  {
+    "slide_title": "Normalized TF Scoring",
+    "slide_paragraph": "This slide introduces normalized term-frequency scoring. It explains that longer documents may contain keywords many times simply because they contain more words overall. If raw keyword counts are used, long documents can unfairly outrank short but highly relevant documents. The proposed solution is to normalize by document length using the formula: Score equals the number of keyword occurrences divided by the total words in the document. For example, if 'pizza' and 'oven' occur 4 times in a 20-word document, the normalized score is 4/20 = 0.20. If they occur 8 times in a 400-word document, the raw count is higher, but the normalized score is only 8/400 = 0.02. This slide teaches that retrieval scoring must consider proportion, not just count. Normalization is one reason modern ranking formulas are more reliable than simple matching.",
+    "key_concepts": [
+      "normalized term frequency",
+      "document length",
+      "TF scoring",
+      "keyword occurrence ratio",
+      "length normalization",
+      "ranking bias"
+    ],
+    "index_text": "Slide 34 | Normalized TF Scoring | Score = keyword occurrences / total words | document length normalization"
+  },
+  {
+    "slide_title": "TF-IDF",
+    "slide_paragraph": "This slide introduces the full TF-IDF idea. Basic term-frequency scoring treats all words equally, even though common filler words are much less informative than rare, meaningful words. The solution is inverse document frequency, or IDF, which gives higher weight to terms that appear in fewer documents. The formula shown is Score = TF(word, doc) multiplied by log(Total docs divided by Docs containing word). Term frequency measures how important a word is inside one document; inverse document frequency measures how distinctive that word is across the whole collection. For example, a word like 'the' appears in almost every document and receives little weight, while a word like 'neapolitan' or 'Vancouver' may appear in fewer documents and receive more weight. TF-IDF therefore ranks documents higher when they contain query terms that are both frequent locally and rare globally.",
+    "key_concepts": [
+      "TF-IDF",
+      "term frequency",
+      "inverse document frequency",
+      "rare words",
+      "common words",
+      "ranking formula"
+    ],
+    "index_text": "Slide 35 | TF-IDF | Score = TF(word, doc) × log(Total docs / Docs containing word) | IDF"
+  },
+  {
+    "slide_title": "Counting Documents for IDF",
+    "slide_paragraph": "This slide breaks down the first step in computing inverse document frequency: count how many documents contain each word. The example words are 'making' and 'pizza'. To calculate IDF, the system must know the total number of documents and the number of documents in which each word appears. This document-frequency count is different from term frequency. Term frequency asks how often a word appears inside one document. Document frequency asks in how many documents the word appears at least once. A word that appears in many documents is common and less useful for distinguishing relevant results. A word that appears in only a few documents is more distinctive. This slide prepares the intuition that rarity across the corpus should increase a word's retrieval weight. The counting step is usually done when building the keyword index.",
+    "key_concepts": [
+      "document frequency",
+      "IDF calculation",
+      "total documents",
+      "word occurrence across corpus",
+      "keyword rarity",
+      "indexing"
+    ],
+    "index_text": "Slide 36 | Count Documents | total docs | docs word appears in | making pizza | document frequency"
+  },
+  {
+    "slide_title": "Document Frequency Examples",
+    "slide_paragraph": "This slide compares the document frequency of two words: 'pizza' and 'the'. Pizza appears in 5 out of 100 documents, so its document frequency is 5/100 = 0.05. The word 'the' appears in all 100 documents, so its document frequency is 100/100 = 1.0. The key insight is that 'pizza' is more informative because it narrows the search to a smaller subset of documents, while 'the' is almost useless for retrieval because it appears everywhere. This example makes the IDF intuition concrete: rare words help discriminate relevant documents from irrelevant ones. In keyword search, a document matching 'pizza' should receive more credit than a document matching only 'the'. The slide also shows why retrieval systems often remove or down-weight stop words such as 'the', 'a', and 'is'.",
+    "key_concepts": [
+      "document frequency",
+      "pizza",
+      "the",
+      "rare terms",
+      "common terms",
+      "stop words"
+    ],
+    "index_text": "Slide 37 | Document Frequency | Pizza appears in 5 of 100 | The appears in all 100 | DF 0.05 vs 1.0"
+  },
+  {
+    "slide_title": "Flipping Document Frequency to Reward Rare Words",
+    "slide_paragraph": "This slide shows how inverse document frequency flips document frequency so that rare words receive higher scores. If 'pizza' appears in only 5 out of 100 documents, its document frequency is 0.05, and taking the inverse gives 1/0.05 = 20. If 'the' appears in all documents, its document frequency is 1.0, and its inverse is 1/1.0 = 1.0. This means 'pizza' receives much more weight than 'the'. The slide labels pizza as high score and the as low score. This is exactly the purpose of IDF: reward terms that are useful for identifying a small, meaningful subset of the corpus. Without IDF, common words could dominate scoring simply because they appear frequently. With IDF, rare and meaningful words contribute more strongly to retrieval ranking.",
+    "key_concepts": [
+      "inverse document frequency",
+      "rare word reward",
+      "IDF",
+      "pizza",
+      "the",
+      "keyword weighting"
+    ],
+    "index_text": "Slide 38 | Flip to reward rare words | IDF = 1/DF | Pizza high score 20 | The low score 1"
+  },
+  {
+    "slide_title": "Applying Log to IDF",
+    "slide_paragraph": "This slide adds a logarithm to the inverse document frequency calculation. The inverse of a rare word's document frequency can become very large, so applying log compresses the scale. In the example, 'pizza' remains higher than 'the', but the score is moderated. The word 'the' is so common that its log-based weight becomes zero or close to zero, meaning it contributes little to retrieval. This prevents extremely rare terms from dominating too aggressively while still preserving the intuition that rare words are more informative. The slide therefore shows the final refinement behind the IDF part of TF-IDF: use rarity, but control the magnitude of the rarity weight. Log scaling is common in information retrieval because it creates more stable scores across large corpora.",
+    "key_concepts": [
+      "log scaling",
+      "IDF",
+      "rarity weighting",
+      "common words",
+      "score compression",
+      "TF-IDF refinement"
+    ],
+    "index_text": "Slide 39 | Apply log | Pizza still higher | The too common no weight | log IDF | rare words"
+  },
+  {
+    "slide_title": "TF-IDF Formula",
+    "slide_paragraph": "This slide presents the TF-IDF formula clearly. Term Frequency is the number of keyword occurrences divided by the total words in the document. TF-IDF then multiplies TF by log base 10 of total documents divided by documents containing the word. The formula combines two intuitions: a word matters more if it appears often in a specific document, and a word matters more if it appears in relatively few documents overall. For example, if a document is short and repeatedly discusses 'pizza oven', and those terms are not too common across the corpus, the document receives a high score for a pizza-oven query. If a document mostly contains common words, the score remains low. TF-IDF is a foundational lexical ranking method because it turns raw keyword matching into a weighted relevance score that can be used to rank search results.",
+    "key_concepts": [
+      "TF formula",
+      "IDF formula",
+      "TF-IDF",
+      "log10",
+      "document length",
+      "keyword relevance"
+    ],
+    "index_text": "Slide 40 | TF-IDF formula | TF = keyword occurrences / total words | TF-IDF = TF × log10(total docs / docs containing word)"
+  },
+  {
+    "slide_title": "Rare Keywords Score Higher",
+    "slide_paragraph": "This slide explains the effect of TF-IDF on document ranking. For the query 'Making pizza without a pizza oven', documents containing meaningful rare terms such as 'pizza' and 'oven' receive higher scores, shown with values like 1.3 and 1.1. Documents matching common or less informative words such as 'a' and 'without' receive low scores, shown as 0 and 0.1. This demonstrates why TF-IDF improves over simple overlap. If a document matches only function words or common words, it should not be considered highly relevant. If it matches rare, content-bearing words, it is much more likely to address the query. The slide reinforces the main principle: keyword search is not just counting words; good keyword search weights words according to how useful they are for distinguishing relevant documents from the rest of the collection.",
+    "key_concepts": [
+      "rare keywords",
+      "high scoring document",
+      "low scoring document",
+      "TF-IDF weighting",
+      "pizza oven",
+      "common words"
+    ],
+    "index_text": "Slide 41 | Rare keywords score higher | pizza oven high score | a without low score | TF-IDF weighting"
+  },
+  {
+    "slide_title": "Keyword Search Overview",
+    "slide_paragraph": "This slide summarizes keyword search as a pipeline: convert documents into sparse vectors, score them, and rank them. It compares TF-IDF and BM25. TF-IDF uses keyword rarity, term frequency, and document length. BM25, described as the most commonly used method, extends these ideas with better document length normalization and term frequency saturation. Term frequency saturation means that repeated occurrences of a word help up to a point, but after many repetitions the additional benefit becomes smaller. This prevents keyword stuffing from dominating rankings. The slide teaches that keyword search has evolved from simple bag-of-words counts into robust ranking formulas. In RAG, BM25 is often used alongside semantic vector search because it is strong for exact terms, rare names, identifiers, and specialized vocabulary.",
+    "key_concepts": [
+      "keyword search pipeline",
+      "sparse vectors",
+      "TF-IDF",
+      "BM25",
+      "term frequency saturation",
+      "document length normalization"
+    ],
+    "index_text": "Slide 42 | Keyword Search Overview | sparse vectors scored ranked | BM25 | TF-IDF | document length normalization"
+  },
+  {
+    "slide_title": "Keyword Search Strengths",
+    "slide_paragraph": "This slide highlights two major strengths of keyword search: simplicity and guaranteed keyword matching. Simplicity means the method is easy to understand, debug, and explain. If a document was retrieved, developers can inspect which query terms matched and how they contributed to the score. Guaranteed keyword matching means that when a user includes a specific word or phrase, keyword search can ensure documents containing that term are found. This is especially important for structured domains where exact terminology matters: legal citations, product SKUs, medical terms, error messages, names, dates, and course-specific vocabulary. The slide's short wording is intentionally direct because these strengths explain why keyword search remains relevant despite modern embedding methods. In many RAG systems, keyword search provides precision and interpretability, while semantic search provides flexibility.",
+    "key_concepts": [
+      "keyword search strengths",
+      "simplicity",
+      "guaranteed matching",
+      "debuggability",
+      "exact terms",
+      "precision"
+    ],
+    "index_text": "Slide 43 | Keyword Search Strengths | simplicity | guaranteed keyword matching"
+  },
+  {
+    "slide_title": "Semantic Search Introduction",
+    "slide_paragraph": "This slide introduces the semantic search section. The lecture is transitioning from lexical retrieval, which depends on exact word overlap, to meaning-based retrieval, which represents prompts and documents using embeddings. Semantic search is important because users often ask questions using different words than the documents use. For example, a user might ask about 'cheap accommodation', while the document discusses 'budget hotels'. Keyword search may miss that relation if the exact words differ, but semantic search can retrieve the document because the meanings are similar. This section will explain how embedding models map text to vectors, how distances between vectors are measured, and how documents are ranked by semantic closeness. The goal is to retrieve relevant information based on meaning rather than only surface form.",
+    "key_concepts": [
+      "semantic search",
+      "meaning-based retrieval",
+      "embeddings",
+      "vector search",
+      "lexical limitations",
+      "section introduction"
+    ],
+    "index_text": "Slide 44 | Semantic search introduction | meaning based retrieval | embeddings vectors"
+  },
+  {
+    "slide_title": "Why Semantic Search Is Needed",
+    "slide_paragraph": "This slide explains why lexical search alone is insufficient. To improve on keyword search, a retrieval system must capture meaning, not only word presence. The examples 'happy' and 'glad' show that keyword search cannot naturally match synonyms if the exact words differ. A document containing 'glad' may be relevant to a query containing 'happy', but pure keyword search may not rank it highly. The slide also notes that keyword search can incorrectly match different meanings. For example, the same word may have different senses in different contexts, such as 'bank' meaning a financial institution or a river edge. Semantic search addresses these problems by using embedding models that place semantically similar texts near each other in vector space. The main intuition is that meaning can be represented geometrically, allowing retrieval by similarity of concepts rather than exact tokens.",
+    "key_concepts": [
+      "synonyms",
+      "semantic meaning",
+      "keyword limitations",
+      "polysemy",
+      "embedding models",
+      "meaning similarity"
+    ],
+    "index_text": "Slide 45 | Semantic search motivation | happy glad | synonyms | different meanings | lexical search limitation"
+  },
+  {
+    "slide_title": "Semantic Search vs. Keyword Search",
+    "slide_paragraph": "This slide directly compares semantic search with keyword search. Both approaches convert prompts and documents into vectors and compare those vectors to generate scores. The main difference is how the vectors are assigned. In keyword search, vectors are based on word counts, producing sparse vectors where each dimension corresponds to a word or term. In semantic search, vectors are produced by an embedding model, usually a neural network trained to place similar meanings close together. This produces dense vectors, where most dimensions contain non-zero values and individual dimensions are not usually interpretable as specific words. The slide is important because it shows that both methods can be understood under a common retrieval framework: represent text numerically, compare representations, rank results. The difference is whether representation is lexical or semantic.",
+    "key_concepts": [
+      "semantic search",
+      "keyword search",
+      "vectors",
+      "embedding model",
+      "sparse vectors",
+      "dense vectors"
+    ],
+    "index_text": "Slide 46 | Semantic Search vs Keyword Search | prompt and documents get vectors | keyword count words | semantic embedding model"
+  },
+  {
+    "slide_title": "Understanding Embedding Models",
+    "slide_paragraph": "This slide introduces embedding models using a simple two-dimensional vector space. The model maps tokens or words to locations in space, and each location is represented by a vector. The examples show 'Pizza' as vector [3, 1] and 'Bear' as vector [5, 2]. In two dimensions these vectors can be drawn as points, making the geometry easy to visualize. The slide also shows words such as food, cuisine, cat, and trombone to suggest that related words should occupy nearby areas in the space. In real embedding models, vectors usually have hundreds or thousands of dimensions, but the same intuition applies: texts with related meanings are placed close together. This is the foundation of semantic retrieval because the system can compare the query vector with document vectors and retrieve the nearest ones.",
+    "key_concepts": [
+      "embedding model",
+      "vector space",
+      "word vectors",
+      "semantic similarity",
+      "2D example",
+      "dense embeddings"
+    ],
+    "index_text": "Slide 47 | Understanding Embedding Models | Pizza vector [3,1] | Bear vector [5,2] | vector space"
+  },
+  {
+    "slide_title": "Embedding Spaces Are Not Directly Interpretable",
+    "slide_paragraph": "This slide clarifies that the axes in embedding space do not usually have simple human-readable meanings. In a two-dimensional teaching diagram, one might be tempted to label the x-axis or y-axis as a concept such as food, animal, or music. However, real embedding dimensions are learned mathematical features, not manually assigned semantic categories. The slide says that points 'float around' in space and similar words cluster together. The important idea is that meaning is represented by relative position rather than by a single interpretable coordinate. A word such as 'cuisine' may be close to 'food', while 'cat' may be far from 'trombone', but we usually interpret similarity by distance or direction, not by reading an axis label. This helps students avoid overinterpreting individual embedding dimensions.",
+    "key_concepts": [
+      "embedding space",
+      "axis interpretation",
+      "clustering",
+      "semantic neighborhoods",
+      "learned dimensions",
+      "relative position"
+    ],
+    "index_text": "Slide 48 | Embedding models | no simple interpretation of X and Y axis | similar words cluster together"
+  },
+  {
+    "slide_title": "Embedding Dimensionality",
+    "slide_paragraph": "This slide explains why embedding models use many dimensions. In two dimensions, only simple relationships can be represented. In three dimensions, there is more room for clusters. In real systems, embeddings often use 100 to 1,000 or more dimensions, which gives the model enough capacity to capture nuanced relationships between words, sentences, or documents. The slide emphasizes that the same principle holds across dimensions: close vectors tend to have similar meanings. More dimensions allow the embedding space to represent many independent semantic factors, such as topic, sentiment, domain, style, entities, and intent. However, higher dimensionality also increases storage and search cost. This is why vector databases and approximate nearest neighbor algorithms are important: they make it possible to search large collections of high-dimensional embeddings efficiently.",
+    "key_concepts": [
+      "embedding dimensionality",
+      "2D vectors",
+      "3D vectors",
+      "high-dimensional embeddings",
+      "semantic nuance",
+      "similarity"
+    ],
+    "index_text": "Slide 49 | More dimensions | 2 dimensions 3 dimensions 100-1000+ dimensions | close vectors similar meanings"
+  },
+  {
+    "slide_title": "Embedding Models for Words, Sentences, and Documents",
+    "slide_paragraph": "This slide explains that embeddings can represent different levels of text. Individual word embedding models map words such as 'cat' and 'happy' into vectors. Sentence embedding models map full sentences such as 'The weather is nice' and 'What a lovely day' into vectors that capture sentence-level meaning. Document embedding models represent longer pieces of text. This distinction matters for RAG because the retriever usually searches chunks, passages, or documents rather than isolated words. A sentence or document embedding must summarize the meaning of multiple tokens into one vector. The slide also implies that choosing the right embedding model depends on the task. A model designed for word similarity may not work well for document retrieval, while a model trained for sentence or passage retrieval is better suited for RAG.",
+    "key_concepts": [
+      "word embeddings",
+      "sentence embeddings",
+      "document embeddings",
+      "embedding model types",
+      "RAG chunks",
+      "semantic representation"
+    ],
+    "index_text": "Slide 50 | Individual Words | Sentences | Documents | word embedding model | sentence embedding model | document embedding model"
+  },
+  {
+    "slide_title": "Sentence Embedding Example",
+    "slide_paragraph": "This slide gives a simple sentence embedding example with three sentences. Sentence 1, 'He spoke softly in class', and sentence 2, 'He whispered quietly during class', are semantically similar because both describe quiet speech in a classroom context. Sentence 3, 'Her daughter brightened the gloomy day', has a very different meaning. In an embedding space, sentences 1 and 2 should appear closer together, while sentence 3 should be farther away. This example demonstrates why semantic search can retrieve relevant documents even when words do not exactly match. Sentence 1 uses 'spoke softly', while sentence 2 uses 'whispered quietly'; keyword search may not fully connect them, but an embedding model can recognize their similar meaning. In RAG, this allows natural user queries to match documents written in different wording.",
+    "key_concepts": [
+      "sentence embeddings",
+      "semantic similarity",
+      "paraphrase",
+      "vector distance",
+      "meaning-based retrieval",
+      "classroom example"
+    ],
+    "index_text": "Slide 51 | Sentence Embedding Example | He spoke softly | He whispered quietly | daughter brightened gloomy day"
+  },
+  {
+    "slide_title": "Measuring Vector Distance: Euclidean Distance",
+    "slide_paragraph": "This slide introduces Euclidean distance as one way to measure how far apart two vectors are. Euclidean distance is the straight-line distance between two points in vector space, equivalent to the shortest possible path from one vector to another. In a two-dimensional diagram, this is easy to visualize as a line segment connecting two points. In semantic search, a smaller Euclidean distance can indicate that two embeddings are more similar. However, Euclidean distance depends on both direction and magnitude. For high-dimensional text embeddings, other measures such as cosine similarity are often preferred because they focus more on direction than raw length. Still, Euclidean distance is a foundational geometric concept and helps students understand that retrieval can be framed as finding nearby vectors in a space.",
+    "key_concepts": [
+      "Euclidean distance",
+      "vector distance",
+      "straight-line distance",
+      "nearest neighbors",
+      "embedding space",
+      "similarity measurement"
+    ],
+    "index_text": "Slide 52 | Measuring Vector Distance | Euclidean Distance | straight line between vectors | shortest distance"
+  },
+  {
+    "slide_title": "Measuring Vector Distance: Cosine Similarity",
+    "slide_paragraph": "This slide introduces cosine similarity, which measures how similar two vectors are by comparing their direction rather than their physical distance in space. The diagram shows an angle theta between two vectors, and a scale from -1 to 1. A value of 1 means the vectors point in the same direction, 0 means they are perpendicular, and -1 means they point in opposite directions. The slide includes examples such as [100, 100] and [10, 10], which point in the same direction even though their magnitudes differ greatly. This is why cosine similarity is useful for text embeddings: two texts can have similar meaning even if their vector lengths differ. In RAG, cosine similarity is commonly used to rank documents by semantic similarity to the user's query.",
+    "key_concepts": [
+      "cosine similarity",
+      "vector direction",
+      "angle theta",
+      "same direction",
+      "perpendicular",
+      "opposite direction"
+    ],
+    "index_text": "Slide 53 | Cosine Similarity | angle theta | [100,100] [10,10] | -1 0 1 | same direction"
+  },
+  {
+    "slide_title": "Measuring Vector Distance: Dot Product",
+    "slide_paragraph": "This slide introduces the dot product as another similarity measure. The dot product measures the length of the projection of one vector onto another. If two vectors point in the same general direction, the dot product is positive. If they are perpendicular, it is zero. If they point in opposite directions, it is negative. In retrieval systems, dot product can be used to score similarity between query and document embeddings, especially when embeddings are normalized or when the model was trained with dot-product similarity. The slide's scale shows the intuitive relation between direction and score. Compared with cosine similarity, dot product also depends on vector magnitude unless vectors are normalized. This is why many embedding systems L2-normalize vectors before search so that dot product and cosine similarity become closely related.",
+    "key_concepts": [
+      "dot product",
+      "projection",
+      "vector similarity",
+      "positive score",
+      "negative score",
+      "embedding retrieval"
+    ],
+    "index_text": "Slide 54 | Dot product | projection length | negative zero positive | same direction opposite direction"
+  },
+  {
+    "slide_title": "Dot Product and Cosine Similarity Compared",
+    "slide_paragraph": "This slide places dot product and cosine similarity side by side. Both measures give higher values for closer or more similar vectors, but they define similarity slightly differently. Cosine similarity focuses on direction and is bounded between -1 and 1. Dot product can be negative, zero, or positive and can grow with vector magnitude. The slide highlights directional interpretations: opposite direction, perpendicular, and same direction. For semantic search, the practical lesson is that retrieval requires a distance or similarity function, and the choice must match the embedding model and database configuration. Many vector databases allow cosine, dot product, or Euclidean distance. The best option often depends on how the embeddings were trained and normalized. Students should not treat vector search as magic; it is a mathematical comparison between query and document vectors.",
+    "key_concepts": [
+      "dot product",
+      "cosine similarity",
+      "distance metrics",
+      "vector ranking",
+      "embedding comparison",
+      "similarity scores"
+    ],
+    "index_text": "Slide 55 | Dot product vs Cosine Similarity | higher values closer vectors | -1 0 1 | negative zero positive"
+  },
+  {
+    "slide_title": "Semantic Search Workflow",
+    "slide_paragraph": "This slide summarizes the semantic search workflow. Documents and the prompt are passed through an embedding model, which maps them into vectors in a shared vector space. The system then ranks documents by distance from the prompt vector and returns the closest ones. The important concept is that the search happens over vector representations rather than raw text. If the prompt asks about making New York style pizza and a document discusses preparing thin crust pizza dough at home, their vectors may be close even if their words do not perfectly overlap. This workflow is the foundation of vector-based RAG. The retriever converts both user queries and knowledge-base chunks into comparable numerical representations, then performs nearest-neighbor search to identify the most semantically relevant chunks.",
+    "key_concepts": [
+      "semantic search workflow",
+      "embedding model",
+      "vector space",
+      "rank by distance",
+      "nearest documents",
+      "dense retrieval"
+    ],
+    "index_text": "Slide 56 | Semantic Search | embedding model | documents prompt | vector space | rank by distance | closest documents"
+  },
+  {
+    "slide_title": "Beta: Weighting Semantic vs. Keyword Search",
+    "slide_paragraph": "This slide explains how hybrid search can weight semantic and keyword components using a beta parameter. A beta value of 0.8 means the final retrieval score is 80 percent semantic search and 20 percent keyword search. A beta value of 0.7 means 70 percent semantic and 30 percent keyword. The slide notes that if exact keyword matching is important, beta should be lower, giving keyword search more influence. This is a practical tuning concept. In domains where exact terms matter, such as legal documents or technical logs, keyword weight should be stronger. In domains where users ask natural language questions and wording varies widely, semantic weight can be stronger. Hybrid weighting lets the retriever combine conceptual similarity with exact term sensitivity, improving robustness across different query types.",
+    "key_concepts": [
+      "hybrid search",
+      "beta weighting",
+      "semantic weight",
+      "keyword weight",
+      "exact matching",
+      "retrieval tuning"
+    ],
+    "index_text": "Slide 57 | Beta weighting | semantic search 80 keyword 20 | beta 0.8 0.7 | lower beta for exact keywords"
+  },
+  {
+    "slide_title": "Approximate Nearest Neighbor Algorithms",
+    "slide_paragraph": "This slide introduces approximate nearest neighbor algorithms, abbreviated ANN. The lecture is moving from how text is represented as vectors to how large collections of vectors can be searched efficiently. In a small collection, a system could compare the query vector with every document vector. But in realistic RAG systems with thousands, millions, or billions of chunks, exact comparison becomes too slow. ANN algorithms solve this by using special data structures to find very close vectors quickly, without always guaranteeing the mathematically closest result. This tradeoff is acceptable in many retrieval systems because the goal is to find highly relevant documents fast, not necessarily to prove the absolute nearest vector. ANN is a key reason vector databases can scale.",
+    "key_concepts": [
+      "ANN",
+      "approximate nearest neighbors",
+      "vector search",
+      "scalability",
+      "efficient retrieval",
+      "large collections"
+    ],
+    "index_text": "Slide 58 | Approximate nearest neighbors algorithms | ANN | vector search efficiency"
+  },
+  {
+    "slide_title": "Basic Vector Retrieval - KNN",
+    "slide_paragraph": "This slide explains basic vector retrieval using K Nearest Neighbors, or KNN. The process is simple: vectorize all documents and the prompt, compute distances from the prompt vector to all document vectors, and sort the documents by distance. The prompt vector is shown in the diagram, representing the user's query in embedding space. KNN is exact because it checks every document vector. If K equals 5, the system returns the five closest documents after computing all distances. This method is conceptually straightforward and useful for understanding vector search. However, it becomes expensive as the number of documents grows because every query requires a distance calculation against every stored vector. This slide sets up the scaling problem that motivates approximate nearest neighbor search.",
+    "key_concepts": [
+      "KNN",
+      "K nearest neighbors",
+      "vectorize documents",
+      "compute distances",
+      "sort by distance",
+      "exact search"
+    ],
+    "index_text": "Slide 59 | Basic Vector Retrieval KNN | vectorize all documents and prompt | compute distances | sort by distance"
+  },
+  {
+    "slide_title": "KNN Returning Closest Elements",
+    "slide_paragraph": "This slide completes the KNN workflow by adding the final step: return the closest elements. After vectorizing all documents and the prompt, computing distances, and sorting by distance, the retriever selects the nearest document vectors as results. These returned items become candidates for the RAG context. The simplicity of KNN makes it easy to reason about: the closest vectors are assumed to be the most semantically relevant documents. But exact KNN requires comparing against every vector in the collection for every query. This is manageable for small datasets but impractical at web or enterprise scale. The slide therefore reinforces both the usefulness and limitation of exact vector retrieval. It is the baseline that approximate methods try to accelerate while preserving acceptable retrieval quality.",
+    "key_concepts": [
+      "KNN retrieval",
+      "closest elements",
+      "nearest neighbors",
+      "semantic results",
+      "top-k",
+      "exact vector search"
+    ],
+    "index_text": "Slide 60 | KNN | return closest elements | prompt vector | vector retrieval | nearest documents"
+  },
+  {
+    "slide_title": "Scaling Challenges of KNN",
+    "slide_paragraph": "This slide explains why exact KNN does not scale well. The calculation time grows linearly with dataset size. If there are 1,000 documents, the system performs 1,000 distance calculations per search. If there are 1 billion documents, it performs 1 billion distance calculations every time. This linear growth becomes too slow and expensive for high-performing retrievers. The slide makes the computational problem clear: vector search is not only about representing meaning but also about searching efficiently through large vector collections. A better approach is needed for large-scale RAG applications. Approximate nearest neighbor algorithms reduce search cost by avoiding exhaustive comparison. They use indexes, graphs, clustering, hashing, or hierarchical structures to quickly navigate toward likely nearest documents.",
+    "key_concepts": [
+      "KNN scaling",
+      "linear growth",
+      "distance calculations",
+      "large datasets",
+      "retrieval performance",
+      "ANN motivation"
+    ],
+    "index_text": "Slide 61 | Scaling Challenges | 1000 docs 1000 calculations | 1B docs 1B calculations | linear growth"
+  },
+  {
+    "slide_title": "Approximate Nearest Neighbors",
+    "slide_paragraph": "This slide defines approximate nearest neighbor search as a faster alternative to exact KNN. ANN is significantly faster because it relies on additional data structures that organize vectors for efficient search. The tradeoff is that ANN is not guaranteed to find the absolute closest document vectors. Instead, it finds vectors that are very likely to be close enough. In RAG, this is usually acceptable because retrieval is already probabilistic and the top few candidates may contain sufficient relevant information. ANN is therefore an engineering compromise between speed and exactness. The slide also prepares for the next concept: graph-based methods such as navigable small world and hierarchical navigable small world, which are commonly used in vector databases to perform fast approximate search.",
+    "key_concepts": [
+      "ANN",
+      "speed",
+      "data structures",
+      "approximation",
+      "nearest neighbor search",
+      "retrieval tradeoff"
+    ],
+    "index_text": "Slide 62 | Approximate Nearest Neighbors | faster than KNN | additional data structures | not guaranteed closest"
+  },
+  {
+    "slide_title": "Navigable Small World",
+    "slide_paragraph": "This slide introduces the Navigable Small World approach for vector search. The method starts by computing distances between document vectors, adding one node to a graph for each document, and connecting each node to its nearest neighbors. The result is a proximity graph: documents that are close in vector space are connected by edges. Once the graph is built, search can traverse from one node to nearby nodes, moving closer to the query vector without checking every document in the dataset. The phrase 'navigable small world' suggests that the graph is structured so that a search can move efficiently through neighborhoods of similar vectors. This is useful for approximate nearest neighbor retrieval because it replaces exhaustive distance computation with graph traversal. The slide lays the conceptual foundation for HNSW, a widely used ANN index.",
+    "key_concepts": [
+      "Navigable Small World",
+      "proximity graph",
+      "graph traversal",
+      "nearest neighbors",
+      "vector index",
+      "ANN"
+    ],
+    "index_text": "Slide 63 | Navigable Small World | compute distances | one node per document | connect nearest neighbors | proximity graph"
+  },
+  {
+    "slide_title": "Query Entry Point",
+    "slide_paragraph": "This slide begins the search process over a proximity graph. It shows a query vector, an initial candidate, and a query entry point. In graph-based ANN search, the algorithm does not compare the query to every stored vector. Instead, it begins at some entry node in the graph and evaluates whether neighboring nodes are closer to the query. The initial candidate is simply a starting guess. It may be far from the query, but the graph's edges allow the search to move step by step toward better candidates. This slide is important because it shows the operational difference between KNN and graph search. KNN is exhaustive, while graph search is navigational. The algorithm uses local comparisons to approach the region of the vector space where the most relevant documents are likely to be located.",
+    "key_concepts": [
+      "query vector",
+      "entry point",
+      "candidate",
+      "graph search",
+      "proximity graph",
+      "ANN traversal"
+    ],
+    "index_text": "Slide 64 | Query Entry Point | candidate | query vector | graph ANN search starts"
+  },
+  {
+    "slide_title": "Search Algorithm: First Candidate Evaluation",
+    "slide_paragraph": "This slide continues the graph-based search algorithm. The query vector is compared with the current candidate and its neighboring nodes. The goal is to find a neighbor that is closer to the query than the current candidate. If such a neighbor exists, the search moves to that neighbor. This local improvement process is similar to hill climbing, except the objective is to reduce distance to the query vector rather than maximize a reward. The diagram likely shows the search beginning to move through connected nodes. The key idea is that the algorithm uses graph edges to avoid scanning all vectors. It only examines a subset of promising neighbors. This makes search much faster than exact KNN, especially when the graph has been constructed to connect each point to useful nearby points.",
+    "key_concepts": [
+      "graph search",
+      "candidate evaluation",
+      "neighbor comparison",
+      "local search",
+      "ANN",
+      "distance reduction"
+    ],
+    "index_text": "Slide 65 | Search Algorithm | query vector | candidate neighbors | move to closer node"
+  },
+  {
+    "slide_title": "Search Algorithm: Moving Toward Closer Neighbors",
+    "slide_paragraph": "This slide represents the next step in graph traversal. After identifying a neighbor that is closer to the query vector, the algorithm updates its current candidate to that closer node. It then repeats the process: inspect the new candidate's neighbors and move again if a closer one is found. This iterative movement is the essence of navigable graph search. Instead of computing distances to the whole database, the algorithm follows edges through the graph, progressively approaching the query's neighborhood. In a well-built proximity graph, nearby documents in semantic space are connected, so this process quickly finds relevant candidates. The slide helps students understand why graph quality matters: if the graph connects useful neighbors, search is efficient; if the graph is poorly connected, the algorithm may miss good results.",
+    "key_concepts": [
+      "graph traversal",
+      "closer neighbor",
+      "iterative search",
+      "proximity graph",
+      "ANN search",
+      "candidate update"
+    ],
+    "index_text": "Slide 66 | Search Algorithm | query vector | move through graph | closer neighbors"
+  },
+  {
+    "slide_title": "Search Algorithm: Repeated Neighbor Exploration",
+    "slide_paragraph": "This slide continues the repeated exploration process in a navigable small world graph. At each step, the search checks whether any neighbor of the current candidate is closer to the query vector. If a closer neighbor exists, the search moves there. This produces a path through vector space from the entry point toward a region of high similarity. The algorithm is approximate because it does not guarantee that the path will find the global nearest neighbor, but in practice it often finds very good candidates quickly. The slide visually reinforces that ANN search is a sequence of local decisions. For RAG, these decisions determine which document chunks are retrieved and therefore what evidence the LLM receives. Efficient retrieval is therefore directly connected to answer quality and latency.",
+    "key_concepts": [
+      "neighbor exploration",
+      "ANN path",
+      "local decisions",
+      "vector similarity",
+      "retrieval latency",
+      "candidate path"
+    ],
+    "index_text": "Slide 67 | Search Algorithm | query vector | repeated neighbor exploration | ANN local decisions"
+  },
+  {
+    "slide_title": "Search Algorithm: Approaching the Query Region",
+    "slide_paragraph": "This slide shows the search getting closer to the query vector. As the candidate moves through the proximity graph, the distance to the query decreases. The algorithm effectively navigates from a rough starting point to a semantically similar region of the vector space. This is why proximity graphs are useful: they encode local neighborhoods, allowing the search to use edges as shortcuts through the space. In a RAG system, this means the retriever can quickly find chunks that are semantically close to the user's question. The slide also implies that the retrieval result is determined by both the embedding model and the ANN index. If semantically related documents are embedded close together and the graph connects them well, the search can locate relevant context efficiently.",
+    "key_concepts": [
+      "query region",
+      "proximity graph",
+      "distance reduction",
+      "semantic neighborhood",
+      "ANN efficiency",
+      "retrieval result"
+    ],
+    "index_text": "Slide 68 | Search Algorithm | query vector | approaching query region | semantic neighborhood"
+  },
+  {
+    "slide_title": "Search Algorithm: Candidate Refinement",
+    "slide_paragraph": "This slide illustrates further refinement of the candidate during graph-based search. Once the algorithm reaches a promising area, it continues checking nearby nodes to see whether any are still closer to the query. This refinement stage is important because early moves may take the algorithm into the correct general neighborhood, but final accuracy depends on exploring local alternatives. In practical ANN indexes, parameters control how many candidates are explored and how aggressively the search expands. Larger search effort can improve recall but increases latency. The slide therefore connects the visual algorithm to a common tuning tradeoff in vector databases: search faster with fewer checks, or search more thoroughly to retrieve better nearest neighbors.",
+    "key_concepts": [
+      "candidate refinement",
+      "local neighborhood",
+      "ANN recall",
+      "latency tradeoff",
+      "vector database tuning",
+      "nearest neighbor"
+    ],
+    "index_text": "Slide 69 | Search Algorithm | query vector | refine candidate | local neighborhood | ANN recall latency"
+  },
+  {
+    "slide_title": "Search Algorithm: Near Final Candidate",
+    "slide_paragraph": "This slide shows the search near its final candidate. By this point, the algorithm has followed graph connections from the entry point toward a node that appears very close to the query vector. It may still inspect nearby nodes, but fewer improvements remain. This demonstrates how ANN methods reduce work: only a small path and local neighborhood are examined compared with scanning every vector. For large RAG knowledge bases, this can be the difference between an interactive system and an unusably slow one. The slide also reminds students that 'approximate' does not mean random. The algorithm uses the structure of the graph and repeated distance comparisons to make informed moves toward relevant results.",
+    "key_concepts": [
+      "near final candidate",
+      "ANN path",
+      "efficient vector search",
+      "graph connections",
+      "retrieval speed",
+      "approximate search"
+    ],
+    "index_text": "Slide 70 | Search Algorithm | query vector | near final candidate | ANN efficient search"
+  },
+  {
+    "slide_title": "Search Algorithm: No Closer Neighbors",
+    "slide_paragraph": "This slide concludes the graph search process with the condition 'No closer neighbors'. Once the current candidate has no neighboring node that is closer to the query vector, the algorithm stops and returns the current candidate or a set of best candidates found during search. This is a local stopping criterion. It does not mathematically prove that no closer vector exists anywhere in the entire database, but it indicates that within the explored graph neighborhood, the search has reached a local optimum. This is the essence of approximate nearest neighbor retrieval. The result is usually good enough and much faster than exact search. In RAG, this candidate or candidate set becomes the retrieved context that will be inserted into the prompt for the LLM.",
+    "key_concepts": [
+      "stopping criterion",
+      "no closer neighbors",
+      "local optimum",
+      "ANN result",
+      "retrieved context",
+      "graph search"
+    ],
+    "index_text": "Slide 71 | Search Algorithm | no closer neighbors | query vector | stopping criterion | local optimum"
+  },
+  {
+    "slide_title": "Hierarchical Improvement",
+    "slide_paragraph": "This slide introduces Hierarchical Navigable Small World, or HNSW, as an improvement over ordinary navigable small world search. HNSW speeds up the early part of search by using a hierarchy of proximity graphs. Instead of searching only one dense graph, the system starts in a sparse upper layer where it can make large jumps across the vector space. It then descends to lower, denser layers for more precise search. The slide explains that this hierarchy accelerates navigation because the search can quickly get near the query region before performing detailed local exploration. HNSW is one of the most widely used ANN algorithms in vector databases because it provides strong speed-recall performance for high-dimensional embeddings. The core idea is to combine fast coarse search with accurate fine search.",
+    "key_concepts": [
+      "HNSW",
+      "Hierarchical Navigable Small World",
+      "hierarchical graph",
+      "ANN",
+      "fast navigation",
+      "proximity graph"
+    ],
+    "index_text": "Slide 72 | Hierarchical Improvement | HNSW | hierarchical proximity graph | speeds up early search"
+  },
+  {
+    "slide_title": "HNSW Layers",
+    "slide_paragraph": "This slide explains the layered structure of HNSW using an example with 1,000 vectors. Layer 1 contains all 1,000 vectors and a complete proximity graph for precise final search. Layer 2 randomly drops to 100 vectors and builds a new proximity graph for intermediate navigation. Layer 3 randomly drops to just 10 vectors and creates a sparse graph for fast navigation at the highest level. The idea is similar to using a map at different zoom levels. At the top layer, the search can make broad movements across the space with very few nodes. At lower layers, it uses more detailed graphs to refine the result. This hierarchy reduces the number of distance comparisons needed while still allowing the search to become precise near the end.",
+    "key_concepts": [
+      "HNSW layers",
+      "layered proximity graph",
+      "coarse-to-fine search",
+      "random sampling",
+      "vector index",
+      "ANN structure"
+    ],
+    "index_text": "Slide 73 | HNSW layers | Layer 1 all 1000 vectors | Layer 2 100 vectors | Layer 3 10 vectors | proximity graph"
+  },
+  {
+    "slide_title": "HNSW Search Process",
+    "slide_paragraph": "This slide explains how search proceeds through the HNSW hierarchy. The algorithm starts with a random candidate vector at the top layer and searches that sparse graph to get as close as possible within that layer. Then it starts at the best candidate from layer 3 and searches through layer 2. Finally, it starts at the best candidate from layer 2 and completes a normal search through the full layer 1 graph. The slide highlights two benefits: make big jumps early and arrive close to the prompt vector once in layer 1. This is a powerful intuition. The upper layers provide speed by covering large distances quickly, while the lower layers provide accuracy by searching dense neighborhoods. HNSW therefore improves vector retrieval performance without needing exhaustive KNN comparisons.",
+    "key_concepts": [
+      "HNSW search",
+      "top layer",
+      "big jumps",
+      "coarse-to-fine",
+      "Layer 1 final search",
+      "ANN efficiency"
+    ],
+    "index_text": "Slide 74 | HNSW search process | start top layer | best candidate from layer 3 to layer 2 to layer 1 | big jumps early"
+  },
+  {
+    "slide_title": "Vector Databases",
+    "slide_paragraph": "This slide introduces vector databases as the storage and retrieval infrastructure for embeddings. After documents are converted into high-dimensional vectors, a system needs a way to store those vectors, index them, and search them quickly. A standard relational database can store text and metadata, but it is not optimized for high-dimensional nearest-neighbor search at scale. Vector databases are designed specifically for vector search and often implement ANN algorithms such as HNSW. In RAG applications, the vector database stores document chunks, their embeddings, and metadata such as source, title, page number, date, or permissions. When a user asks a question, the application embeds the query and searches the vector database for nearby document vectors. This slide marks the transition from retrieval algorithms to practical database tooling.",
+    "key_concepts": [
+      "vector database",
+      "embeddings",
+      "vector storage",
+      "ANN index",
+      "RAG infrastructure",
+      "semantic search"
+    ],
+    "index_text": "Slide 75 | Vector databases | store embeddings | vector search | RAG infrastructure"
+  },
+  {
+    "slide_title": "Vector Database Capabilities",
+    "slide_paragraph": "This slide defines what a vector database is and why it is useful. A vector database is designed to store high-dimensional vectors and perform vector search using approximate nearest neighbor algorithms. It can outperform relational databases for this task because relational databases typically perform vector search like inefficient exact KNN unless specialized extensions are added. Vector databases are optimized to build indexes such as HNSW and compute vector distances quickly. The slide mentions Weaviate as a popular open-source vector database used in the course. The key idea is that vector databases are not merely storage systems; they are retrieval engines optimized for embeddings. They often support hybrid search, metadata filtering, object storage, batch imports, and APIs that make them suitable for production RAG pipelines.",
+    "key_concepts": [
+      "vector database",
+      "ANN search",
+      "HNSW index",
+      "Weaviate",
+      "relational database limitation",
+      "high-dimensional vectors"
+    ],
+    "index_text": "Slide 76 | Vector Database | designed for vector search | outperform relational databases | optimized ANN | Weaviate"
+  },
+  {
+    "slide_title": "Typical Vector Database Operations",
+    "slide_paragraph": "This slide lists the typical operations involved in using a vector database. First, the database must be set up. Then documents are loaded. Sparse vectors can be created for keyword search, and dense vectors can be created for semantic search. An HNSW index can be built to power ANN search. Finally, searches are run. This list summarizes the practical workflow for building retrieval infrastructure. It also shows that modern vector databases often support both sparse and dense retrieval, enabling hybrid search. In a RAG project, these operations usually happen in two phases: an offline indexing phase, where documents are processed and stored, and an online inference phase, where user queries are embedded and searched. Understanding this workflow helps students move from theory to implementation.",
+    "key_concepts": [
+      "database setup",
+      "load documents",
+      "sparse vectors",
+      "dense vectors",
+      "HNSW index",
+      "run searches"
+    ],
+    "index_text": "Slide 77 | Typical Vector Database Operations | setup | load documents | sparse vectors | dense vectors | HNSW index | searches"
+  },
+  {
+    "slide_title": "Connect to Database and Create a Collection",
+    "slide_paragraph": "This slide shows a Weaviate code example for creating a collection. The code imports configuration classes and calls client.collections.create with the collection name 'Article'. The annotation 'Creates collection' points to the collection creation call. The vectorizer configuration specifies text2vec_openai, meaning the database will use an OpenAI-compatible text vectorizer to create embeddings. The properties section defines fields such as title and body, both with text data type. Conceptually, a collection is like a table or class that stores objects with a defined schema. In a RAG system, each object may represent an article, document chunk, or knowledge item. Defining properties is important because metadata and text fields determine what can be searched, filtered, displayed, and cited later.",
+    "key_concepts": [
+      "Weaviate",
+      "collection",
+      "vectorizer",
+      "properties",
+      "schema",
+      "text2vec_openai"
+    ],
+    "index_text": "Slide 78 | Connect to Database and Create Collection | Weaviate code | Article collection | vectorizer_config | title body properties"
+  },
+  {
+    "slide_title": "Adding Objects to a Collection",
+    "slide_paragraph": "This slide shows how documents or objects are added to a vector database collection in batches. The code uses a fixed-size batch with batch_size=200 and loops over data rows, adding each object with its properties. Batch insertion is important because adding many documents one at a time can be slow. The slide also highlights error handling: if the number of errors exceeds 10, the import stops, and failed objects are collected and printed. This is a practical implementation detail that matters in real RAG projects, where document ingestion may fail due to malformed rows, missing fields, invalid data types, or API issues. The annotations 'Batch adding data', 'Detecting errors', and 'Handling failures' emphasize that building a knowledge base is not only about embeddings but also about reliable data engineering.",
+    "key_concepts": [
+      "batch import",
+      "Weaviate collection",
+      "error detection",
+      "failed objects",
+      "data ingestion",
+      "RAG indexing"
+    ],
+    "index_text": "Slide 79 | Adding objects to a collection | batch fixed_size 200 | detecting errors | handling failures | failed_objects"
+  },
+  {
+    "slide_title": "Vector Search in Action",
+    "slide_paragraph": "This slide shows a vector search query in Weaviate. The code gets the 'Article' collection, then calls query.near_text with the query 'hotel capacity in downtown Vancouver'. This performs semantic vector search by embedding the query and finding nearby article vectors. The limit is set to 2, meaning only the top two results are returned. The metadata query asks for vector distances, allowing the user to inspect how close each result was to the query. The annotations identify the collection selection, the near_text vector search, and the request for vector distances. This slide demonstrates how the earlier embedding and ANN concepts appear in actual code. In a RAG pipeline, the returned article properties would be inserted into the augmented prompt as retrieved context.",
+    "key_concepts": [
+      "vector search",
+      "near_text",
+      "Weaviate query",
+      "vector distance",
+      "Article collection",
+      "semantic retrieval"
+    ],
+    "index_text": "Slide 80 | Vector Search in Action | articles.query.near_text | hotel capacity downtown Vancouver | MetadataQuery distance"
+  },
+  {
+    "slide_title": "Keyword Search in Action",
+    "slide_paragraph": "This slide shows keyword search using BM25 in Weaviate. The code calls articles.query.bm25 with the query 'Vancouver hotel capacity' and limit=3. BM25 is a strong lexical retrieval method that ranks documents based on keyword matching, term frequency, inverse document frequency, and length normalization. Unlike near_text vector search, BM25 focuses on exact terms in the query. The loop prints the properties of each returned object. This slide helps students connect the earlier theoretical discussion of keyword search and BM25 to actual implementation. In RAG, BM25 can be useful when exact words such as 'Vancouver', 'hotel', and 'capacity' are important. It can also be combined with semantic retrieval in hybrid search to improve robustness.",
+    "key_concepts": [
+      "BM25",
+      "keyword search",
+      "Weaviate",
+      "lexical retrieval",
+      "exact terms",
+      "limit results"
+    ],
+    "index_text": "Slide 81 | Keyword Search in Action | articles.query.bm25 | Vancouver hotel capacity | BM25 keyword search"
+  },
+  {
+    "slide_title": "Hybrid Search in Action",
+    "slide_paragraph": "This slide shows hybrid search in Weaviate. The code calls articles.query.hybrid with the query 'Vancouver hotel capacity', alpha=0.25, and limit=3. The annotation explains that this weights the hybrid search to 25 percent vector search and 75 percent keyword search. This means exact keyword matching has stronger influence than semantic similarity in the final ranking. Hybrid search is useful because it can retrieve documents that share exact important terms while also considering meaning. The alpha parameter is a practical tuning knob: increasing alpha gives more weight to vector similarity, while decreasing it gives more weight to keyword matching. This slide is valuable because it shows that hybrid retrieval is not just a concept; it is directly supported by vector database APIs and can be adjusted based on application needs.",
+    "key_concepts": [
+      "hybrid search",
+      "alpha",
+      "vector weight",
+      "keyword weight",
+      "Weaviate",
+      "retrieval tuning"
+    ],
+    "index_text": "Slide 82 | Hybrid Search in Action | articles.query.hybrid | alpha 0.25 | 25% vector 75% keyword"
+  },
+  {
+    "slide_title": "Filtered Search in Action",
+    "slide_paragraph": "This slide shows hybrid search combined with a metadata filter. The query is 'History of urban development in Vancouver', alpha is set to 0.3, and limit is 4. The filter uses Filter.by_property('title').contains_any(['Vancouver']), meaning results are restricted to objects whose title contains Vancouver. This demonstrates how metadata filters can enforce strict criteria while hybrid search ranks relevant content within that constrained subset. In practice, filters may restrict results by date, source, department, user permissions, language, document type, or title. The slide's annotation 'Adding a metadata filter' emphasizes that filtering is often essential in production RAG, especially when the knowledge base is large or contains documents from multiple domains. The retrieved documents are more likely to be relevant and appropriate because irrelevant titles are excluded before ranking.",
+    "key_concepts": [
+      "filtered search",
+      "metadata filter",
+      "hybrid search",
+      "title filter",
+      "Vancouver",
+      "Weaviate"
+    ],
+    "index_text": "Slide 83 | Filtered Search in Action | hybrid query | Filter.by_property title contains Vancouver | metadata filter"
+  },
+  {
+    "slide_title": "Complete Workflow",
+    "slide_paragraph": "This slide summarizes the complete retrieval workflow in three steps: configure the database, load and index data, and perform searches. Configuration includes creating collections, schemas, vectorizers, and indexes. Loading and indexing data includes inserting documents, generating embeddings, creating sparse vectors, and building ANN structures such as HNSW. Performing searches includes vector search, keyword search, hybrid search, and filtered search. This workflow captures the engineering lifecycle of the retrieval side of RAG. The LLM can only generate grounded answers if the knowledge base has been prepared correctly. Poor ingestion, missing metadata, bad chunking, or incorrect indexes can lead to irrelevant retrieval and weak final answers. The slide therefore serves as a practical checklist for implementing vector database retrieval.",
+    "key_concepts": [
+      "complete workflow",
+      "configure database",
+      "load data",
+      "index data",
+      "perform searches",
+      "RAG implementation"
+    ],
+    "index_text": "Slide 84 | Complete Workflow | Configure Database | Load and Index Data | Perform Searches"
+  },
+  {
+    "slide_title": "Using Your Own Prompts",
+    "slide_paragraph": "This slide introduces the section on custom prompts. After building the retrieval system, the next step is to construct prompts that tell the LLM how to use the retrieved information. In RAG, prompting is not just a user question; it is an assembled input containing system instructions, conversation history, retrieved documents, metadata, and the current query. Using your own prompts means designing the behavior of the LLM for the application. For example, an assistant may be instructed to answer in detail, answer concisely, cite sources, admit missing information, or avoid using outside knowledge. This section is important because even excellent retrieval can fail if the prompt does not clearly tell the LLM how to interpret and use the retrieved context.",
+    "key_concepts": [
+      "custom prompts",
+      "prompt design",
+      "RAG prompting",
+      "system instructions",
+      "retrieved context",
+      "application behavior"
+    ],
+    "index_text": "Slide 85 | Using your own prompts | prompt design | custom system prompt | RAG context"
+  },
+  {
+    "slide_title": "Your Own System Prompt",
+    "slide_paragraph": "This slide gives principles for constructing a system prompt. The system prompt can instruct the LLM to respond in great detail or answer succinctly. For RAG applications, the slide recommends telling the language model to use only retrieved documents to answer prompts, judge whether a document is relevant, and cite sources in its response. It also notes that system prompts are added to every prompt the LLM processes. This makes the system prompt a persistent behavioral layer. In RAG, these instructions are critical for reducing hallucinations. If the retrieved documents do not contain the answer, the model should admit that information is missing rather than inventing an answer. A strong system prompt therefore defines not only tone and style but also evidence discipline, citation behavior, and boundaries on what sources the model may use.",
+    "key_concepts": [
+      "system prompt",
+      "RAG instructions",
+      "use retrieved documents",
+      "cite sources",
+      "admit missing information",
+      "behavioral guidance"
+    ],
+    "index_text": "Slide 86 | Your own system prompt | respond in detail or succinctly | use only retrieved documents | judge relevance | cite sources"
+  },
+  {
+    "slide_title": "Prompt Templates",
+    "slide_paragraph": "This slide presents a structured prompt template for RAG. The template includes system instructions, conversation history, retrieved information, and the user prompt. The system instructions provide behavioral guidance. The conversation history preserves prior turns when relevant. The retrieved information section inserts document chunks and their sources, such as [DOCUMENT 1] with chunk text and source metadata. The final user prompt contains the current query. The slide emphasizes that prompt templates provide structure and decide where content gets injected. This is essential because RAG prompts include many different pieces of information. Without a template, the model may confuse retrieved documents with user text, ignore citations, or fail to follow instructions. A good template makes the augmented prompt consistent, debuggable, and easier to improve.",
+    "key_concepts": [
+      "prompt template",
+      "system instructions",
+      "conversation history",
+      "retrieved information",
+      "source metadata",
+      "augmented prompt"
+    ],
+    "index_text": "Slide 87 | Prompt Templates | system_prompt | conversation_history | retrieved information | chunk source | user_query"
+  },
+  {
+    "slide_title": "Prompt Template Example",
+    "slide_paragraph": "This slide shows a concrete RAG prompt template for geographic information. The system instructions say the assistant should use only retrieved documents, cite sources as [DOC X], and admit if information is missing. The conversation history includes a previous question about Canada's largest city and an answer citing [DOC 1]. The retrieved documents contain facts about Ottawa: one states that Ottawa is the capital city of Canada in Ontario, another says Queen Victoria chose it as capital in 1857, and another says Parliament is located on Parliament Hill. The current query asks, 'What is the capital of Canada?' The correct response should be grounded in [DOC 1], not generated from unsupported memory. This slide demonstrates how a RAG prompt organizes evidence so the model can answer accurately, cite the supporting document, and avoid unsupported claims.",
+    "key_concepts": [
+      "RAG prompt example",
+      "geographic information",
+      "retrieved documents",
+      "citations",
+      "Ottawa",
+      "source-grounded answer"
+    ],
+    "index_text": "Slide 88 | Prompt Template Example | use only retrieved documents | cite sources [DOC X] | Ottawa capital of Canada | conversation history"
+  },
+  {
+    "slide_title": "Lecture References",
+    "slide_paragraph": "This final slide lists the lecture reference: the DeepLearning.AI course on Retrieval Augmented Generation, covering Modules 1 to 4. This indicates that the lecture content is based on a structured RAG learning path covering motivation, retrieval foundations, vector databases, and prompt construction. The reference slide is important academically because it identifies the instructional source behind the lecture material. For students, it also points to where they can study the topics in more depth, especially if they want hands-on exercises with vector databases, hybrid search, and RAG prompt templates. The slide closes the lecture after moving from the basic need for retrieval, through keyword and semantic search, to approximate nearest neighbor algorithms, vector database implementation, and prompt design for grounded generation.",
+    "key_concepts": [
+      "lecture references",
+      "DeepLearning.AI",
+      "RAG course",
+      "retrieval foundations",
+      "vector databases",
+      "prompt templates"
+    ],
+    "index_text": "Slide 89 | Lecture References | Retrieval Augmented Generation RAG | DeepLearning.AI Modules 1-4"
+  }
+]

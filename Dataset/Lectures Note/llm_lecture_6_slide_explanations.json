@@ -1,0 +1,915 @@
+[
+    {
+        "slide_title": "Optimize LLMs and build generative AI applications",
+        "slide_paragraph": "This opening slide introduces the lecture theme: moving beyond simply using a large language model and toward optimizing it for practical deployment inside generative AI applications. The title connects two major ideas. First, LLM optimization focuses on making models faster, smaller, cheaper, or more reliable for inference. Second, building generative AI applications means integrating the model with surrounding components such as user interfaces, external data sources, tools, APIs, orchestration libraries, and feedback loops. The illustration of a human head connected to digital symbols visually suggests that the lecture is about combining human-facing intelligence with computational systems. The slide therefore frames the lecture as an applied stage of the LLM lifecycle: after selecting, prompting, fine-tuning, and aligning a model, we still need to optimize it and embed it into real software systems.",
+        "key_concepts": [
+            "LLM optimization",
+            "Generative AI applications",
+            "Application deployment",
+            "Inference performance",
+            "LLM lifecycle"
+        ],
+        "index_text": "Slide 1: Optimize LLMs and build generative AI applications; lecture introduction; Dr. Tamer Arafa; optimization and application building."
+    },
+    {
+        "slide_title": "Generative AI project lifecycle",
+        "slide_paragraph": "This slide presents the full generative AI project lifecycle as a sequence of stages. It begins with scope, where the problem or use case is defined, then moves to selecting a model. The central adaptation and alignment phase includes prompt engineering, fine-tuning, alignment with human feedback, and evaluation. The final application integration phase includes optimizing and deploying the model for inference, then augmenting the model and building LLM-powered applications. The diagram is important because it shows that optimization and application design are not isolated activities; they come after a model has already been chosen and adapted. In practical projects, a model that performs well in experimentation may still need additional work before it can be used efficiently, safely, and reliably inside a real user-facing application.",
+        "key_concepts": [
+            "Generative AI lifecycle",
+            "Model selection",
+            "Fine-tuning",
+            "Human feedback alignment",
+            "Application integration"
+        ],
+        "index_text": "Slide 2: Generative AI project lifecycle; define problem, choose model, prompt engineering, fine-tuning, align with human feedback, evaluate, optimize, deploy, augment applications."
+    },
+    {
+        "slide_title": "Generative AI project lifecycle: application integration focus",
+        "slide_paragraph": "This lifecycle slide repeats the same project pipeline but highlights the later practical stages that matter when turning an LLM into an application. After the model has been selected and adapted, the next responsibility is to optimize and deploy it for inference. Inference is the stage where the model receives user prompts and generates outputs, so performance, latency, memory use, and cost become central concerns. The following step, augmenting the model and building LLM-powered applications, suggests that the model alone is not the entire product. A production generative AI system often includes retrieval, tools, memory, APIs, validation logic, and user interfaces. The slide therefore prepares the learner to think about LLMs as components inside a larger software architecture rather than as standalone chat engines.",
+        "key_concepts": [
+            "Inference deployment",
+            "Model optimization",
+            "LLM-powered applications",
+            "Application integration",
+            "Production systems"
+        ],
+        "index_text": "Slide 3: Lifecycle emphasis on optimize and deploy model for inference; augment model and build LLM-powered applications."
+    },
+    {
+        "slide_title": "Generative AI project lifecycle: optimization and augmentation",
+        "slide_paragraph": "This slide again uses the lifecycle diagram to reinforce where the current lecture fits. The first stages, scope and selection, answer what problem is being solved and which model will be used. The middle stages improve the model through prompts, fine-tuning, human feedback alignment, and evaluation. The final stages, shown under application integration, are where the lecture now concentrates: making the model efficient enough for use and connecting it to external capabilities. This is a crucial distinction for students: a model may be accurate but too slow, too expensive, too memory-intensive, or too limited by its training data. Optimization techniques address efficiency, while augmentation techniques such as retrieval and tool use address knowledge gaps and functional limitations.",
+        "key_concepts": [
+            "Optimization",
+            "Augmentation",
+            "Evaluation",
+            "Deployment",
+            "LLM systems"
+        ],
+        "index_text": "Slide 4: Generative AI project lifecycle; focus on optimization, deployment, augmentation, and LLM application building."
+    },
+    {
+        "slide_title": "Model optimizations to improve application performance",
+        "slide_paragraph": "This slide introduces the first main topic of the lecture: model optimizations that improve application performance. In an LLM application, performance does not only mean answer quality. It also includes speed, memory requirements, hardware cost, throughput, and responsiveness. Large models can be powerful, but their size makes them difficult to serve at scale. Optimization methods attempt to preserve as much useful model behavior as possible while reducing the computational burden. The slide acts as a transition from the project lifecycle to specific optimization strategies. It prepares the learner to compare several methods, each with a different mechanism: compressing knowledge into a smaller model, reducing numerical precision, or removing unnecessary model weights.",
+        "key_concepts": [
+            "Application performance",
+            "Model compression",
+            "Inference efficiency",
+            "Deployment cost",
+            "Optimization techniques"
+        ],
+        "index_text": "Slide 5: Model optimizations to improve application performance; transition to distillation, quantization, and pruning."
+    },
+    {
+        "slide_title": "LLM optimization techniques",
+        "slide_paragraph": "This slide summarizes three major LLM optimization techniques: distillation, quantization, and pruning. The diagram shows distillation as a teacher LLM transferring knowledge to a smaller student LLM. Quantization is shown as an LLM being converted into a 16-bit quantized LLM, meaning its numerical weights are represented with fewer bits. Pruning is shown as an LLM becoming a pruned LLM, meaning selected weights or structures are removed. These three techniques all aim to reduce the cost of using a model, but they do so differently. Distillation changes the model by training a smaller model to imitate a larger one. Quantization changes how numbers are stored and computed. Pruning removes parts of the model that are considered less important.",
+        "key_concepts": [
+            "Distillation",
+            "Quantization",
+            "Pruning",
+            "Teacher-student training",
+            "Model compression"
+        ],
+        "index_text": "Slide 6: LLM optimization techniques; distillation teacher student, quantization 16-bit model, pruning pruned model."
+    },
+    {
+        "slide_title": "LLM optimization techniques: overview repeated",
+        "slide_paragraph": "This slide repeats the optimization overview to reinforce the three categories before explaining them in detail. The teacher-student visual under distillation emphasizes knowledge transfer: the goal is not simply to shrink the same model, but to train a smaller student to reproduce important behavior from a larger teacher. The quantization visual emphasizes lower precision representation, such as converting from full precision to 16-bit. The pruning visual emphasizes removal of weights or model components. For application builders, these methods represent trade-offs. Smaller or lower-precision models can be faster and cheaper, but may lose some accuracy or reasoning ability. The choice depends on the target application, hardware, latency requirements, and acceptable quality loss.",
+        "key_concepts": [
+            "Optimization trade-offs",
+            "Knowledge transfer",
+            "Lower precision",
+            "Weight removal",
+            "Inference efficiency"
+        ],
+        "index_text": "Slide 7: Repeated overview of distillation, quantization, and pruning for LLM optimization."
+    },
+    {
+        "slide_title": "Distillation",
+        "slide_paragraph": "This slide explains knowledge distillation as a way to train a smaller student model from a larger teacher model. The diagram shows training data going into the teacher and student models, with the teacher producing predictions through a softmax layer. The student also produces predictions, and a distillation loss compares the student output to the teacher output. The key idea is that the teacher model has already learned useful patterns from large-scale training, and the smaller student can learn to imitate those patterns. In ordinary supervised learning, the student might only learn from hard labels, such as the correct class. In distillation, the student learns from the teacher\u2019s probability distribution, which can contain richer information about which alternatives are plausible and which are unlikely.",
+        "key_concepts": [
+            "Knowledge distillation",
+            "Teacher model",
+            "Student model",
+            "Softmax predictions",
+            "Distillation loss"
+        ],
+        "index_text": "Slide 8: Distillation; train smaller student model from larger teacher model using softmax predictions and distillation loss."
+    },
+    {
+        "slide_title": "Distillation with temperature",
+        "slide_paragraph": "This slide extends the distillation diagram by adding a temperature parameter T to the softmax operation. Temperature controls how sharp or smooth a probability distribution is. With a standard softmax, the teacher may assign very high probability to one answer and very low probability to all others. By using a higher temperature, the probability distribution becomes softer, revealing more about the teacher\u2019s relative preferences among incorrect or secondary options. This is useful because a student model can learn more from a teacher that says, for example, one wrong answer is still somewhat related while another is completely unlikely. The distillation loss then encourages the student\u2019s softened predictions to match the teacher\u2019s softened labels.",
+        "key_concepts": [
+            "Softmax temperature",
+            "Soft labels",
+            "Teacher predictions",
+            "Student predictions",
+            "Distillation loss"
+        ],
+        "index_text": "Slide 9: Distillation with temperature T; softmax smoothing; train student from teacher soft labels."
+    },
+    {
+        "slide_title": "Distillation using soft labels",
+        "slide_paragraph": "This slide focuses on the role of soft labels in knowledge distillation. The teacher and student both apply softmax with temperature greater than 1, producing softer probability distributions rather than hard one-hot answers. The diagram labels the teacher output as soft labels and the student output as soft predictions. The distillation loss compares these two distributions. This is valuable because soft labels contain information about similarity between possible outputs. For example, in a classification task, a teacher might assign 0.70 to the correct class, 0.20 to a related class, and 0.10 to an unrelated class. A student trained on this distribution learns not only the answer but also the teacher\u2019s structure of uncertainty.",
+        "key_concepts": [
+            "Soft labels",
+            "Soft predictions",
+            "Temperature greater than 1",
+            "Distribution matching",
+            "Knowledge transfer"
+        ],
+        "index_text": "Slide 10: Distillation; soft labels and soft predictions with temperature T greater than 1; distillation loss."
+    },
+    {
+        "slide_title": "Distillation with hard and soft supervision",
+        "slide_paragraph": "This slide shows that student training can combine two sources of supervision. On one side, the student learns from hard labels or ground truth labels using a student loss. These are the ordinary target labels in the training data. On the other side, the student learns from soft labels produced by the teacher model using distillation loss. The teacher\u2019s softmax with higher temperature provides soft labels, while the student produces both soft predictions and hard predictions depending on the training objective. This combined setup helps the student remain faithful to the real dataset while also inheriting useful behavior from the teacher. In practice, the final loss can be a weighted combination of ordinary supervised loss and distillation loss.",
+        "key_concepts": [
+            "Hard labels",
+            "Ground truth",
+            "Student loss",
+            "Distillation loss",
+            "Soft predictions"
+        ],
+        "index_text": "Slide 11: Distillation combines hard labels, hard predictions, soft labels, soft predictions, student loss, and distillation loss."
+    },
+    {
+        "slide_title": "Distillation for application deployment",
+        "slide_paragraph": "This slide completes the distillation workflow by showing the student model being used with external applications after training. The teacher LLM provides soft labels, the student LLM learns from both hard ground-truth labels and teacher outputs, and the resulting smaller model can then be deployed in an application environment. The important application insight is that distillation is not only a training technique; it is a deployment strategy. A smaller student can be cheaper and faster to serve than the original teacher while retaining much of its behavior. This makes distillation especially useful when the original model is too large for the available hardware, too expensive for high-volume inference, or too slow for real-time user interaction.",
+        "key_concepts": [
+            "Deployment",
+            "Student LLM",
+            "External applications",
+            "Model compression",
+            "Faster inference"
+        ],
+        "index_text": "Slide 12: Distillation workflow leads to smaller student LLM for external applications; hard labels and soft labels."
+    },
+    {
+        "slide_title": "Post-Training Quantization (PTQ)",
+        "slide_paragraph": "This slide introduces post-training quantization, a method that reduces the precision of model weights, and sometimes activations, after training has already been completed. The slide contrasts FP32, a 32-bit floating point format, with lower precision formats such as FP16, BFLOAT16, and INT8. The diagram shows a full LLM being converted into an 8-bit quantized LLM. The main idea is that each numerical weight takes less memory when represented with fewer bits. However, quantization must preserve the dynamic range of values well enough for the model to remain useful. That is why the slide mentions calibration: the quantization process needs representative data to estimate how weight and activation values are distributed so that lower-precision representations do not distort the model too much.",
+        "key_concepts": [
+            "Post-training quantization",
+            "FP32",
+            "FP16",
+            "BFLOAT16",
+            "INT8",
+            "Calibration"
+        ],
+        "index_text": "Slide 13: Post-training quantization; reduce precision of model weights and activations; calibration; FP32 to lower precision."
+    },
+    {
+        "slide_title": "Pruning",
+        "slide_paragraph": "This slide explains pruning as the removal of model weights whose values are close to zero or exactly zero. The diagram shows an LLM becoming a pruned LLM, which suggests a smaller or more efficient model. In theory, pruning reduces model size and improves performance because unnecessary parameters are removed. The slide also warns that pruning is not always straightforward for LLMs: in practice, only a small percentage of LLM weights may be exactly zero, so simply removing zero weights may not produce large savings. The slide lists several pruning-related approaches, including full model retraining, PEFT or LoRA, and post-training pruning. These options differ in whether the model is retrained after pruning and how much of the original model is modified.",
+        "key_concepts": [
+            "Pruning",
+            "Sparse weights",
+            "Model size reduction",
+            "Post-training pruning",
+            "PEFT",
+            "LoRA"
+        ],
+        "index_text": "Slide 14: Pruning removes model weights close or equal to zero; pruning methods include full retraining, PEFT/LoRA, post-training."
+    },
+    {
+        "slide_title": "Cheat Sheet: Time and effort in the lifecycle",
+        "slide_paragraph": "This slide provides a comparative cheat sheet for different stages in the generative AI lifecycle. Pre-training takes days, weeks, or months and requires high expertise because it determines the model architecture, size, tokenizer, vocabulary, and context length, with next-token prediction as the main objective. Prompt engineering requires no model training and has low expertise requirements because only the input prompt is customized. Prompt tuning and fine-tuning usually take minutes to hours and update either model weights or adapter weights to improve task performance using task-specific or domain-specific data. Reinforcement learning from human feedback has similar training duration to fine-tuning but requires a reward model and aims to align behavior with human goals such as helpfulness, honesty, and harmlessness. Compression, optimization, and deployment reduce model size using pruning, quantization, and distillation to improve inference performance.",
+        "key_concepts": [
+            "Lifecycle comparison",
+            "Pre-training",
+            "Prompt engineering",
+            "Fine-tuning",
+            "RLHF",
+            "Compression"
+        ],
+        "index_text": "Slide 15: Cheat sheet comparing pre-training, prompt engineering, prompt tuning/fine-tuning, RLHF, compression, optimization, deployment."
+    },
+    {
+        "slide_title": "Using the LLM in applications",
+        "slide_paragraph": "This section title shifts the lecture from optimizing models themselves to using LLMs inside applications. The main implication is that an application is more than a prompt sent to a model. A real system must handle user input, retrieve or verify information, call tools when needed, structure outputs, and sometimes perform actions in external systems. This transition is important because optimization techniques address speed and cost, while application design addresses correctness, reliability, up-to-date knowledge, and useful interaction. The following slides show why models alone can be insufficient and how external data, retrieval, code execution, APIs, and reasoning frameworks can make LLM-powered applications more capable.",
+        "key_concepts": [
+            "LLM applications",
+            "System integration",
+            "External tools",
+            "Reliability",
+            "Application design"
+        ],
+        "index_text": "Slide 16: Using the LLM in applications; transition to LLM-powered application architecture and augmentation."
+    },
+    {
+        "slide_title": "Models having difficulty",
+        "slide_paragraph": "This slide illustrates three common weaknesses of standalone LLMs. First, the model may be out of date: when asked who the Prime Minister of the UK is, it answers Boris Johnson, showing that its knowledge may reflect old training data rather than the current world. Second, it may perform arithmetic incorrectly: the slide shows the division 40366 / 439 and an incorrect answer of 92.549, while the slide notes that the correct value is 91.949. Third, it may hallucinate: when asked about a fictional or unsupported concept, a Martian Dunetree, the model invents a confident explanation. These examples motivate external augmentation. Instead of relying only on memorized parameters, applications should connect models to current data sources, calculators, search tools, and validation mechanisms.",
+        "key_concepts": [
+            "Knowledge cutoff",
+            "Arithmetic errors",
+            "Hallucination",
+            "External tools",
+            "Model limitations"
+        ],
+        "index_text": "Slide 17: Models having difficulty; out-of-date answer, wrong calculation 40366/439, hallucination about Martian Dunetree."
+    },
+    {
+        "slide_title": "Generative AI project lifecycle: application stage",
+        "slide_paragraph": "This lifecycle slide reappears to connect the model difficulty examples to the application integration stage. The model may already have passed through prompt engineering, fine-tuning, human feedback alignment, and evaluation, yet it can still fail when asked for current facts, precise calculations, or unsupported information. Therefore, the final lifecycle steps are essential: optimize and deploy the model for inference, then augment it and build LLM-powered applications. In this context, augmentation means giving the model access to resources beyond its learned parameters. That may include databases, documents, web search, APIs, calculators, code interpreters, or orchestration frameworks that organize multi-step workflows.",
+        "key_concepts": [
+            "Application integration",
+            "Augmentation",
+            "Inference",
+            "External resources",
+            "Lifecycle motivation"
+        ],
+        "index_text": "Slide 18: Lifecycle emphasizes optimize/deploy and augment/build applications after showing LLM limitations."
+    },
+    {
+        "slide_title": "LLM-powered applications: basic flow",
+        "slide_paragraph": "This slide shows the simplest possible LLM-powered application structure: a user prompt goes into an LLM, and the LLM returns a completion. This is the basic interaction pattern used by chatbots and text generation systems. However, the simplicity of the diagram is also its limitation. If the only component is the LLM, the system depends entirely on the model\u2019s internal knowledge and reasoning ability. It cannot automatically access private documents, databases, real-time information, or external actions unless those are included in the prompt or connected through additional infrastructure. This slide therefore provides the baseline architecture that later slides will extend with data sources, applications, and orchestration libraries.",
+        "key_concepts": [
+            "User prompt",
+            "LLM completion",
+            "Basic architecture",
+            "Standalone LLM",
+            "Prompt-response flow"
+        ],
+        "index_text": "Slide 19: Basic LLM-powered application; user prompt to LLM to completion."
+    },
+    {
+        "slide_title": "LLM-powered applications with external systems",
+        "slide_paragraph": "This slide expands the basic LLM application into a richer architecture. The user application connects to an orchestration library, which coordinates the LLM, external data sources, and external applications. The external data sources shown include documents, databases, and the web. External applications represent systems that can perform actions or provide services. The orchestration library is the central coordinator: it decides how to construct prompts, retrieve relevant context, call tools, and pass results back to the LLM or the user application. This diagram is important because it frames modern LLM systems as pipelines or agentic workflows rather than single model calls. The LLM remains important, but it operates within a broader software ecosystem.",
+        "key_concepts": [
+            "Orchestration library",
+            "External data sources",
+            "Documents",
+            "Databases",
+            "Web",
+            "External applications"
+        ],
+        "index_text": "Slide 20: LLM-powered applications include orchestration library, external data sources, documents, database, web, external applications, user application."
+    },
+    {
+        "slide_title": "Retrieval augmented generation (RAG)",
+        "slide_paragraph": "This section title introduces retrieval augmented generation, usually abbreviated as RAG. RAG is a technique for improving model answers by retrieving relevant external information and providing it to the model as context during generation. The reason this matters is that LLMs have knowledge cutoffs and may hallucinate when they do not know an answer. RAG addresses this by separating knowledge storage from language generation. Instead of expecting all facts to be stored inside model parameters, the system retrieves facts from external documents, databases, web pages, or vector stores. The LLM then uses the retrieved evidence to generate a grounded answer.",
+        "key_concepts": [
+            "Retrieval augmented generation",
+            "RAG",
+            "External knowledge",
+            "Grounded generation",
+            "Knowledge retrieval"
+        ],
+        "index_text": "Slide 21: Retrieval augmented generation; section title introducing RAG for external information grounding."
+    },
+    {
+        "slide_title": "Knowledge cut-offs in LLMs",
+        "slide_paragraph": "This slide demonstrates the knowledge cutoff problem using a question about the current Prime Minister of the United Kingdom. The prompt asks for a current fact, but the model answers Boris Johnson. The slide uses this example to show that an LLM\u2019s internal knowledge is limited by the data and time period on which it was trained. Even if the model was correct at one point, real-world facts change. This is a major problem for applications that require current information, such as news, legal status, company policies, product availability, or government roles. RAG helps by retrieving up-to-date external information at inference time and giving it to the model before it generates the final answer.",
+        "key_concepts": [
+            "Knowledge cutoff",
+            "Current facts",
+            "Outdated answers",
+            "RAG motivation",
+            "Inference-time retrieval"
+        ],
+        "index_text": "Slide 22: Knowledge cut-offs in LLMs; current UK Prime Minister example; model answers Boris Johnson."
+    },
+    {
+        "slide_title": "LLM-powered applications and external data",
+        "slide_paragraph": "This slide repeats the application architecture to show where RAG fits. The LLM is connected through an orchestration library to external data sources such as documents, databases, and the web. The user application is the interface that receives the user\u2019s request and returns the final result. In a RAG system, the orchestration layer typically receives the user query, searches the external data sources for relevant information, inserts that information into the prompt, and sends the augmented prompt to the LLM. The model then generates an answer that is grounded in retrieved content rather than relying only on its parametric memory. This architecture is especially useful for domain-specific or frequently changing knowledge.",
+        "key_concepts": [
+            "RAG architecture",
+            "Orchestration",
+            "External data",
+            "User application",
+            "Grounded answering"
+        ],
+        "index_text": "Slide 23: Application architecture repeated; LLM with external data sources and orchestration for RAG."
+    },
+    {
+        "slide_title": "Retrieval Augmented Generation (RAG) architecture",
+        "slide_paragraph": "This slide shows a compact RAG architecture. A query is processed by a query encoder, which converts the user\u2019s text into a representation suitable for retrieval. The retriever then searches external information sources and returns relevant content. This retrieved content can be supplied to the LLM to support generation. The slide cites the original RAG work by Lewis et al. and emphasizes that RAG is designed for knowledge-intensive NLP tasks. The key mechanism is retrieval before generation: the model does not simply answer from memory, but receives evidence retrieved from external sources. This improves factual grounding and makes it possible to answer questions about private or updated collections of documents.",
+        "key_concepts": [
+            "Query encoder",
+            "Retriever",
+            "External information sources",
+            "Knowledge-intensive NLP",
+            "Retrieval before generation"
+        ],
+        "index_text": "Slide 24: RAG architecture; query encoder, retriever, external information sources; Lewis et al. 2020."
+    },
+    {
+        "slide_title": "Example: Searching legal documents",
+        "slide_paragraph": "This slide provides a concrete RAG example using legal documents. The input query asks: who is the plaintiff in case 22-48710BI-SME? The query encoder represents this question so it can be compared to available documents. The external information source contains a legal document headed as a United States District Court document for the Southern District of Maine. The document states the case number and lists Busy Industries as the plaintiff and the State of Maine as the defendant. The purpose of the example is to show retrieval grounding: the answer is not obtained from general world knowledge but from a specific document. The system must find the document that matches the case number and then extract the plaintiff field.",
+        "key_concepts": [
+            "Legal document search",
+            "Query encoding",
+            "Document retrieval",
+            "Case number matching",
+            "Grounded extraction"
+        ],
+        "index_text": "Slide 25: Legal document RAG example; query asks plaintiff in case 22-48710BI-SME; document lists Busy Industries vs State of Maine."
+    },
+    {
+        "slide_title": "Example: RAG completion from legal documents",
+        "slide_paragraph": "This slide completes the legal document example. After the system retrieves the relevant district court document, the LLM produces the completion: Busy Industries. The answer is supported by the retrieved text, where Busy Industries appears next to the label Plaintiff. This demonstrates the value of RAG for question answering over specialized documents. Without retrieval, an LLM would likely not know the details of a fabricated or private case number. With retrieval, the model only needs to read and extract the answer from the provided context. The example also shows why RAG is useful in professional settings such as legal, medical, finance, customer support, and internal enterprise search, where the answer must come from a known source.",
+        "key_concepts": [
+            "RAG completion",
+            "Legal QA",
+            "Evidence-based answer",
+            "Document-grounded response",
+            "Information extraction"
+        ],
+        "index_text": "Slide 26: Retrieved legal document enables LLM completion Busy Industries as plaintiff."
+    },
+    {
+        "slide_title": "RAG integrates with many types of data sources",
+        "slide_paragraph": "This slide lists the kinds of external information sources that can be integrated into a RAG system. These include documents, wikis, expert systems, web pages, databases, and vector stores. The diagram again shows a query encoder feeding a retriever that searches external information sources. The important point is that RAG is not limited to plain text files. It can be built over many organizational knowledge sources, including structured data such as databases and semi-structured or unstructured data such as wikis and documents. A vector store is especially common because it stores embedding vectors that allow semantic similarity search, meaning the system can find relevant text even when the exact words differ from the user\u2019s query.",
+        "key_concepts": [
+            "Data sources",
+            "Documents",
+            "Wikis",
+            "Databases",
+            "Vector store",
+            "Semantic search"
+        ],
+        "index_text": "Slide 27: RAG data sources include documents, wikis, expert systems, web pages, databases, vector store; query encoder and retriever."
+    },
+    {
+        "slide_title": "Data preparation for vector store for RAG",
+        "slide_paragraph": "This slide explains the first key consideration when preparing data for RAG: retrieved data must fit inside the model\u2019s context window. The slide shows that the prompt context limit may be only a few thousand tokens, while a single document may be too large to fit. Therefore, long sources must be split into shorter chunks. Chunking is essential because the retriever usually returns a few relevant pieces rather than entire documents. A good chunk should be large enough to preserve meaning but small enough to fit into the prompt alongside the user question and instructions. This slide highlights a practical challenge: even if the relevant information exists, it must be packaged in a way the LLM can actually consume.",
+        "key_concepts": [
+            "Chunking",
+            "Context window",
+            "Prompt context limit",
+            "Long documents",
+            "Data preparation"
+        ],
+        "index_text": "Slide 28: RAG data preparation; data must fit context window; split long sources into short chunks."
+    },
+    {
+        "slide_title": "Data preparation for RAG: embeddings",
+        "slide_paragraph": "This slide introduces the second key consideration for RAG: data must be represented in a format that allows relevance to be assessed at inference time. The slide identifies embedding vectors as that format. A prompt is converted into an embedding vector, and text chunks are also represented as vectors. The diagram includes example words such as fox, whale, swim, jumps, book, and fire, and mentions cosine similarity. Cosine similarity measures how close two vectors are in direction, which often corresponds to semantic relatedness. In RAG, the system compares the query embedding to stored chunk embeddings and retrieves the closest matches. This allows semantic search rather than relying only on exact keyword matching.",
+        "key_concepts": [
+            "Embeddings",
+            "Cosine similarity",
+            "Semantic relevance",
+            "Query vector",
+            "Vector search"
+        ],
+        "index_text": "Slide 29: RAG data preparation; prompt text converted to embedding vectors; cosine similarity for relevance assessment."
+    },
+    {
+        "slide_title": "Data preparation for RAG: chunk embeddings",
+        "slide_paragraph": "This slide continues the RAG preparation workflow by showing that each chunk should be processed to produce embedding vectors. The left side shows several chunks of text, and the right side shows numerical vector representations with dimensions labeled as x1, x2, x3, and so on. The idea is that every chunk becomes a point in a high-dimensional vector space. At inference time, the user\u2019s query is embedded into the same space, and the retriever identifies chunks whose embeddings are close to the query embedding. This slide also reinforces that RAG has an offline preparation stage: documents are split, embedded, and stored before users ask questions. Good embeddings and well-designed chunks strongly influence the quality of retrieved context.",
+        "key_concepts": [
+            "Chunk embeddings",
+            "Vector representation",
+            "Offline indexing",
+            "Embedding model",
+            "Retriever quality"
+        ],
+        "index_text": "Slide 30: Process each chunk with LLM or embedding model to produce embedding vectors; chunks represented by x1 to xn."
+    },
+    {
+        "slide_title": "Vector database search",
+        "slide_paragraph": "This slide visualizes vector database search as points in a multi-dimensional space. The orange point represents the prompt embedding, while text chunks such as Text 3, Text 4, Text 5, and Text 6 appear at different positions. Chunks closer to the prompt point are considered more semantically relevant. The slide highlights Text 4 and Text 3 as nearby candidates, suggesting they may be retrieved. The bullets note that each text in the vector store is identified by a key and that this enables citations to be included in the completion. This is important for trustworthy RAG systems: if the model uses retrieved context, the application can track which source chunk supported the answer and show that source to the user.",
+        "key_concepts": [
+            "Vector database",
+            "Nearest neighbor search",
+            "Source keys",
+            "Citations",
+            "Semantic retrieval"
+        ],
+        "index_text": "Slide 31: Vector database search; prompt embedding near Text 4 and Text 3; source keys enable citations."
+    },
+    {
+        "slide_title": "Enabling interactions with external applications",
+        "slide_paragraph": "This section title introduces the next application capability: allowing an LLM-powered system to interact with external applications. Retrieval gives a model access to information, but many applications also require actions. For example, a chatbot may need to create a ticket, send an email, update an order, generate a shipping label, make a database query, or call a payment API. This requires more than text generation. The system must collect required information, decide which action is appropriate, call the correct external service, and validate that the action was completed. The following slides use a clothing return example to show how an LLM can participate in workflows that involve both conversation and external API calls.",
+        "key_concepts": [
+            "External applications",
+            "Tool use",
+            "API calls",
+            "Workflow automation",
+            "Action execution"
+        ],
+        "index_text": "Slide 32: Enabling interactions with external applications; section on LLMs calling tools and APIs."
+    },
+    {
+        "slide_title": "Having an LLM initiate a clothing return",
+        "slide_paragraph": "This slide starts a customer support scenario involving a ShopBot. The user says they need to return a pair of jeans they purchased. The bot responds politely and asks for the order number. The user provides the number 21104. The example shows the first stage of a tool-enabled conversation: before the system can take action, it must collect the necessary information. The LLM\u2019s role is not only to generate friendly text, but also to guide the user through the workflow. The order number becomes a structured piece of information that can later be used in a lookup or API call. This demonstrates why conversational applications need both language ability and state tracking.",
+        "key_concepts": [
+            "Customer support",
+            "Information collection",
+            "Order number",
+            "Conversational workflow",
+            "ShopBot"
+        ],
+        "index_text": "Slide 33: ShopBot clothing return; user wants to return jeans; bot asks order number; user gives 21104."
+    },
+    {
+        "slide_title": "Having an LLM initiate a clothing return: lookup and API call",
+        "slide_paragraph": "This slide continues the clothing return workflow. The bot says it has found the order, which implies a lookup using RAG or a database query. The user confirms they only want to return the jeans. The bot then says it will get a return label from a shipping partner and asks the user to confirm the email used for the order. The slide explicitly labels two technical steps: lookup with RAG and API call. The lookup retrieves information about the order, while the API call interacts with the shipping partner to generate a return label. This illustrates how an LLM application can combine natural conversation, retrieval from internal systems, and external service calls in one workflow.",
+        "key_concepts": [
+            "RAG lookup",
+            "API call",
+            "Return label",
+            "Shipping partner",
+            "Workflow state"
+        ],
+        "index_text": "Slide 34: ShopBot finds order, confirms jeans, gets return label from shipping partner, requests email; lookup with RAG and API call."
+    },
+    {
+        "slide_title": "Having an LLM initiate a clothing return: final API action",
+        "slide_paragraph": "This slide completes the clothing return example. The user provides an email address, and the bot confirms that the shipping label has been sent and asks the user to return the jeans within five days. The slide labels this as an API call to the shipper. This is an example of an LLM-powered application causing a real-world side effect: sending a label through an external shipping system. Because such actions can affect users and businesses, the system must be careful. It should verify the order, confirm the item, validate the email, and ensure the action is authorized before calling the API. The conversation shows how language generation supports the workflow, while external applications perform the actual operational task.",
+        "key_concepts": [
+            "Shipping API",
+            "Email confirmation",
+            "Return label",
+            "External action",
+            "Workflow completion"
+        ],
+        "index_text": "Slide 35: ShopBot receives email tim.b@email.net, sends shipping label through shipper API, completes return workflow."
+    },
+    {
+        "slide_title": "LLM-powered applications with tools and actions",
+        "slide_paragraph": "This slide returns to the broader LLM-powered application architecture and adds examples of external application capabilities: triggering API calls and performing calculations. The diagram again includes the user application, orchestration library, LLM, external data sources, and external applications. The key teaching point is that LLM applications can be extended with tools. A calculator can solve arithmetic problems more reliably than the language model alone. An API can perform actions such as retrieving orders, booking appointments, or sending emails. The orchestration layer decides when to use these tools and how to feed the results back into the model. This makes the application more accurate and more useful than a standalone LLM.",
+        "key_concepts": [
+            "Tool use",
+            "API triggering",
+            "Calculations",
+            "Orchestration library",
+            "External applications"
+        ],
+        "index_text": "Slide 36: LLM application architecture with external applications; trigger API calls; perform calculations."
+    },
+    {
+        "slide_title": "Requirements for using LLMs to power applications",
+        "slide_paragraph": "This slide lists practical requirements for using LLMs in applications. First, the system must validate actions, meaning it should check whether a planned action is correct, allowed, and safe before executing it. Second, it must collect required user information and ensure it appears in the completion or structured output, such as the user email tim.b@email.net. Third, it must plan actions, shown as a step-by-step return process: check order ID, request label, verify user email, and email the user label. Fourth, it must format outputs, such as producing a SQL query that counts matching orders. The slide concludes that prompt structure is important because the prompt must guide the model to produce reliable, structured, action-ready outputs.",
+        "key_concepts": [
+            "Action validation",
+            "Information extraction",
+            "Planning",
+            "Structured outputs",
+            "Prompt structure",
+            "SQL generation"
+        ],
+        "index_text": "Slide 37: Requirements for LLM applications; validate actions, collect user email, plan return steps, format SQL query."
+    },
+    {
+        "slide_title": "Helping LLMs reason and plan with Chain-of-Thought Prompting",
+        "slide_paragraph": "This section title introduces chain-of-thought prompting as a technique for improving reasoning and planning. The term refers to prompting a model to produce or use intermediate reasoning steps before giving a final answer. The motivation is that complex problems often require multiple operations, such as interpreting the question, identifying relevant quantities, performing calculations, and checking the result. A direct answer prompt may cause the model to jump to an incorrect conclusion. Chain-of-thought prompting provides examples of step-by-step reasoning so the model can follow a similar pattern. In applications, this can help with arithmetic, logic, planning, and multi-step question answering.",
+        "key_concepts": [
+            "Chain-of-thought prompting",
+            "Reasoning",
+            "Planning",
+            "Intermediate steps",
+            "Complex problem solving"
+        ],
+        "index_text": "Slide 38: Chain-of-thought prompting; helps LLMs reason and plan step by step."
+    },
+    {
+        "slide_title": "LLMs can struggle with complex reasoning problems",
+        "slide_paragraph": "This slide shows a reasoning failure using a word problem. The prompt first gives an example about Roger having 5 tennis balls, buying 2 cans with 3 balls each, and reaching the answer 11. Then it asks a new problem: a cafeteria had 23 apples, used 20, and bought 6 more. The model incorrectly answers 27. The correct reasoning should be 23 minus 20 equals 3, then 3 plus 6 equals 9. The model\u2019s error suggests that simply providing an answer example may not be enough. It may copy superficial patterns or combine numbers incorrectly. This motivates chain-of-thought prompting, where the example includes reasoning steps rather than only the final answer.",
+        "key_concepts": [
+            "Reasoning failure",
+            "Word problems",
+            "Arithmetic reasoning",
+            "Few-shot prompting",
+            "Incorrect answer"
+        ],
+        "index_text": "Slide 39: LLM struggles with complex reasoning; cafeteria apples problem incorrectly answered 27 instead of 9."
+    },
+    {
+        "slide_title": "Humans take a step-by-step approach to solving complex problems",
+        "slide_paragraph": "This slide contrasts direct answering with step-by-step reasoning. The tennis ball problem is solved by identifying the initial amount, calculating the additional balls from two cans, and adding them. The reasoning is written as: two cans of three tennis balls each equals six tennis balls, then five plus six equals eleven. The slide labels these intermediate statements as reasoning steps or a chain of thought. The purpose is to show that humans often solve complex tasks by decomposing them into smaller operations. For LLM prompting, showing this decomposition can guide the model to perform similar intermediate reasoning instead of guessing the final answer. The explicit start, steps, and end format makes the solution path clear.",
+        "key_concepts": [
+            "Step-by-step reasoning",
+            "Decomposition",
+            "Chain of thought",
+            "Arithmetic solution",
+            "Intermediate reasoning"
+        ],
+        "index_text": "Slide 40: Human step-by-step solution for tennis balls problem; chain of thought with Start, Step 1, Step 2, End."
+    },
+    {
+        "slide_title": "Chain-of-Thought Prompting can help LLMs reason",
+        "slide_paragraph": "This slide shows how chain-of-thought prompting improves the cafeteria apples problem. The prompt includes a worked example where the tennis ball problem is answered with reasoning steps: Roger starts with five balls, two cans of three balls each give six more, and five plus six equals eleven. Then the model is asked the cafeteria problem. This time, it correctly reasons that the cafeteria had 23 apples, used 20, leaving 3, then bought 6 more, giving 9. The final answer is marked correct. The slide illustrates the main value of chain-of-thought prompting: examples that include reasoning can teach the model a problem-solving style, not just an input-output mapping.",
+        "key_concepts": [
+            "Chain-of-thought example",
+            "Worked reasoning",
+            "Few-shot reasoning",
+            "Correct arithmetic",
+            "Wei et al. 2022"
+        ],
+        "index_text": "Slide 41: Chain-of-thought prompting fixes apples problem; model reasons 23-20=3 then 3+6=9."
+    },
+    {
+        "slide_title": "Chain-of-Thought Prompting for yes/no reasoning",
+        "slide_paragraph": "This slide shows chain-of-thought prompting on a physical reasoning question. The example asks whether a pear would sink in water and explains that a pear\u2019s density is about 0.6 g/cm^3, which is less than water, so it would float and the answer is no. The new question asks whether a gold ring would sink to the bottom of a swimming pool. The model follows the demonstrated reasoning style: it compares gold\u2019s density, 19.3 g/cm^3, to water and concludes that the ring would sink, so the answer is yes. This example shows that chain-of-thought is useful beyond arithmetic. It can help the model connect facts, apply a principle, and produce a justified final answer.",
+        "key_concepts": [
+            "Physical reasoning",
+            "Density",
+            "Yes/no QA",
+            "Chain-of-thought transfer",
+            "Reasoned answer"
+        ],
+        "index_text": "Slide 42: Chain-of-thought example for sinking objects; pear floats, gold ring sinks due to density."
+    },
+    {
+        "slide_title": "Program-aided Language Models",
+        "slide_paragraph": "This section title introduces program-aided language models, often abbreviated as PAL. The main idea is that some tasks, especially mathematical or algorithmic tasks, are better solved by generating and executing code than by relying on the LLM to calculate directly. The LLM can understand the natural language problem and translate it into a program, while a code interpreter executes the program exactly. This division of labor is powerful: the language model handles interpretation and code generation, while the programming environment handles arithmetic and symbolic computation. The following slides contrast ordinary LLM reasoning with PAL-style tool use.",
+        "key_concepts": [
+            "Program-aided language models",
+            "PAL",
+            "Code interpreter",
+            "Tool-augmented reasoning",
+            "Mathematical problem solving"
+        ],
+        "index_text": "Slide 43: Program-aided Language Models section; LLM plus code interpreter for solving tasks."
+    },
+    {
+        "slide_title": "LLMs can struggle with mathematics",
+        "slide_paragraph": "This slide repeats the arithmetic limitation from earlier. The prompt asks the model to compute 40366 divided by 439, and the model answers 92.549. The slide indicates that this is incorrect. The point is not that LLMs cannot represent mathematical concepts, but that next-token prediction is not the same as reliable calculation. A language model may generate a plausible-looking number based on patterns rather than performing exact arithmetic. For precise calculations, an external calculator or code interpreter is more reliable. This motivates program-aided language models, where the LLM writes code and the interpreter computes the result.",
+        "key_concepts": [
+            "Mathematics limitation",
+            "Exact arithmetic",
+            "Calculation error",
+            "Code interpreter motivation",
+            "PAL"
+        ],
+        "index_text": "Slide 44: LLM struggles with mathematics; 40366 / 439 answered as 92.549 incorrectly."
+    },
+    {
+        "slide_title": "Program-aided language (PAL) models",
+        "slide_paragraph": "This slide visually compares chain-of-thought reasoning with program-aided language models. On the left, the LLM is combined with a code interpreter. The figure from the PAL paper shows that ordinary chain-of-thought can still produce an incorrect answer even when it writes explanatory steps, while PAL converts the problem into executable code. In the PAL example, variables such as tennis_balls and bought_balls are assigned values, then the answer is computed by the interpreter. The green check mark indicates that executing code gives the correct result. This slide teaches a key design principle: when a task requires deterministic computation, it is often better to let the LLM create a program and let a tool execute it.",
+        "key_concepts": [
+            "PAL architecture",
+            "LLM plus code interpreter",
+            "Executable reasoning",
+            "Chain-of-thought comparison",
+            "Deterministic computation"
+        ],
+        "index_text": "Slide 45: PAL models; LLM plus code interpreter; compares Chain-of-Thought with program-aided language models."
+    },
+    {
+        "slide_title": "PAL example with one-shot prompt",
+        "slide_paragraph": "This slide shows a PAL prompt using one-shot learning. The prompt first gives the Roger tennis ball problem and an answer written as code-like reasoning. It assigns tennis_balls = 5, computes bought_balls = 2 * 3, and sets answer = tennis_balls + bought_balls. Then the prompt presents a new bakery problem: bakers started with 200 loaves, sold 93 in the morning and 39 in the afternoon, and a grocery store returned 6 unsold loaves. The LLM is expected to continue in the same format by writing a programmatic solution. The visible structure demonstrates how an example can teach the model to express reasoning as executable variable assignments rather than free-form prose.",
+        "key_concepts": [
+            "One-shot prompting",
+            "Code-like reasoning",
+            "Variable assignment",
+            "Bakery word problem",
+            "PAL prompt"
+        ],
+        "index_text": "Slide 46: PAL example; one-shot prompt with tennis balls code; asks bakery loaves problem."
+    },
+    {
+        "slide_title": "PAL example: generated programmatic solution",
+        "slide_paragraph": "This slide shows the model completing the PAL-style solution for the bakery problem. It creates variables for the quantities: loaves_baked = 200, loaves_sold_morning = 93, loaves_sold_afternoon = 39, and loaves_returned = 6. Then it computes the answer as loaves_baked minus the two sold quantities plus the returned loaves. The slide labels the blue parts as chain-of-thought reasoning and the pink parts as PAL execution. The mathematical expression corresponds to 200 - 93 - 39 + 6, which equals 74. The example illustrates how PAL converts a natural language word problem into a small executable program, reducing the chance of arithmetic mistakes.",
+        "key_concepts": [
+            "Program generation",
+            "Variable extraction",
+            "Arithmetic execution",
+            "PAL completion",
+            "Word problem solving"
+        ],
+        "index_text": "Slide 47: PAL generated code for bakery problem; 200 - 93 - 39 + 6; answer 74."
+    },
+    {
+        "slide_title": "Program-aided language (PAL) models: prompt to execution",
+        "slide_paragraph": "This slide abstracts the PAL workflow. A user question is inserted into a PAL prompt template to create a PAL-formatted prompt. The LLM receives this prompt and generates a Python script, shown as a function structure that returns an answer. The script is then passed to a Python interpreter, which executes it and produces answer = 74. The key idea is that the final answer comes from code execution, not from the LLM\u2019s own arithmetic token generation. The prompt template is important because it tells the model what format to produce. The Python interpreter provides the reliability needed for numerical computation, while the LLM provides the language understanding needed to translate the question into code.",
+        "key_concepts": [
+            "PAL prompt template",
+            "Python script",
+            "Python interpreter",
+            "Code execution",
+            "Answer extraction"
+        ],
+        "index_text": "Slide 48: PAL workflow; question to prompt template to formatted prompt; LLM generates Python script; interpreter returns answer 74."
+    },
+    {
+        "slide_title": "Program-aided language (PAL) models: solution execution",
+        "slide_paragraph": "This slide simplifies the PAL pipeline further. The PAL-formatted prompt goes to the LLM, which outputs a solution intended for a Python interpreter. The interpreter executes the generated solution and produces answer = 74. This representation emphasizes that the LLM and interpreter have different responsibilities. The LLM is responsible for producing syntactically and semantically appropriate code, while the interpreter is responsible for executing the code exactly. This architecture is useful not only for arithmetic but also for tasks such as data analysis, symbolic manipulation, unit conversion, and any problem where an executable procedure can be derived from natural language.",
+        "key_concepts": [
+            "Generated solution",
+            "Interpreter execution",
+            "Tool delegation",
+            "PAL formatted prompt",
+            "Reliable computation"
+        ],
+        "index_text": "Slide 49: PAL formatted prompt; LLM generates solution; Python interpreter executes and returns answer 74."
+    },
+    {
+        "slide_title": "Program-aided language (PAL) models: final answer",
+        "slide_paragraph": "This slide shows the final stage of the PAL process. After the Python interpreter executes the solution, the application returns a completion with the correct answer: 74. The diagram includes the LLM, the solution, the interpreter, and the final answer. The important distinction is that the completion is grounded in executed code rather than approximate model reasoning. This reduces arithmetic hallucination and makes the output easier to verify. In a complete application, the orchestration layer would manage this flow: send the question to the LLM, capture the generated code, run it in a safe interpreter environment, and return the computed result to the user.",
+        "key_concepts": [
+            "Completion",
+            "Correct answer",
+            "Safe execution",
+            "Code-grounded output",
+            "Orchestration"
+        ],
+        "index_text": "Slide 50: PAL final completion; Python interpreter produces answer 74 and final output is correct."
+    },
+    {
+        "slide_title": "LLM-powered applications architecture",
+        "slide_paragraph": "This slide returns once more to the general LLM-powered application architecture. It shows the user application connected to an orchestration library, which coordinates the LLM, external data sources, and external applications. After presenting RAG and PAL, the diagram can now be understood more concretely. External data sources support retrieval augmented generation. External applications and tools support actions, calculations, or code execution. The orchestration library is what binds these pieces into a working system. It decides when to retrieve documents, when to call a Python interpreter, when to call APIs, how to format prompts, and how to assemble the final response.",
+        "key_concepts": [
+            "Application architecture",
+            "RAG",
+            "PAL",
+            "Orchestration",
+            "External tools"
+        ],
+        "index_text": "Slide 51: LLM-powered applications architecture repeated; documents, database, web, external applications, orchestration library."
+    },
+    {
+        "slide_title": "PAL architecture",
+        "slide_paragraph": "This slide adapts the general application architecture specifically for PAL. The user application communicates with an orchestration library, which coordinates the LLM and a Python interpreter. The diagram removes the broader external data sources and focuses on the computation tool. The LLM generates code or a solution plan, and the Python interpreter executes it. The orchestration library is responsible for passing information between them and returning the result to the user application. This structure is a simple but powerful example of tool-augmented LLM design. It also implies that safe execution controls are important, because generated code should be run in a restricted environment rather than unrestricted production infrastructure.",
+        "key_concepts": [
+            "PAL architecture",
+            "Python interpreter",
+            "User application",
+            "Orchestration library",
+            "Tool-augmented LLM"
+        ],
+        "index_text": "Slide 52: PAL architecture; LLM connected to Python interpreter through orchestration library and user application."
+    },
+    {
+        "slide_title": "LLM-powered applications: return to full architecture",
+        "slide_paragraph": "This slide again shows the broader architecture of an LLM-powered application. It is placed after the PAL architecture to remind students that a complete application may include several augmentation mechanisms at once. A system might use RAG to retrieve documents, PAL to perform calculations, APIs to execute actions, and memory or agents to manage conversation state. The LLM sits inside this larger environment rather than acting alone. The orchestration library remains the central component for combining these capabilities into coherent behavior. This slide prepares the transition to ReAct, which combines reasoning with action-taking in a more general framework.",
+        "key_concepts": [
+            "Full LLM architecture",
+            "Multiple tools",
+            "RAG and PAL integration",
+            "Agents",
+            "Orchestration"
+        ],
+        "index_text": "Slide 53: Full LLM-powered application architecture; prepares for ReAct reasoning and action."
+    },
+    {
+        "slide_title": "ReAct: Combining reasoning and action in LLMs",
+        "slide_paragraph": "This section title introduces ReAct, a framework that combines reasoning and action in LLMs. The name reflects the interleaving of reasoning steps, where the model thinks about what to do, and action steps, where it calls an external tool or performs an operation. ReAct is useful when a problem cannot be solved by a single model completion. Multi-step question answering, fact verification, and tool-based workflows often require the model to search, observe results, reason again, and decide the next action. The following slides explain the ReAct pattern using structured steps: Question, Thought, Action, and Observation.",
+        "key_concepts": [
+            "ReAct",
+            "Reasoning and action",
+            "Tool use",
+            "Multi-step QA",
+            "Agentic workflow"
+        ],
+        "index_text": "Slide 54: ReAct combines reasoning and action in LLMs; section title."
+    },
+    {
+        "slide_title": "ReAct: Synergizing Reasoning and Action in LLMs",
+        "slide_paragraph": "This slide presents ReAct as an LLM combined with a web search API. The slide cites Yao et al. and mentions two example benchmarks or tasks: HotPot QA for multi-step question answering and Fever for fact verification. The figure on the right shows examples where reasoning and action are interleaved: the model thinks, searches, observes information, and continues reasoning until it can answer. The main idea is that reasoning alone may not be enough if the model lacks facts, and actions alone may not be enough without planning. ReAct creates a loop where the model uses reasoning to choose actions, uses observations from actions to update its reasoning, and eventually produces a final answer.",
+        "key_concepts": [
+            "ReAct",
+            "Web search API",
+            "HotPot QA",
+            "Fever",
+            "Fact verification",
+            "Multi-step reasoning"
+        ],
+        "index_text": "Slide 55: ReAct; LLM plus Websearch API; HotPot QA and Fever; Yao et al. 2022."
+    },
+    {
+        "slide_title": "ReAct: Question step",
+        "slide_paragraph": "This slide defines the first element of the ReAct pattern: the Question. The question is the problem that requires advanced reasoning and multiple steps to solve. The example asks which magazine was started first, Arthur\u2019s Magazine or First for Women. This type of question is not answered reliably by simple pattern completion because it requires knowing or finding the start date of both magazines, comparing the dates, and returning the earlier one. The slide lists the ReAct sequence on the left: Question, Thought, Action, Observation. By beginning with the Question, the system establishes the goal that all later reasoning and actions must serve.",
+        "key_concepts": [
+            "Question",
+            "Multi-step question answering",
+            "ReAct sequence",
+            "Problem formulation",
+            "Arthur's Magazine"
+        ],
+        "index_text": "Slide 56: ReAct Question; which magazine started first, Arthur's Magazine or First for Women."
+    },
+    {
+        "slide_title": "ReAct: Thought step",
+        "slide_paragraph": "This slide defines the Thought component of ReAct. A Thought is a reasoning step that identifies how the model will approach the problem and what action should be taken next. In the example, the model reasons that it needs to search for Arthur\u2019s Magazine and First for Women, then determine which one was started first. The Thought does not directly answer the question; instead, it plans the next information-gathering step. This is important because ReAct separates internal reasoning from external action. The model uses thought to decide what information is missing, then chooses an action to obtain that information.",
+        "key_concepts": [
+            "Thought",
+            "Reasoning step",
+            "Planning",
+            "Information need",
+            "Action selection"
+        ],
+        "index_text": "Slide 57: ReAct Thought; model decides to search Arthur's Magazine and First for Women to compare start dates."
+    },
+    {
+        "slide_title": "ReAct: Action step",
+        "slide_paragraph": "This slide defines the Action component of ReAct. An action is an external task selected from an allowed set of actions. The slide gives examples: Search[entity], Lookup[string], and Finish[answer]. Search retrieves information about an entity, Lookup finds a keyword in the current passage, and Finish returns the final answer. The chosen action is determined by the previous thought. In the example, the thought identified Arthur\u2019s Magazine as a needed search target, so the action becomes search[Arthur\u2019s Magazine]. This controlled action space is important because it constrains what the model can do and makes tool use structured rather than arbitrary.",
+        "key_concepts": [
+            "Action",
+            "Search",
+            "Lookup",
+            "Finish",
+            "Controlled action space",
+            "Tool invocation"
+        ],
+        "index_text": "Slide 58: ReAct Action; allowed actions search[entity], lookup[string], finish[answer]; example search Arthur's Magazine."
+    },
+    {
+        "slide_title": "ReAct: Observation step",
+        "slide_paragraph": "This slide defines Observation as the result returned after carrying out an action. In the example, searching Arthur\u2019s Magazine returns information that it was an American literary periodical published in Philadelphia in the 19th century, with dates 1844-1846. The observation provides factual evidence that the model can use in the next thought. ReAct depends on this feedback loop: action produces observation, observation informs reasoning, and reasoning chooses the next action. This makes the system more grounded than a model answering only from memory because each step can incorporate external evidence.",
+        "key_concepts": [
+            "Observation",
+            "Search result",
+            "External evidence",
+            "Feedback loop",
+            "Grounded reasoning"
+        ],
+        "index_text": "Slide 59: ReAct Observation; result for Arthur's Magazine says 1844-1846 literary periodical in Philadelphia."
+    },
+    {
+        "slide_title": "ReAct: Continuing the reasoning-action loop",
+        "slide_paragraph": "This slide shows the second iteration of the ReAct loop. After observing that Arthur\u2019s Magazine started in 1844, the model forms Thought 2: it still needs to search First for Women. It then performs Action 2: search[First for Women]. The observation says First for Women is a women\u2019s magazine published by Bauer Media Group in the USA and that it started in 1989. The slide demonstrates why ReAct is useful for comparison questions: the model gathers one piece of evidence, realizes another piece is needed, retrieves it, and stores both facts for comparison. It is a structured multi-step process rather than a single response.",
+        "key_concepts": [
+            "Iterative search",
+            "Thought 2",
+            "Action 2",
+            "Observation 2",
+            "Evidence comparison"
+        ],
+        "index_text": "Slide 60: ReAct second loop; Arthur's Magazine started 1844; search First for Women; observation says started 1989."
+    },
+    {
+        "slide_title": "ReAct: Finishing the answer",
+        "slide_paragraph": "This slide shows the final ReAct reasoning step. The model compares the two start dates: Arthur\u2019s Magazine started in 1844 and First for Women started in 1989. Since 1844 is earlier than 1989, the model concludes that Arthur\u2019s Magazine started first. It then uses the Finish action with the answer Arthur\u2019s Magazine. This illustrates the complete ReAct pattern: begin with a question, reason about missing information, search for evidence, observe results, reason again, and finish when enough information has been collected. The final answer is not merely guessed; it is derived from retrieved observations and an explicit comparison.",
+        "key_concepts": [
+            "Finish action",
+            "Date comparison",
+            "Final answer",
+            "Evidence-based reasoning",
+            "ReAct loop completion"
+        ],
+        "index_text": "Slide 61: ReAct final step; compare 1844 and 1989; finish with Arthur's Magazine."
+    },
+    {
+        "slide_title": "ReAct instructions define the action space",
+        "slide_paragraph": "This slide shows the kind of instruction prompt used to define a ReAct agent\u2019s action space. The instructions tell the model to solve a question answering task by interleaving Thought, Action, and Observation steps. It then defines three allowed action types. Search[entity] searches the exact entity on Wikipedia and returns the first paragraph if available or similar entities otherwise. Lookup[keyword] returns the next sentence containing the keyword in the current passage. Finish[answer] returns the answer and ends the task. These instructions are crucial because they transform the LLM from an unrestricted text generator into a structured tool-using agent. The model knows what actions exist, when to use them, and how to format them.",
+        "key_concepts": [
+            "ReAct prompt",
+            "Action space",
+            "Search",
+            "Lookup",
+            "Finish",
+            "Tool instructions"
+        ],
+        "index_text": "Slide 62: ReAct instructions define action space; Thought, Action, Observation; Search, Lookup, Finish."
+    },
+    {
+        "slide_title": "Building up the ReAct prompt",
+        "slide_paragraph": "This slide explains how a ReAct prompt is assembled. It contains instructions, one or more ReAct examples, and the new question to be answered. The ReAct example demonstrates the pattern of Question, Thought, Action, and Observation, so the LLM can imitate that structure on the new task. This is similar to few-shot prompting, but the examples include tool-use behavior rather than only final answers. The prompt is therefore both a task description and a behavioral protocol. It tells the model how to reason, when to act, how to interpret observations, and when to finish. This structured prompt design is central to building agent-like LLM systems.",
+        "key_concepts": [
+            "Prompt construction",
+            "Few-shot ReAct examples",
+            "Instructions",
+            "Question",
+            "Agent prompting"
+        ],
+        "index_text": "Slide 63: Building ReAct prompt; instructions plus ReAct example plus question to be answered sent to LLM."
+    },
+    {
+        "slide_title": "LangChain",
+        "slide_paragraph": "This slide introduces LangChain as an example orchestration framework for building LLM-powered applications. The diagram places LangChain between the user application and the components it coordinates: the LLM, external applications, external data sources such as documents, databases, and the web, and application-level modules such as prompt templates, tools, memory, and agents. These components are combined into a chain. Prompt templates standardize inputs to the model, tools allow the model to call functions or APIs, memory stores conversational or task context, and agents decide which tools to use. The slide shows that frameworks like LangChain help developers assemble complex workflows without manually coding every interaction between the LLM and external systems.",
+        "key_concepts": [
+            "LangChain",
+            "Prompt templates",
+            "Tools",
+            "Memory",
+            "Agents",
+            "Chains"
+        ],
+        "index_text": "Slide 64: LangChain orchestration; prompt templates, tools, memory, agents; external data sources and applications combined into a chain."
+    },
+    {
+        "slide_title": "The significance of scale: application building",
+        "slide_paragraph": "This slide contrasts BERT-base at 110 million parameters with BLOOM at 176 billion parameters to emphasize the significance of scale in application building. Large models generally offer broader capabilities and stronger generalization, but they also require more memory, compute, and deployment infrastructure. Smaller models may be easier to deploy but less capable for open-ended generation or complex reasoning. The slide\u2019s placement after application frameworks suggests that model scale influences architectural decisions. If a model is very large, developers may need optimization, distillation, quantization, or cloud serving. If a model is smaller, they may need more retrieval, tools, or task-specific fine-tuning to compensate for limited capacity.",
+        "key_concepts": [
+            "Model scale",
+            "BERT",
+            "BLOOM",
+            "Application building",
+            "Deployment trade-offs"
+        ],
+        "index_text": "Slide 65: Significance of scale for application building; BERT-base 110M vs BLOOM 176B."
+    },
+    {
+        "slide_title": "LLM powered application architectures",
+        "slide_paragraph": "This section title introduces a broader view of LLM-powered application architectures. After covering individual techniques such as RAG, PAL, ReAct, and LangChain, the lecture now moves to the layers that make up a complete generative AI system. An application architecture includes not only the model but also infrastructure, data sources, tools, interfaces, and users. This matters because production systems must support training or fine-tuning, serving, monitoring, feedback collection, and integration with existing business systems. The following slides build this architecture layer by layer so students can see how each component contributes to a deployed generative AI product.",
+        "key_concepts": [
+            "Application architecture",
+            "System layers",
+            "LLM deployment",
+            "Generative AI systems",
+            "Production design"
+        ],
+        "index_text": "Slide 66: LLM powered application architectures; transition to layered architecture for generative applications."
+    },
+    {
+        "slide_title": "Building generative applications: infrastructure",
+        "slide_paragraph": "This slide introduces the foundation layer for building generative applications: infrastructure. The text mentions training or fine-tuning, serving, and application components. Infrastructure includes the hardware, software, and deployment environment needed to train, adapt, host, and run the model. Serving infrastructure is especially important because users expect fast responses, reliable uptime, and scalable access. Application components may include APIs, databases, queues, monitoring systems, and authentication. The slide positions infrastructure as the base because all other layers depend on it. Without stable infrastructure, even a strong model cannot be delivered effectively to users.",
+        "key_concepts": [
+            "Infrastructure",
+            "Training",
+            "Fine-tuning",
+            "Serving",
+            "Application components"
+        ],
+        "index_text": "Slide 67: Building generative applications; infrastructure layer includes training/fine-tuning, serving, application components."
+    },
+    {
+        "slide_title": "Building generative applications: LLM models",
+        "slide_paragraph": "This slide adds the model layer on top of the infrastructure. It shows LLM models and an optimized LLM. The distinction suggests that application builders may start from a general LLM and then optimize it for deployment through techniques discussed earlier, such as quantization, pruning, or distillation. The optimized LLM is the version more suitable for serving in an application because it may be faster, smaller, or cheaper. This layer is central because it provides the generative capability, but the slide\u2019s layered structure shows that the model is not enough by itself. It needs infrastructure beneath it and other application layers around it.",
+        "key_concepts": [
+            "LLM models",
+            "Optimized LLM",
+            "Model layer",
+            "Serving",
+            "Model optimization"
+        ],
+        "index_text": "Slide 68: Building generative applications; add LLM models and optimized LLM on infrastructure."
+    },
+    {
+        "slide_title": "Building generative applications: information sources",
+        "slide_paragraph": "This slide adds information sources to the generative application architecture. The information sources shown include databases, documents, and the web. These sources support techniques like RAG and help overcome model limitations such as knowledge cutoffs and hallucinations. In a real application, information sources may include internal policy documents, product catalogs, customer records, knowledge bases, legal files, or live web data. The architecture now contains infrastructure, LLM models, optimized LLMs, and external knowledge. This combination allows the model to generate responses grounded in the application\u2019s actual data rather than relying only on general training knowledge.",
+        "key_concepts": [
+            "Information sources",
+            "Databases",
+            "Documents",
+            "Web",
+            "Grounding",
+            "RAG"
+        ],
+        "index_text": "Slide 69: Building generative applications; information sources layer includes database, documents, web."
+    },
+    {
+        "slide_title": "Building generative applications: outputs and feedback",
+        "slide_paragraph": "This slide adds generated outputs and feedback to the architecture. Generated outputs are the responses, summaries, actions, code, recommendations, or other artifacts produced by the application. Feedback is equally important because it allows the system to be evaluated and improved. Feedback may come from users, automated metrics, human reviewers, logs, or downstream task success. The architecture now suggests a loop: the optimized LLM uses information sources to generate outputs, and feedback from those outputs can inform future improvements to prompts, retrieval, fine-tuning, or alignment. This is how generative AI applications evolve after deployment rather than remaining static.",
+        "key_concepts": [
+            "Generated outputs",
+            "Feedback",
+            "Evaluation loop",
+            "Continuous improvement",
+            "Application monitoring"
+        ],
+        "index_text": "Slide 70: Building generative applications; add generated outputs and feedback to infrastructure, models, and information sources."
+    },
+    {
+        "slide_title": "Building generative applications: tools and frameworks",
+        "slide_paragraph": "This slide adds LLM tools and frameworks, with LangChain and model hubs as examples. Tools and frameworks help developers build, connect, and manage components of generative AI applications. LangChain can provide chains, agents, tools, memory, and prompt templates. Model hubs provide access to pretrained or fine-tuned models and sometimes deployment utilities. This layer sits between the raw model and the final application because it simplifies orchestration. Instead of manually writing all retrieval, prompting, tool calling, and memory logic, developers can use frameworks to assemble these capabilities. The diagram shows that modern LLM application development is an ecosystem activity involving models, data, tools, and infrastructure.",
+        "key_concepts": [
+            "LLM tools",
+            "Frameworks",
+            "LangChain",
+            "Model hubs",
+            "Orchestration"
+        ],
+        "index_text": "Slide 71: Building generative applications; LLM tools and frameworks such as LangChain and model hubs."
+    },
+    {
+        "slide_title": "Building generative applications: application interfaces",
+        "slide_paragraph": "This slide adds application interfaces, such as websites, mobile applications, and APIs. These interfaces are how users or other systems access the generative AI capability. A web interface may provide a chatbot, a mobile app may offer personalized assistance, and an API may allow another system to call the LLM service programmatically. This layer is important because usability and integration depend on interface design. Even a powerful backend model will not be useful if users cannot interact with it clearly or if external systems cannot access it reliably. The architecture now shows a full pathway from infrastructure and models through data and tools to a usable product surface.",
+        "key_concepts": [
+            "Application interfaces",
+            "Websites",
+            "Mobile applications",
+            "APIs",
+            "User access",
+            "Integration"
+        ],
+        "index_text": "Slide 72: Building generative applications; application interfaces include websites, mobile applications, APIs."
+    },
+    {
+        "slide_title": "Building generative applications: consumers",
+        "slide_paragraph": "This slide adds the final consumer layer, showing users and systems as the consumers of the application. Users may interact directly through chat interfaces, web pages, or mobile apps. Systems may consume the generative AI service through APIs, scheduled workflows, or backend integrations. This distinction is important because not all LLM applications are human-facing chatbots. Some generate reports, classify tickets, summarize documents, or call services automatically within larger software pipelines. The architecture is now complete: consumers access application interfaces, which use tools and frameworks, information sources, optimized models, generated output and feedback loops, and infrastructure.",
+        "key_concepts": [
+            "Consumers",
+            "Users",
+            "Systems",
+            "APIs",
+            "End-to-end architecture"
+        ],
+        "index_text": "Slide 73: Building generative applications; consumers include users and systems; full layered architecture."
+    },
+    {
+        "slide_title": "Building generative applications: complete architecture recap",
+        "slide_paragraph": "This slide repeats the completed generative application architecture as a recap. It includes consumers, application interfaces, LLM tools and frameworks, generated outputs and feedback, information sources, LLM models and optimized LLMs, and infrastructure. The repetition reinforces that production generative AI requires many coordinated layers. The LLM is only one component. The application must also handle data access, tool orchestration, feedback, serving infrastructure, and user or system interfaces. This complete view helps students understand why building an LLM application is different from simply calling a model in a notebook. Successful systems require careful design across the entire stack.",
+        "key_concepts": [
+            "Complete architecture",
+            "Full stack LLM application",
+            "Infrastructure",
+            "Interfaces",
+            "Feedback",
+            "Information sources"
+        ],
+        "index_text": "Slide 74: Complete generative application architecture recap; consumers, interfaces, tools, data, outputs, models, infrastructure."
+    },
+    {
+        "slide_title": "Lecture References",
+        "slide_paragraph": "This final slide lists the lecture reference: Generative AI with Large Language Models from DeepLearning.AI, Week 3. The presence of a reference slide indicates that the lecture material draws on an established educational source for topics such as model optimization, RAG, chain-of-thought prompting, PAL, ReAct, and application architectures. For students, this slide is useful because it points to a broader resource for revisiting the concepts in more detail. It also signals that the lecture has covered the application-oriented part of the generative AI lifecycle, moving from model optimization to retrieval, tool use, reasoning-action frameworks, and full application design.",
+        "key_concepts": [
+            "Lecture reference",
+            "DeepLearning.AI",
+            "Generative AI with LLMs",
+            "Week 3",
+            "Further study"
+        ],
+        "index_text": "Slide 75: Lecture References; Generative AI with Large Language Models by DeepLearning.AI Week 3."
+    }
+]
