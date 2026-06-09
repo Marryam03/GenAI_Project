@@ -14,21 +14,22 @@ generator, a RAG retriever, and a set of tools — into one **LangGraph** multi-
 
 ```
 GenAI Project/
-├── MCQ_MultiAgent_LangGraph.ipynb   # ★ THE INTEGRATED SYSTEM (run this)
+├── MCQ_MultiAgent_LangGraph.ipynb  
 ├── RAG/
-│   ├── Hybrid_RAG+LLM.ipynb         # builds the RAG corpus + retriever
-│   ├── embeddings.npy               # 664 × 1024 slide vectors (L2-normalised) 
-│   ├── chunks_metadata.json         # 664 slide chunks (id, text, metadata)     
-│   └── qdrant_db_backup.zip         # same vectors in a Qdrant store (production option)
+│   ├── Hybrid_RAG+LLM.ipynb         
+│   ├── embeddings.npy              
+│   ├── chunks_metadata.json          
+│   └── qdrant_db_backup.zip        
 ├── Fine-Tuning/
-│   └── MCQ_SFT_Qwen3_4B.ipynb       # QLoRA fine-tune of Qwen3-4B on the MCQ bank
+│   └── MCQ_SFT_Qwen3_4B.ipynb      
 └── Dataset/
-    ├── Lectures/                    # 9 lecture PDFs (source material)
-    ├── Lectures Note/               # 9 slide-explanation JSONs  → RAG corpus + citations
-    └── MCQ Exams/                   # llm_mcq_exam_bank.xlsx (2,111 MCQs) → fine-tuning + tool
+    ├── Lectures/                   
+    ├── Lectures Note/              
+    └── MCQ Exams/                   
 ```
 
 The fine-tuned adapter is hosted on Hugging Face: `Marryam03/mcq-sft-qwen3-4b-lora-v2`.
+
 https://huggingface.co/Marryam03/mcq-sft-qwen3-4b-lora-v2
 ---
 
@@ -59,8 +60,8 @@ https://huggingface.co/Marryam03/mcq-sft-qwen3-4b-lora-v2
 
 ## 3. Required LLM topics (rubric coverage)
 
-| Topic | Where | What it does |
-|---|---|---|
+| Topic | Where | 
+|---|---|
 | **Prompt design** | Per-agent system prompts (role/style/constraints) + structured JSON specs for the generator. |
 | **RAG** | Hybrid dense+BM25+RRF retriever over lecture notes; grounds generation, overrides citations, and authors feedback. |
 | **Fine-tuning / PEFT** | QLoRA on Qwen3-4B over the MCQ bank; produces valid, grounded MCQ JSON. |
