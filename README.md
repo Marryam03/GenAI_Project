@@ -6,8 +6,7 @@ answer, explains *why* the answer is right/wrong with **slide citations**, and r
 learning resources. It ties together three components built in separate notebooks — a fine-tuned
 generator, a RAG retriever, and a set of tools — into one **LangGraph** multi-agent pipeline.
 
-> **Disclaimer:** All questions and explanations are AI-generated from course lecture notes and
-> may contain errors. Always verify against the original slides and your instructor.
+**Disclaimer:** All questions and explanations are AI-generated from course lecture notes and may contain errors. Always verify against the original slides and your instructor.
 
 ---
 
@@ -18,8 +17,8 @@ GenAI Project/
 ├── MCQ_MultiAgent_LangGraph.ipynb   # ★ THE INTEGRATED SYSTEM (run this)
 ├── RAG/
 │   ├── Hybrid_RAG+LLM.ipynb         # builds the RAG corpus + retriever
-│   ├── embeddings.npy               # 664 × 1024 slide vectors (L2-normalised)  ← used by §5
-│   ├── chunks_metadata.json         # 664 slide chunks (id, text, metadata)     ← used by §5
+│   ├── embeddings.npy               # 664 × 1024 slide vectors (L2-normalised) 
+│   ├── chunks_metadata.json         # 664 slide chunks (id, text, metadata)     
 │   └── qdrant_db_backup.zip         # same vectors in a Qdrant store (production option)
 ├── Fine-Tuning/
 │   └── MCQ_SFT_Qwen3_4B.ipynb       # QLoRA fine-tune of Qwen3-4B on the MCQ bank
@@ -30,7 +29,7 @@ GenAI Project/
 ```
 
 The fine-tuned adapter is hosted on Hugging Face: `Marryam03/mcq-sft-qwen3-4b-lora-v2`.
-
+https://huggingface.co/Marryam03/mcq-sft-qwen3-4b-lora-v2
 ---
 
 ## 2. How the pieces connect (architecture)
@@ -94,7 +93,7 @@ The fine-tuned adapter is hosted on Hugging Face: `Marryam03/mcq-sft-qwen3-4b-lo
 
 ---
 
-## 7. Ethics, safety, limitations
+## 6. Ethics, safety, limitations
 
 - **Disclaimer** attached to every student-facing output.
 - **Refusal:** `on_topic()` refuses topics with no sufficiently similar lecture slide;
