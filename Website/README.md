@@ -1,4 +1,7 @@
-# In the terminal run the following commands
+# In the terminal run the following commands:
+
+pip install requirements.txt
+
 export PROJECT_ROOT="/home/mabdrabou/Desktop/GenAI Project"
 
 export GEMINI_API_KEY="GEMINI API KEY"
